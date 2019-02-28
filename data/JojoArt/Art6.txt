@@ -1,8 +1,0 @@
-TYPE : 1;
-BUT : 1;
-cibleAllie : 3;
-DMGMIN : 300;
-DMGMAX : 600;
-delaiRecup : 100;
-PTRART : 180;
-Soin : 100;
