@@ -1,0 +1,17 @@
+./data/Couteau.bmp
+NV : 8;
+EXP : 50;
+MAXPV : 200;
+PV : 200;
+FRC : 20;
+MGE : 40;
+VITATT : 60;
+CRIT : 10;
+CNTR : 20;
+GARDE : 20;
+DEFPHY : 30;
+DEFMGE : 30;
+AGI : 20;
+DEXT : 20;
+PRTAUTO : 110;
+CHANCE : 1;

@@ -1,0 +1,17 @@
+./data/DioFace.png
+NV : 9;
+EXP : 50;
+MAXPV : 500;
+PV : 500;
+FRC : 30;
+MGE : 20;
+VITATT : 60;
+CRIT : 10;
+CNTR : 60;
+GARDE : 0;
+DEFPHY : 60;
+DEFMGE : 20;
+AGI : 80;
+DEXT : 30;
+PRTAUTO : 100;
+CHANCE : 10;
