@@ -1,0 +1,75 @@
+\hypertarget{degatsTxt_8c}{}\section{degats\+Txt.\+c File Reference}
+\label{degatsTxt_8c}\index{degats\+Txt.\+c@{degats\+Txt.\+c}}
+
+
+texte des degats qui serront afficher à l\textquotesingle{}ecran  
+
+
+{\ttfamily \#include $<$S\+D\+L2/\+S\+D\+L.\+h$>$}\newline
+{\ttfamily \#include $<$S\+D\+L2/\+S\+D\+L\+\_\+ttf.\+h$>$}\newline
+{\ttfamily \#include $<$S\+D\+L2/\+S\+D\+L\+\_\+image.\+h$>$}\newline
+{\ttfamily \#include \char`\"{}degats\+Txt.\+h\char`\"{}}\newline
+\subsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{degatsTxt_8c_ae1f9625f4b78fd518cfcf8b5b6a76448}{add\+Degat\+Txt}} (\mbox{\hyperlink{structdegatsTxt}{degats\+Txt}} $\ast$texte, int dmg, int posX, int posY, int type)
+\begin{DoxyCompactList}\small\item\em permet d\textquotesingle{}ajouter du texte à une certaine position sur l\textquotesingle{}écran \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{degatsTxt_8c_af1b228d963aa7e8eec82aa42ad54a883}{afficher\+Degats\+Txt}} (\mbox{\hyperlink{structdegatsTxt}{degats\+Txt}} $\ast$texte, S\+D\+L\+\_\+\+Surface $\ast$p\+Surface, S\+D\+L\+\_\+\+Rect camera)
+\begin{DoxyCompactList}\small\item\em permet d\textquotesingle{}afficher du texte sur l\textquotesingle{}écran \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+texte des degats qui serront afficher à l\textquotesingle{}ecran 
+
+\begin{DoxyAuthor}{Author}
+Mano Brabant 
+\end{DoxyAuthor}
+\begin{DoxyVersion}{Version}
+0.\+01 
+\end{DoxyVersion}
+\begin{DoxyDate}{Date}
+13 fevrier 2019 
+\end{DoxyDate}
+
+
+\subsection{Function Documentation}
+\mbox{\Hypertarget{degatsTxt_8c_ae1f9625f4b78fd518cfcf8b5b6a76448}\label{degatsTxt_8c_ae1f9625f4b78fd518cfcf8b5b6a76448}} 
+\index{degats\+Txt.\+c@{degats\+Txt.\+c}!add\+Degat\+Txt@{add\+Degat\+Txt}}
+\index{add\+Degat\+Txt@{add\+Degat\+Txt}!degats\+Txt.\+c@{degats\+Txt.\+c}}
+\subsubsection{\texorpdfstring{add\+Degat\+Txt()}{addDegatTxt()}}
+{\footnotesize\ttfamily void add\+Degat\+Txt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdegatsTxt}{degats\+Txt}} $\ast$}]{texte,  }\item[{int}]{dmg,  }\item[{int}]{posX,  }\item[{int}]{posY,  }\item[{int}]{type }\end{DoxyParamCaption})}
+
+
+
+permet d\textquotesingle{}ajouter du texte à une certaine position sur l\textquotesingle{}écran 
+
+
+\begin{DoxyParams}{Parameters}
+{\em texte} & emplacement dans un tableau ou sont stockés tout les texte à afficher \\
+\hline
+{\em posX} & position en X du texte à afficher \\
+\hline
+{\em posY} & position en Y du texte à afficher \\
+\hline
+{\em type} & permet de determiner la couleur du texte \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{degatsTxt_8c_af1b228d963aa7e8eec82aa42ad54a883}\label{degatsTxt_8c_af1b228d963aa7e8eec82aa42ad54a883}} 
+\index{degats\+Txt.\+c@{degats\+Txt.\+c}!afficher\+Degats\+Txt@{afficher\+Degats\+Txt}}
+\index{afficher\+Degats\+Txt@{afficher\+Degats\+Txt}!degats\+Txt.\+c@{degats\+Txt.\+c}}
+\subsubsection{\texorpdfstring{afficher\+Degats\+Txt()}{afficherDegatsTxt()}}
+{\footnotesize\ttfamily void afficher\+Degats\+Txt (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structdegatsTxt}{degats\+Txt}} $\ast$}]{texte,  }\item[{S\+D\+L\+\_\+\+Surface $\ast$}]{p\+Surface,  }\item[{S\+D\+L\+\_\+\+Rect}]{camera }\end{DoxyParamCaption})}
+
+
+
+permet d\textquotesingle{}afficher du texte sur l\textquotesingle{}écran 
+
+
+\begin{DoxyParams}{Parameters}
+{\em texte} & tableau où sont stockés tout les textes à afficher \\
+\hline
+{\em p\+Surface} & fenetre dans laquelle on va afficher les textes \\
+\hline
+{\em camera} & nous permet d\textquotesingle{}afficher les textes de facon fixe \\
+\hline
+\end{DoxyParams}
