@@ -1,0 +1,9 @@
+TYPE : 1;
+BUT : 1;
+cibleAllie : 2;
+DMGMIN : 300;
+DMGMAX : 600;
+delaiRecup : 700;
+PTRART : 180;
+buffATTMAX : 2.0;
+delaiBuffATTMAX : 1500;

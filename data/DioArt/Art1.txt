@@ -1,0 +1,8 @@
+TYPE : 0;
+BUT : 0;
+DMGMIN : 300;
+DMGMAX : 600;
+delaiRecup : 700;
+PTRART : 180;
+debuffDEXT : 0.1;
+delaiDebuffDEXT : 1000;
