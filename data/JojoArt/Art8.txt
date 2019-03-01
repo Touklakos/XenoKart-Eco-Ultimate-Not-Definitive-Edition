@@ -1,6 +1,0 @@
-TYPE : 1;
-BUT : 1;
-cibleAllie : 2;
-delaiRecup : 100;
-buffVITATT : 0.5;
-delaiBuffVITATT : 400;

@@ -1,9 +1,0 @@
-TYPE : 0;
-BUT : 0;
-DMGMIN : 300;
-DMGMAX : 600;
-delaiRecup : 700;
-PTRART : 180;
-fournaise : 2000;
-frisson : 1000;
-poison : 1000;
