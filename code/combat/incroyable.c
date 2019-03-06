@@ -722,7 +722,7 @@ for(int i = 0; i < 3; i++) {
 
                         indice = cibleEnnemi(&ennemis[i]);
 
-                        attaqueAllie(equipe, ennemis[i], indice, dgtsTxt, &nbDgtTxt);
+                        attaqueAllie(equipe, &ennemis[i], indice, dgtsTxt, &nbDgtTxt);
 
                       }
 
@@ -730,7 +730,7 @@ for(int i = 0; i < 3; i++) {
 
                     for(i = 0; i < 3; i++) {        //v�rifications des auto-attaques
 
-                      attaqueEnnemi(equipe, ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
+                      attaqueEnnemi(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
 
                     }
 
@@ -797,7 +797,7 @@ for(int i = 0; i < 3; i++) {
 
                             if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
 
-                              utiliseArt(ArtJeu[indicePersonnage][positionCurseur], equipe, ennemis[equipe[indicePersonnage]->cible] ,indicePersonnage, dgtsTxt, &nbDgtTxt);
+                              utiliseArt(ArtJeu[indicePersonnage][positionCurseur], equipe, &ennemis[equipe[indicePersonnage]->cible] ,indicePersonnage, dgtsTxt, &nbDgtTxt);
 
                             } else if(ArtJeu[indicePersonnage][positionCurseur]->BUT == soutien) {
 
@@ -925,7 +925,7 @@ for(int i = 0; i < 3; i++) {
 
             if(equipe[indicePersonnage]->enCombat) {
 
-              orientationPersoCombatRelative(equipe, indicePersonnage, ennemis[equipe[indicePersonnage]->cible]);
+              orientationPersoCombatRelative(equipe, indicePersonnage, &ennemis[equipe[indicePersonnage]->cible]);
 
             }
 
@@ -933,11 +933,11 @@ for(int i = 0; i < 3; i++) {
 
               for(int i = 0; i < 3; i++) {
 
-                  etatEnnemi(ennemis[n], i, dgtsTxt, &nbDgtTxt);
+                  etatEnnemi(&ennemis[n], i, dgtsTxt, &nbDgtTxt);
 
               }
 
-              delaiEtat(ennemis[n]);
+              delaiEtat(&ennemis[n]);
 
             }
 
@@ -957,7 +957,7 @@ for(int i = 0; i < 3; i++) {
 
             for(int n = 0; n < nbEnnemi; n++) {
 
-              delaiModificationEnnemi(ennemis[n]);
+              delaiModificationEnnemi(&ennemis[n]);
 
             }
 
@@ -983,7 +983,7 @@ for(int i = 0; i < 3; i++) {
 
             } else if (equipe[indicePersonnage]->enCombat) {
 
-              SuiviCameraCombat(&camera, equipe[indicePersonnage], ennemis[equipe[indicePersonnage]->cible]);
+              SuiviCameraCombat(&camera, equipe[indicePersonnage], &ennemis[equipe[indicePersonnage]->cible]);
 
             } else {
 
@@ -997,7 +997,7 @@ for(int i = 0; i < 3; i++) {
 
               if(ennemis[n].enCombat) {
 
-                afficherHostilite(pSurface, ennemis[n], equipe, camera);
+                afficherHostilite(pSurface, &ennemis[n], equipe, camera);
 
               }
 
@@ -1027,7 +1027,7 @@ for(int i = 0; i < 3; i++) {
 
             gererTexte(dgtsTxt, &nbDgtTxt, pSurface, camera);
 
-            gererEnnemis(ennemis, &nbEnnemi, ennemis, &nbEnnemi);
+            gererEnnemis(ennemis, &nbEnnemi);
 
             if(!nbEnnemi) {
 
@@ -1041,9 +1041,9 @@ for(int i = 0; i < 3; i++) {
 
             }
 
-            printf("\nils sont moult : %p\n", ennemis[0]);
+            printf("\nils sont moult : %p\n", &ennemis[0]);
 
-            printf("\nils sont moult : %p\n", ennemis[1]);
+            printf("\nils sont moult : %p\n", &ennemis[1]);
 
             printf("\nils sont moult : %d\n", equipe[indicePersonnage]->cible);
 
