@@ -266,7 +266,7 @@ int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
 
 
 
-int gererEnnemis(Ennemi ennemis[], int *nbEnnemi) {
+int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *etat) {
 
   for(int i = 0; i < *nbEnnemi; i++) {
 
@@ -279,6 +279,31 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi) {
       }
 
       (*nbEnnemi)--;
+
+
+      int combat = 0;
+
+      for(int i = 0; i < *nbEnnemi && !combat; i++) {
+
+        if(ennemis[i].enCombat) {
+
+          combat = 1;
+
+        }
+
+      }
+
+      if(!combat) {
+
+          for(int i = 0; i < 3; i++) {
+
+            equipe[i]->enCombat = 0;
+
+          }
+
+          *etat = 1;
+
+      }
 
     }
 
@@ -728,7 +753,11 @@ for(int i = 0; i < 3; i++) {
 
                     }
 
+                    printf("Je sais pas ou je suis");
+
                     for(i = 0; i < 3; i++) {        //v�rifications des auto-attaques
+
+                      printf("Oscours moult : %d\n", equipe[i]->cible);
 
                       attaqueEnnemi(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
 
@@ -1027,25 +1056,10 @@ for(int i = 0; i < 3; i++) {
 
             gererTexte(dgtsTxt, &nbDgtTxt, pSurface, camera);
 
-            gererEnnemis(ennemis, &nbEnnemi);
+            gererEnnemis(ennemis, &nbEnnemi, equipe, &etat);
 
-            if(!nbEnnemi) {
 
-              for(int i = 0; i < 3; i++) {
 
-                equipe[i]->enCombat = 0;
-
-              }
-
-              etat = 1;
-
-            }
-
-            printf("\nils sont moult : %p\n", &ennemis[0]);
-
-            printf("\nils sont moult : %p\n", &ennemis[1]);
-
-            printf("\nils sont moult : %d\n", equipe[indicePersonnage]->cible);
 
             while(nbEnnemi == 0) {
 
