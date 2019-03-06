@@ -264,7 +264,9 @@ int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
 
 
 
-int mortEnnemi(Ennemi ennemis[], int *nbEnnemi) {
+
+
+int gererEnnemis(Ennemi ennemis[], int *nbEnnemi) {
 
   for(int i = 0; i < *nbEnnemi; i++) {
 
@@ -283,31 +285,6 @@ int mortEnnemi(Ennemi ennemis[], int *nbEnnemi) {
   }
 
   return *nbEnnemi;
-
-}
-
-
-int gererEnnemis(Ennemi *cibleEnn[], int *nbCible, Ennemi ennemis[], int *nbEnnemi) {
-
-  for(int i = 0; i < *nbCible; i++) {
-
-    if(cibleEnn[i]->PV <= 0) {
-
-      mortEnnemi(ennemis, nbEnnemi);
-
-      for(int j = i; j < *nbCible-1; j++) {
-
-        cibleEnn[j] = cibleEnn[j+1];
-
-      }
-
-      (*nbCible)--;
-
-    }
-
-  }
-
-  return *nbCible;
 
 }
 
@@ -377,7 +354,7 @@ int main(int argc, char** argv)
 
     //////Création de la fenetre où s'affichera le jeu//////
 
-    SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720, 0);
+    SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIGHT, SCREEN_HEIGHT, 0);
 
     //////Initailisation de la police d'écriture//////
 
@@ -533,10 +510,6 @@ int main(int argc, char** argv)
 
       int nbEnnemiPool = 2;
 
-
-      Ennemi *cibleEnn[100];
-
-      int nbCible = 0;
 
 
       Ennemi ennemis[100];
@@ -743,13 +716,13 @@ for(int i = 0; i < 3; i++) {
 
                   case 0:
 
-                    for(int i = 0; i < nbCible; i++) {
+                    for(int i = 0; i < nbEnnemi; i++) {
 
-                      if(cibleEnn[i]->enCombat) {
+                      if(ennemis[i].enCombat) {
 
-                        indice = cibleEnnemi(cibleEnn[i]);
+                        indice = cibleEnnemi(&ennemis[i]);
 
-                        attaqueAllie(equipe, cibleEnn[i], indice, dgtsTxt, &nbDgtTxt);
+                        attaqueAllie(equipe, ennemis[i], indice, dgtsTxt, &nbDgtTxt);
 
                       }
 
@@ -757,7 +730,7 @@ for(int i = 0; i < 3; i++) {
 
                     for(i = 0; i < 3; i++) {        //v�rifications des auto-attaques
 
-                      attaqueEnnemi(equipe, cibleEnn[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
+                      attaqueEnnemi(equipe, ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
 
                     }
 
@@ -824,7 +797,7 @@ for(int i = 0; i < 3; i++) {
 
                             if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
 
-                              utiliseArt(ArtJeu[indicePersonnage][positionCurseur], equipe, cibleEnn[equipe[indicePersonnage]->cible] ,indicePersonnage, dgtsTxt, &nbDgtTxt);
+                              utiliseArt(ArtJeu[indicePersonnage][positionCurseur], equipe, ennemis[equipe[indicePersonnage]->cible] ,indicePersonnage, dgtsTxt, &nbDgtTxt);
 
                             } else if(ArtJeu[indicePersonnage][positionCurseur]->BUT == soutien) {
 
@@ -919,24 +892,15 @@ for(int i = 0; i < 3; i++) {
 
                             relacheSPACE = 1;
 
-                            if(nbCible+1 <= nbEnnemi) {
+                            for(int i = 0; i < 3; i++) {
 
-                              cibleEnn[nbCible++] = &ennemis[equipe[indicePersonnage]->cible];
+                              equipe[i]->enCombat = 1;
 
-                              for(int i = 0; i < 3; i++) {
-
-                                equipe[i]->enCombat = 1;
-
-                                equipe[i]->enChoixCible = 0;
-
-                                equipe[i]->cible = nbCible-1;
-
-
-                              }
-
-                              etat = 0;
+                              equipe[i]->enChoixCible = 0;
 
                             }
+
+                            etat = 0;
 
                           } else if(!state[SDL_SCANCODE_SPACE]) relacheSPACE = 0;
 
@@ -961,19 +925,19 @@ for(int i = 0; i < 3; i++) {
 
             if(equipe[indicePersonnage]->enCombat) {
 
-              orientationPersoCombatRelative(equipe, indicePersonnage, cibleEnn[equipe[indicePersonnage]->cible]);
+              orientationPersoCombatRelative(equipe, indicePersonnage, ennemis[equipe[indicePersonnage]->cible]);
 
             }
 
-            for(int n = 0; n < nbCible; n++) {
+            for(int n = 0; n < nbEnnemi; n++) {
 
               for(int i = 0; i < 3; i++) {
 
-                  etatEnnemi(cibleEnn[n], i, dgtsTxt, &nbDgtTxt);
+                  etatEnnemi(ennemis[n], i, dgtsTxt, &nbDgtTxt);
 
               }
 
-              delaiEtat(cibleEnn[n]);
+              delaiEtat(ennemis[n]);
 
             }
 
@@ -991,9 +955,9 @@ for(int i = 0; i < 3; i++) {
 
             }
 
-            for(int n = 0; n < nbCible; n++) {
+            for(int n = 0; n < nbEnnemi; n++) {
 
-              delaiModificationEnnemi(cibleEnn[n]);
+              delaiModificationEnnemi(ennemis[n]);
 
             }
 
@@ -1019,7 +983,7 @@ for(int i = 0; i < 3; i++) {
 
             } else if (equipe[indicePersonnage]->enCombat) {
 
-              SuiviCameraCombat(&camera, equipe[indicePersonnage], cibleEnn[equipe[indicePersonnage]->cible]);
+              SuiviCameraCombat(&camera, equipe[indicePersonnage], ennemis[equipe[indicePersonnage]->cible]);
 
             } else {
 
@@ -1029,11 +993,11 @@ for(int i = 0; i < 3; i++) {
 
             background(sol, pSurface, camera);
 
-            for(int n = 0; n < nbCible; n++) {
+            for(int n = 0; n < nbEnnemi; n++) {
 
-              if(cibleEnn[n]->enCombat) {
+              if(ennemis[n].enCombat) {
 
-                afficherHostilite(pSurface, cibleEnn[n], equipe, camera);
+                afficherHostilite(pSurface, ennemis[n], equipe, camera);
 
               }
 
@@ -1063,9 +1027,9 @@ for(int i = 0; i < 3; i++) {
 
             gererTexte(dgtsTxt, &nbDgtTxt, pSurface, camera);
 
-            gererEnnemis(cibleEnn, &nbCible, ennemis, &nbEnnemi);
+            gererEnnemis(ennemis, &nbEnnemi, ennemis, &nbEnnemi);
 
-            if(!nbCible) {
+            if(!nbEnnemi) {
 
               for(int i = 0; i < 3; i++) {
 
@@ -1077,9 +1041,9 @@ for(int i = 0; i < 3; i++) {
 
             }
 
-            printf("\nils sont moult : %p\n", cibleEnn[0]);
+            printf("\nils sont moult : %p\n", ennemis[0]);
 
-            printf("\nils sont moult : %p\n", cibleEnn[1]);
+            printf("\nils sont moult : %p\n", ennemis[1]);
 
             printf("\nils sont moult : %d\n", equipe[indicePersonnage]->cible);
 
@@ -1097,6 +1061,17 @@ for(int i = 0; i < 3; i++) {
                 case SDL_QUIT:
                     quit = 1;
                     break;
+
+            /*    switch(event.window.event) {
+
+                    case SDL_WINDOWEVENT_EXPOSED:
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                    case SDL_WINDOWEVENT_RESIZED:
+                    case SDL_WINDOWEVENT_SHOWN:
+
+                    break;
+
+                }*/
 
             }
 
