@@ -769,11 +769,7 @@ for(int i = 0; i < 3; i++) {
 
                     }
 
-                    printf("Je sais pas ou je suis");
-
                     for(i = 0; i < 3; i++) {        //v�rifications des auto-attaques
-
-                      printf("Oscours moult : %d\n", equipe[i]->cible);
 
                       attaqueEnnemi(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
 
@@ -1006,11 +1002,9 @@ for(int i = 0; i < 3; i++) {
 
             }
 
-            for(i = 0; i < 3; i++) {
 
-                deplacementPersonnage(equipe[i]);
+            deplacementPersonnage(equipe, indicePersonnage, ennemis);
 
-            }
 
             for(int i = 0; i < nbEnnemi; i++) {
 

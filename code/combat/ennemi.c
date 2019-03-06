@@ -187,8 +187,6 @@ int cibleEnnemi(Ennemi *ennemi) {
 
   for(int i = 0; i < 3; i++) {
 
-    printf("wala%d : %d\n", i, ennemi->hostilite[i]);
-
     if(max < ennemi->hostilite[i]) {
 
       max = ennemi->hostilite[i];
@@ -493,7 +491,7 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
     degats = degats*(100-ennemi->DEFPHY)/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
     ennemi->PV -= degats;
-    ennemi->hostilite[indice] += degats*20;
+    ennemi->hostilite[indice] += degats*2;
     equipe[indice]->delaiAuto=(int)equipe[indice]->modif[VITATT];
 
     addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image[0]->h, type);
@@ -570,7 +568,7 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
 
 
     ennemi->PV -= degats;
-    ennemi->hostilite[indice] += degats;
+    ennemi->hostilite[indice] += degats*2;
     art->recup = art->delaiRecup[equipe[indice]->orientationRelative];
     ennemi->etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
     ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemi->RES_ETATS[fournaise]/100;
@@ -710,5 +708,51 @@ void delaiModificationEnnemi(Ennemi* ennemi) {
         }
 
     }
+
+}
+
+void persoPoursuit(Personnage *perso, Ennemi *ennemi) {
+
+
+  int vecX, vecY;
+
+  vecX = ennemi->posX - perso->posX;
+  vecY = ennemi->posY - perso->posY;
+
+  int dis = distance(perso->posX, perso->posY, ennemi->posX, ennemi->posY)- perso->image->w/2;
+
+  if(dis >= perso->PRTAUTO) {
+
+    perso->vitX = vecX*VITDPL/dis;
+
+    perso->vitY = vecY*VITDPL/dis;
+
+  } else {
+
+    perso->vitX = 0;
+
+    perso->vitY = 0;
+
+  }
+
+  printf("\nPersoVit = %d:%d\n", perso->vitX, perso->vitY);
+
+}
+
+
+void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi ennemis[]) {
+
+  for(int i = 0; i < 3; i++) {
+
+    if(i != indicePersonnage && equipe[i]->enCombat) {
+
+      persoPoursuit(equipe[i], ennemis+(equipe[i]->cible));
+
+    }
+
+    equipe[i]->posX+=equipe[i]->vitX;
+    equipe[i]->posY+=equipe[i]->vitY;
+
+  }
 
 }

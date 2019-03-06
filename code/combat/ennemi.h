@@ -72,3 +72,5 @@ int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degat
 int etatEnnemi(Ennemi *enn, int type, degatsTxt dgtsTxt[], int *nbDgtTxt);
 void delaiEtat(Ennemi *ennemi);
 void delaiModificationEnnemi(Ennemi* ennemi);
+void persoPoursuit(Personnage *perso, Ennemi *ennemi);
+void deplacementPersonnage(Personnage *equipe[], int indicePersonnage, Ennemi ennemis[]);

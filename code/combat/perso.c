@@ -154,13 +154,6 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
 
 }
 
-void deplacementPersonnage(Personnage* perso) {
-
-    perso->posX+=perso->vitX;
-    perso->posY+=perso->vitY;
-
-}
-
 
 
 void afficherPersonnage(Personnage perso, SDL_Window* screen, SDL_Rect camera) {
