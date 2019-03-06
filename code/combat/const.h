@@ -6,6 +6,6 @@
 #define DELAI_CIBLE_ENN 5
 
 
-#define SCREEN_WIGHT 1280
+#define SCREEN_WIDHT 1280
 #define SCREEN_HEIGHT 720
 #define FPS 60

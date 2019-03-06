@@ -354,7 +354,7 @@ int main(int argc, char** argv)
 
     //////Création de la fenetre où s'affichera le jeu//////
 
-    SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIGHT, SCREEN_HEIGHT, 0);
+    SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIGDHT, SCREEN_HEIGHT, 0);
 
     //////Initailisation de la police d'écriture//////
 
