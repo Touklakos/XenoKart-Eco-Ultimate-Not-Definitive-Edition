@@ -16,9 +16,9 @@ MENU=${CODE}/menu/
 
 LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm
 INCS=-I${SDL_INC_DIR}
-PROG=incroyable
+PROG=incroyable main
 
-all: sdl_text menu cleanO
+all: sdl_text cleanO
 
 sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
@@ -37,6 +37,5 @@ menu: ${MENU}menu.c
 cleanO:
 	rm -f *.o
 
-clean:
+clean: cleanO
 	rm -f ${PROG}
-	cleanO
