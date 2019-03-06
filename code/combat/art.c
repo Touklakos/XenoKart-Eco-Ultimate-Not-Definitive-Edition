@@ -955,7 +955,7 @@ void afficherArt(Art *art[], SDL_Surface *pSurface) {
 
     for(int i = 0; i < 8; i++) {
 
-        SDL_Rect dest = { i*(SCREEN_WIGHT/10)+64, SCREEN_HEIGHT-100, 0, 0};
+        SDL_Rect dest = { i*(SCREEN_WIDTH/10)+64, SCREEN_HEIGHT-100, 0, 0};
         SDL_BlitSurface(art[i]->image, NULL, pSurface, &dest);
 
     }

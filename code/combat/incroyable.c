@@ -155,7 +155,7 @@ void background(SDL_Surface *sol, SDL_Surface *pSurface, SDL_Rect camera) {
 
   int j;
 
-    for(i = -SCREEN_WIGHT; i < SCREEN_WIGHT*2; i+=sol->w) {
+    for(i = -SCREEN_WIDTH; i < SCREEN_WIDTH*2; i+=sol->w) {
 
         for(j = -SCREEN_HEIGHT; j < SCREEN_HEIGHT*2; j+=sol->h) {
 
@@ -290,7 +290,7 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi) {
 
 void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi, Ennemi ennPool[], int nbEnnemiPool) {
 
-  SDL_Rect dest = {SCREEN_WIGHT/2, SCREEN_HEIGHT/2,0,0};
+  SDL_Rect dest = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2,0,0};
 
   char message[20];
 
@@ -339,7 +339,7 @@ int main(int argc, char** argv)
     srand(time(NULL));
 
 
-    SDL_Rect camera = {0, 0, SCREEN_WIGHT/2, SCREEN_HEIGHT/2};  //camera servira à afficher les sprites en fonction de la position du joueur
+    SDL_Rect camera = {0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2};  //camera servira à afficher les sprites en fonction de la position du joueur
 
     ///////Initialisation de SDL/////////
 
@@ -354,7 +354,7 @@ int main(int argc, char** argv)
 
     //////Création de la fenetre où s'affichera le jeu//////
 
-    SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIGDHT, SCREEN_HEIGHT, 0);
+    SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 
     //////Initailisation de la police d'écriture//////
 
