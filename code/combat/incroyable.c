@@ -180,9 +180,9 @@ void background(SDL_Surface *sol, SDL_Surface *pSurface, SDL_Rect camera) {
 void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe[], SDL_Rect camera) {
 
 
-    int indice = cibleEnnemi(ennemi);
+    cibleEnnemi(ennemi);
 
-    SDL_Rect rect ={equipe[indice]->posX-camera.x+camera.w-equipe[indice]->image->w/2, equipe[indice]->posY-camera.y+camera.h+equipe[indice]->image->h/2, equipe[indice]->image->w, 10};
+    SDL_Rect rect ={equipe[ennemi->cible]->posX-camera.x+camera.w-equipe[ennemi->cible]->image->w/2, equipe[ennemi->cible]->posY-camera.y+camera.h+equipe[ennemi->cible]->image->h/2, equipe[ennemi->cible]->image->w, 10};
 
 
     SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 255, 0, 0));
@@ -281,13 +281,21 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *eta
       (*nbEnnemi)--;
 
 
+
+
+
+
       int combat = 0;
+
+      int indice = 0;
 
       for(int i = 0; i < *nbEnnemi && !combat; i++) {
 
         if(ennemis[i].enCombat) {
 
           combat = 1;
+
+          indice = i;
 
         }
 
@@ -299,9 +307,19 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *eta
 
             equipe[i]->enCombat = 0;
 
+            equipe[i]->cible = 0;
+
           }
 
           *etat = 1;
+
+      } else {
+
+        for(int i = 0; i < 3; i++) {
+
+          equipe[i]->cible = indice;
+
+        }
 
       }
 
@@ -579,8 +597,6 @@ int main(int argc, char** argv)
 
       int recupCible = 0;             //variable qui permet de naviguer entre les cibles
 
-      int indice = 0;                 //indique le personnage le plus hositile pour un monstre
-
 
       long long unsigned debut, fin, fpsCount = 0;
 
@@ -745,9 +761,9 @@ for(int i = 0; i < 3; i++) {
 
                       if(ennemis[i].enCombat) {
 
-                        indice = cibleEnnemi(&ennemis[i]);
+                        cibleEnnemi(&ennemis[i]);
 
-                        attaqueAllie(equipe, &ennemis[i], indice, dgtsTxt, &nbDgtTxt);
+                        attaqueAllie(equipe, &ennemis[i], ennemis[i].cible, dgtsTxt, &nbDgtTxt);
 
                       }
 
@@ -1075,17 +1091,6 @@ for(int i = 0; i < 3; i++) {
                 case SDL_QUIT:
                     quit = 1;
                     break;
-
-            /*    switch(event.window.event) {
-
-                    case SDL_WINDOWEVENT_EXPOSED:
-                    case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    case SDL_WINDOWEVENT_RESIZED:
-                    case SDL_WINDOWEVENT_SHOWN:
-
-                    break;
-
-                }*/
 
             }
 

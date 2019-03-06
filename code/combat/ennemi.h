@@ -42,6 +42,8 @@ typedef struct {
 
     int hostilite[3];
 
+    int cible;
+
 
     Etat etats[3];
 

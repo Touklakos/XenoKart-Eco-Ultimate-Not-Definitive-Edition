@@ -1,8 +1,8 @@
 ./data/GutsFace.png
 NV : 10;
 EXP : 50;
-MAXPV : 4000;
-PV : 4000;
+MAXPV : 400;
+PV : 400;
 FRC : 80;
 MGE : 0;
 VITATT : 40;

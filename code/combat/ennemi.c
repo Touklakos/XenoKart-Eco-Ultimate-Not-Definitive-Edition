@@ -12,9 +12,9 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
     ennemi->vitX = 0;
     ennemi->vitY = 0;
     ennemi->orientationAbsolue = 2;
-    ennemi->hostilite[0] = 0;
-    ennemi->hostilite[1] = 0;
-    ennemi->hostilite[2] = 0;
+    ennemi->hostilite[0] = 1;
+    ennemi->hostilite[1] = 1;
+    ennemi->hostilite[2] = 1;
 
 
     FILE* f;
@@ -182,10 +182,12 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 
 int cibleEnnemi(Ennemi *ennemi) {
 
-  int max = ennemi->hostilite[0];
-  int indice = 0;
+  int max = 0;
+  int indice = -1;
 
-  for(int i = 1; i < 3; i++) {
+  for(int i = 0; i < 3; i++) {
+
+    printf("wala%d : %d\n", i, ennemi->hostilite[i]);
 
     if(max < ennemi->hostilite[i]) {
 
@@ -197,7 +199,11 @@ int cibleEnnemi(Ennemi *ennemi) {
 
   }
 
-  return indice;
+  if(indice == -1) return -1;
+
+  ennemi->cible = indice;
+
+  return 0;
 
 }
 
@@ -217,7 +223,7 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
 
   printf("\nIncoming !!! : %d\n", dis);
 
-  if(dis > ennemi->PRTAUTO) {
+  if(dis >= ennemi->PRTAUTO) {
 
     ennemi->vitX = vecX*VITDPL/dis;
 
@@ -238,9 +244,9 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
 
 void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]) {
 
-    int indice = cibleEnnemi(ennemi);
+    cibleEnnemi(ennemi);
 
-    ennemiPoursuit(ennemi, equipe[indice]);
+    ennemiPoursuit(ennemi, equipe[ennemi->cible]);
 
     ennemi->posX+=ennemi->vitX;
     ennemi->posY+=ennemi->vitY;
@@ -254,7 +260,9 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 
     if(ennemi->enCombat) {
 
-      ennemi->orientationAbsolue = (equipe[cibleEnnemi(ennemi)]->orientationAbsolue + 2)%4;
+      cibleEnnemi(ennemi);
+
+      ennemi->orientationAbsolue = (equipe[ennemi->cible]->orientationAbsolue + 2)%4;
 
     }
 
@@ -485,7 +493,7 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
     degats = degats*(100-ennemi->DEFPHY)/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
     ennemi->PV -= degats;
-    ennemi->hostilite[indice] += degats;
+    ennemi->hostilite[indice] += degats*20;
     equipe[indice]->delaiAuto=(int)equipe[indice]->modif[VITATT];
 
     addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image[0]->h, type);
