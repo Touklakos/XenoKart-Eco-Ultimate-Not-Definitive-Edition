@@ -267,12 +267,26 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
     SDL_Rect dest = { ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h, 0, 0};
     SDL_BlitSurface(ennemi->image[ennemi->orientationAbsolue], NULL, pSurface, &dest);
 
-    SDL_Rect rect ={ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h, ennemi->PV*ennemi->image[ennemi->orientationAbsolue]->w/ennemi->MAXPV, 5};
+    if(ennemi->enCombat) {
 
-    SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 255, 0, 0)); //on nettoye l'�cran en affichant un grand rectangle blanc
+      SDL_Rect rect ={ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h, ennemi->PV*ennemi->image[ennemi->orientationAbsolue]->w/ennemi->MAXPV, 5};
+
+      SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 255, 0, 0));
+
+  }
 
 }
 
+
+void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
+
+  SDL_Surface *HUD = IMG_Load("./data/hud.png");
+
+  SDL_Rect rect ={ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w + (ennemi->image[ennemi->orientationAbsolue]->w - HUD->w)/2, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h-HUD->h, 0, 0};
+
+  SDL_BlitSurface(HUD, NULL, pSurface, &rect);
+
+}
 
 
 int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {

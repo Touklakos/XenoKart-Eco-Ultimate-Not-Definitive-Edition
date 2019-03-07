@@ -1062,6 +1062,12 @@ for(int i = 0; i < 3; i++) {
 
             afficherHUD(equipe, pSurface);
 
+            if(equipe[indicePersonnage]->enChoixCible || equipe[indicePersonnage]->enCombat) {
+
+              hudEnnemi(ennemis+(equipe[indicePersonnage]->cible), pSurface, camera);
+
+            }
+
             if(etatCombat == 1) afficherCible(cible, pSurface);
 
             gererTexte(dgtsTxt, &nbDgtTxt, pSurface, camera);

@@ -59,6 +59,7 @@ int cibleEnnemi(Ennemi *ennemi);
 void ennemiPoursuit(Ennemi *ennemi, Personnage *perso);
 void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]);
 void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[], int etat);
+void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera);
 int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi);
 int orientationPersoCombatRelative(Personnage* equipe[], int indicePersonnage, Ennemi* ennemi);
 int typeCoupPerso(Personnage *perso, Ennemi *ennemi);
