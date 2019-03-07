@@ -49,6 +49,8 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 
         char cheminImage[50];
 
+        fscanf(f, "%s", ennemi->nom);
+
         fscanf(f, "%s", cheminImage);
 
         while(!feof(f)) {       //on charge les stats �crite dans un fichier
@@ -282,9 +284,27 @@ void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
   SDL_Surface *HUD = IMG_Load("./data/hud.png");
 
-  SDL_Rect rect ={ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w + (ennemi->image[ennemi->orientationAbsolue]->w - HUD->w)/2, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h-HUD->h, 0, 0};
+  SDL_Rect rect = {ennemi->posX - camera.x + camera.w - HUD->w/2, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h-HUD->h, 0, 0};
 
   SDL_BlitSurface(HUD, NULL, pSurface, &rect);
+
+
+  SDL_Surface *nom;
+
+  TTF_Font *police = NULL;
+
+  police = TTF_OpenFont("./data/DejaVuSans.ttf", 20);   //taile de police plus ou moins grande
+
+  SDL_Color couleur = {255,255,255};
+
+  nom = TTF_RenderText_Solid(police, ennemi->nom, couleur);
+
+  SDL_Rect rect2 = {ennemi->posX - camera.x + camera.w - nom->w/2, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h-HUD->h, 0, 0};
+
+  SDL_BlitSurface(nom, NULL, pSurface, &rect2);
+
+  TTF_CloseFont(police);
+
 
 }
 

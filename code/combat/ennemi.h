@@ -10,6 +10,7 @@ typedef struct {
     int orientationAbsolue;                //orientation (en haut, en bas, � droite, � gauche, en bas � droite, etc ...) par rapport à l'écran
 
     SDL_Surface* image[4];
+    char nom[50];
 
 
     //def stats in-game

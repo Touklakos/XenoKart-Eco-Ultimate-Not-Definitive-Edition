@@ -1,3 +1,4 @@
+Zanza
 ./data/Zanza.png
 NV : 12;
 MAXPV : 20000;

@@ -1,3 +1,4 @@
+Dickson
 ./data/Zanza.png
 NV : 12;
 MAXPV : 10000;
