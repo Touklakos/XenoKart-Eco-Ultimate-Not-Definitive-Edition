@@ -189,7 +189,9 @@ int cibleEnnemi(Ennemi *ennemi) {
 
   for(int i = 0; i < 3; i++) {
 
-    if(max < ennemi->hostilite[i]) {
+    printf("Il est mechant monsieur brochant ,il est mignon monsieur pignon : %d\n", ennemi->hostilite[i]);
+
+    if(max + 100 < ennemi->hostilite[i]) {
 
       max = ennemi->hostilite[i];
 
@@ -217,12 +219,6 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
 
   int dis = distance(perso->posX, perso->posY, ennemi->posX, ennemi->posY)- perso->image->w/2;
 
-  printf("\nPerso = %d:%d\n", perso->posX, perso->posY);
-  printf("\nEnnemi = %d:%d\n", ennemi->posX, ennemi->posY);
-
-
-  printf("\nIncoming !!! : %d\n", dis);
-
   if(dis >= ennemi->PRTAUTO) {
 
     ennemi->vitX = vecX*VITDPL/dis;
@@ -236,9 +232,6 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
     ennemi->vitY = 0;
 
   }
-
-  printf("\nEnnemi = %d:%d\n", ennemi->vitX, ennemi->vitY);
-
 
 }
 
@@ -262,7 +255,12 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 
       cibleEnnemi(ennemi);
 
+      orientationPersoCombatAbsolue(equipe[ennemi->cible], ennemi);
+
       ennemi->orientationAbsolue = (equipe[ennemi->cible]->orientationAbsolue + 2)%4;
+
+      printf("orientation absolue Enn : %d\n", ennemi->orientationAbsolue);
+      printf("orientation absolue Pers: %d\n", equipe[ennemi->cible]->orientationAbsolue);
 
     }
 
@@ -768,8 +766,6 @@ void persoPoursuit(Personnage *perso, Ennemi *ennemi) {
     perso->vitY = 0;
 
   }
-
-  printf("\nPersoVit = %d:%d\n", perso->vitX, perso->vitY);
 
 }
 

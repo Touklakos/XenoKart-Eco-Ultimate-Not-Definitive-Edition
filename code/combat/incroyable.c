@@ -755,9 +755,9 @@ for(int i = 0; i < 3; i++) {
 
                 switch(etat) {
 
-                  case 0:
+                  case 0:   //en combat
 
-                    for(int i = 0; i < nbEnnemi; i++) {
+                    for(int i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
 
                       if(ennemis[i].enCombat) {
 
@@ -769,7 +769,7 @@ for(int i = 0; i < 3; i++) {
 
                     }
 
-                    for(i = 0; i < 3; i++) {        //v�rifications des auto-attaques
+                    for(i = 0; i < 3; i++) {        //les personnages attaques l'ennemi qu'ils ciblent
 
                       attaqueEnnemi(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
 
@@ -777,7 +777,7 @@ for(int i = 0; i < 3; i++) {
 
                     switch(etatCombat) {
 
-                      case 0:
+                      case 0:       //deplacement, choix et activations des arts, controle des personnages
 
                         if(state[SDL_SCANCODE_3] && relacheGachetteDroite == 0) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
 
@@ -787,6 +787,12 @@ for(int i = 0; i < 3; i++) {
 
                             relacheGachetteDroite = 1;
                             relacheA = 1;
+
+                          }
+
+                          if(state[SDL_SCANCODE_R]) {  //si on appuie sur R on dit au personnage d'aataquer une cible
+
+                            equipe[(indicePersonnage+1)%3]->cible = equipe[indicePersonnage]->cible;
 
                           }
 
@@ -802,6 +808,12 @@ for(int i = 0; i < 3; i++) {
 
                               relacheGachetteGauche = 1;
                               relacheA = 1;
+
+                            }
+
+                            if(state[SDL_SCANCODE_R]) {  //si on appuie sur R on dit au personnage d'aataquer une cible
+
+                              equipe[(indicePersonnage+2)%3]->cible = equipe[indicePersonnage]->cible;
 
                             }
 
@@ -858,7 +870,7 @@ for(int i = 0; i < 3; i++) {
 
                           break;
 
-                          case 1:
+                          case 1:         //choix de la cible d'un art de soutien
 
                             if(recupCible-- < 0) {
 
@@ -896,7 +908,7 @@ for(int i = 0; i < 3; i++) {
 
                         //  break;
 
-                        case 1:
+                        case 1:       //en exploration
 
                           if(recupCibleEnn-- < 0) {
 
@@ -934,6 +946,8 @@ for(int i = 0; i < 3; i++) {
                             relacheSPACE = 1;
 
                             for(int i = 0; i < 3; i++) {
+
+                              equipe[i]->cible = equipe[indicePersonnage]->cible;
 
                               equipe[i]->enCombat = 1;
 
