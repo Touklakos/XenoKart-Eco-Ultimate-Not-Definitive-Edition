@@ -15,6 +15,7 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
     ennemi->hostilite[0] = 1;
     ennemi->hostilite[1] = 1;
     ennemi->hostilite[2] = 1;
+    ennemi->numFrame = 0;
 
 
     FILE* f;
@@ -170,10 +171,8 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 
         ennemi->enCombat = 0;
 
-        ennemi->image[0] = IMG_Load(cheminImage);
-        ennemi->image[1] = IMG_Load("./data/ZanzaGauche.png");
-        ennemi->image[2] = IMG_Load("./data/ZanzaDos.png");
-        ennemi->image[3] = IMG_Load("./data/ZanzaDroite.png");
+        ennemi->image = IMG_Load("./data/test.png");
+
 
         fclose(f);
 
@@ -188,8 +187,6 @@ int cibleEnnemi(Ennemi *ennemi) {
   int indice = -1;
 
   for(int i = 0; i < 3; i++) {
-
-    printf("Il est mechant monsieur brochant ,il est mignon monsieur pignon : %d\n", ennemi->hostilite[i]);
 
     if(max + 100 < ennemi->hostilite[i]) {
 
@@ -261,15 +258,21 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 
       printf("orientation absolue Enn : %d\n", ennemi->orientationAbsolue);
       printf("orientation absolue Pers: %d\n", equipe[ennemi->cible]->orientationAbsolue);
+      printf("orientation relative Pers: %d\n", equipe[ennemi->cible]->orientationRelative);
 
     }
 
-    SDL_Rect dest = { ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h, 0, 0};
-    SDL_BlitSurface(ennemi->image[ennemi->orientationAbsolue], NULL, pSurface, &dest);
+    if(ennemi->vitX != 0 || ennemi->vitY != 0) ennemi->numFrame = (ennemi->numFrame+1)%60;
+    else ennemi->numFrame = 0;
+
+    SDL_Rect dest = { ennemi->posX - ennemi->image->w/2/4-camera.x+camera.w, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h, 0, 0};
+    SDL_Rect img = { ennemi->image->w/4*(ennemi->numFrame/15), ennemi->image->h/4*ennemi->orientationAbsolue, ennemi->image->w/4, ennemi->image->h/4};
+
+    SDL_BlitSurface(ennemi->image, &img, pSurface, &dest);
 
     if(ennemi->enCombat) {
 
-      SDL_Rect rect ={ennemi->posX - ennemi->image[ennemi->orientationAbsolue]->w/2-camera.x+camera.w, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h, ennemi->PV*ennemi->image[ennemi->orientationAbsolue]->w/ennemi->MAXPV, 5};
+      SDL_Rect rect ={ennemi->posX - ennemi->image->w/2/4-camera.x+camera.w, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h, ennemi->PV*ennemi->image->w/4/ennemi->MAXPV, 5};
 
       SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 255, 0, 0));
 
@@ -282,7 +285,7 @@ void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
   SDL_Surface *HUD = IMG_Load("./data/hud.png");
 
-  SDL_Rect rect = {ennemi->posX - camera.x + camera.w - HUD->w/2, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h-HUD->h, 0, 0};
+  SDL_Rect rect = {ennemi->posX - camera.x + camera.w - HUD->w/2, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h-HUD->h, 0, 0};
 
   SDL_BlitSurface(HUD, NULL, pSurface, &rect);
 
@@ -297,11 +300,12 @@ void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
   nom = TTF_RenderText_Solid(police, ennemi->nom, couleur);
 
-  SDL_Rect rect2 = {ennemi->posX - camera.x + camera.w - nom->w/2, ennemi->posY - ennemi->image[ennemi->orientationAbsolue]->h/2-camera.y+camera.h-HUD->h, 0, 0};
+  SDL_Rect rect2 = {ennemi->posX - camera.x + camera.w - nom->w/2, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h-HUD->h, 0, 0};
 
   SDL_BlitSurface(nom, NULL, pSurface, &rect2);
 
   TTF_CloseFont(police);
+
 
 
 }
@@ -315,6 +319,7 @@ int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {
     vecX = perso->posX - ennemi->posX;
 
     vecY = perso->posY - ennemi->posY;
+
 
 
 
@@ -347,7 +352,6 @@ int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {
 
 
 int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage, Ennemi* ennemi) {
-
 
     int orientationAbs1 = orientationPersoCombatAbsolue(equipe[indicePersonnage], ennemi);
 
@@ -526,7 +530,7 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
     ennemi->hostilite[indice] += degats*2;
     equipe[indice]->delaiAuto=(int)equipe[indice]->modif[VITATT];
 
-    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image[0]->h, type);
+    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image->h/4, type);
 
     (*nbDgtTxt)++;
 
@@ -548,7 +552,7 @@ int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dg
 
     orientationPersoCombatRelative(equipe, indice, ennemi);
 
-    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - ennemi->image[0]->w/2 < equipe[indice]->PRTAUTO && equipe[indice]->delaiAuto < 0) {
+    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - ennemi->image->w/2/4 < equipe[indice]->PRTAUTO && equipe[indice]->delaiAuto < 0) {
 
         return persoAutoAttaque(equipe, ennemi, indice, dgtsTxt, nbDgtTxt);
 
@@ -603,11 +607,11 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
     ennemi->hostilite[indice] += degats*2;
     art->recup = art->delaiRecup[equipe[indice]->orientationRelative];
     ennemi->etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
-    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemi->RES_ETATS[fournaise]/100;
+    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemi->RES_ETATS[fournaise]/100*3;
     ennemi->etats[frisson].valeur += art->etats[equipe[indice]->orientationRelative][frisson];
-    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][frisson]*ennemi->RES_ETATS[frisson]/100;
+    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][frisson]*ennemi->RES_ETATS[frisson]/100*3;
     ennemi->etats[poison].valeur += art->etats[equipe[indice]->orientationRelative][poison];
-    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][poison]*ennemi->RES_ETATS[poison]/100;
+    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][poison]*ennemi->RES_ETATS[poison]/100*3;
 
     for(int i = 0; i < 3; i++) {
 
@@ -615,7 +619,7 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
 
     }
 
-    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image[0]->h, normalC);
+    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image->h/4, normalC);
 
     (*nbDgtTxt)++;
 
@@ -634,7 +638,7 @@ int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degat
 
     orientationPersoCombatRelative(equipe, indice, ennemi);
 
-    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - ennemi->image[0]->w/2 < art->PRTART[equipe[indice]->orientationRelative] && art->recup < 0) {
+    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - ennemi->image->w/2/4 < art->PRTART[equipe[indice]->orientationRelative] && art->recup < 0) {
 
         return lanceArt(art, equipe, ennemi, indice, dgtsTxt, nbDgtTxt);
 
@@ -683,7 +687,7 @@ int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
         }
 
-        addDegatTxt(dgtsTxt + (*nbDgtTxt), ret, ennemi->posX, ennemi->posY-ennemi->image[0]->h, typeC);
+        addDegatTxt(dgtsTxt + (*nbDgtTxt), ret, ennemi->posX, ennemi->posY-ennemi->image->h/4, typeC);
 
         (*nbDgtTxt)++;
 

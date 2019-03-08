@@ -9,7 +9,8 @@ typedef struct {
     int vitY;
     int orientationAbsolue;                //orientation (en haut, en bas, � droite, � gauche, en bas � droite, etc ...) par rapport à l'écran
 
-    SDL_Surface* image[4];
+    SDL_Surface* image;
+    int numFrame;
     char nom[50];
 
 

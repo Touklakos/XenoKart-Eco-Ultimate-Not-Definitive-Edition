@@ -1058,7 +1058,7 @@ for(int i = 0; i < 3; i++) {
 
             for(i = 0; i < 3; i++) {
 
-                afficherPersonnage(*equipe[i], screen, camera);
+                afficherPersonnage(equipe[i], screen, camera);
 
             }
 

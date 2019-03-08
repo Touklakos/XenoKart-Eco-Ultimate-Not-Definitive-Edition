@@ -1,4 +1,4 @@
-./data/GutsFace.png
+./data/Guts.png
 NV : 10;
 EXP : 50;
 MAXPV : 40000;
