@@ -17,7 +17,7 @@ SDL_Color blanc = {255,255,255};
 SDL_Color noir = {0,0,0};
 
 
-void fonctionQuitter(){
+void fonctionQuitter(){ //fonction qui permet de detecter si l'user veut arreter le programme via la croix
   SDL_PollEvent(&event);
 
   switch(event.type){
@@ -27,7 +27,7 @@ void fonctionQuitter(){
   }
 }
 
-void fonctionFin(){
+void fonctionFin(){ //fonction qui affiche les statistiques a la fin d'une boucle dans les fonctions
   fin = SDL_GetTicks();
 
   printf("\nfps = %i\n", (fpsCount++)*1000/SDL_GetTicks());
@@ -39,18 +39,18 @@ void fonctionFin(){
   }
 }
 
-void afficher(affichage tab[], SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
+void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){ //fonction qui affiche toutes la SDL ( Rect et texte pour le menu )
 
   SDL_Rect test;
 
   SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 0, 0, 0));
 
-  for(int i = 1; i < N; i++){
+  for(int i = 1; i < tTab; i++){
       SDL_FillRect(pSurface, &tab[i].rec, SDL_MapRGB(pSurface->format, 255, 255, 255));
   }
   SDL_FillRect(pSurface, &tab[0].rec, SDL_MapRGB(pSurface->format, 255, 0, 0));
 
-  for(int i = 1; i < N; i++){
+  for(int i = 1; i < tTab; i++){
       test = tab[i].rec;
       test.x = test.x+tab[i].rec.w/2 - tab[i].txt->w/2;
       test.y = test.y+tab[i].rec.h/2 - tab[i].txt->h/2;
@@ -60,7 +60,7 @@ void afficher(affichage tab[], SDL_Surface* pSurface, SDL_Window* screen, TTF_Fo
   SDL_UpdateWindowSurface(screen);
 }
 
-void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
+void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){ //fonction qui gere quand l'user va sur "GAME"
 
   int decallageBouton = BUTTON_HEIGHT+DEC;
   int recupCurs = 0;
@@ -68,11 +68,11 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   int tailletab = 3;
 
-  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT,};
-  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT,};
+  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT,};
+  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT,};
   SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
 
-  affichage tab[3];
+  affichage tab[tailletab];
   tab[0].rec = choix;
   tab[1].rec = charger;
   tab[2].rec = nouveau;
@@ -86,28 +86,35 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
     debut = SDL_GetTicks();
 
-    afficher(tab, pSurface, screen, police);
+    afficher(tab, tailletab, pSurface, screen, police);
     SDL_PumpEvents();
 
     if(recupCurs-- < 0){
 
-      if(state[SDL_SCANCODE_S]){
+      if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
         if(nbChoix == 2) nbChoix = 0;
         tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
-        afficher(tab, pSurface, screen, police);
+        afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
 
-      if(state[SDL_SCANCODE_W]){
+      if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
         nbChoix--;
         if(nbChoix == -1) nbChoix = 1;
         tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
-        afficher(tab, pSurface, screen, police);
+        afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
 
-      if(state[SDL_SCANCODE_E]){
+      if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
+        switch(nbChoix){
+          case 0 : printf("LOAD\n");break;
+          case 1 : printf("NEW\n");break;
+        }
+      }
+
+      if(state[SDL_SCANCODE_BACKSPACE] || state[SDL_SCANCODE_ESCAPE]){
         return;
       }
 
@@ -156,7 +163,7 @@ int main(int argc, char** argv){
 
   while(!quit){
 
-    afficher(tab, pSurface, screen, police);
+    afficher(tab, tailletab, pSurface, screen, police);
 
     debut = SDL_GetTicks();
 
@@ -165,34 +172,33 @@ int main(int argc, char** argv){
 
 
     if(recupCurs-- < 0){
-      if(state[SDL_SCANCODE_S]){
+      if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
         if(nbChoix == 3) nbChoix = 0;
 
         tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
 
-        afficher(tab, pSurface, screen, police);
+        afficher(tab, tailletab, pSurface, screen, police);
 
         recupCurs = DELAI_CURSEUR;
       }
-      if(state[SDL_SCANCODE_W]){
+      if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
         nbChoix--;
         if(nbChoix == -1) nbChoix = 2;
 
         tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
 
-        afficher(tab, pSurface, screen, police);
+        afficher(tab, tailletab, pSurface, screen, police);
 
         recupCurs = DELAI_CURSEUR;
       }
 
-      if(state[SDL_SCANCODE_Q]){
+      if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
         switch(nbChoix){
           case 0 : fonctionJeu(pSurface, screen, police); break;
           case 1 : break;
           case 2 : quit = 2; break;
         }
-
       }
     }
     fonctionFin();
