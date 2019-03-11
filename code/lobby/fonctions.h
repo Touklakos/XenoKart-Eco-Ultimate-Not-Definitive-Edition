@@ -29,6 +29,6 @@ void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *point
 
 void commerce(SDL_Surface * psurface);
 
-void expedition(SDL_Surface * psurface);
+int expedition(SDL_Window * screen);
 
 void load_inv(t_objet inv[nbObjets]);

@@ -114,3 +114,83 @@ void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *point
   TTF_CloseFont(police);
 
 }
+
+int expedition(SDL_Window * screen){
+  TTF_Font *police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
+  SDL_Surface* pSurface = NULL;
+  pSurface = SDL_GetWindowSurface(screen);
+  SDL_Rect dest;
+  SDL_Color c = {0,0,0};
+  SDL_Surface * map = NULL;
+  map = IMG_Load("./data/map.png");
+  SDL_Surface * flag = NULL;
+  flag = IMG_Load("./data/flag.png");
+  int test_touche = 0;
+  int i = 0;
+  SDL_Surface * texte[4];
+  texte[0] = TTF_RenderText_Solid(police, "Jungle", c);
+  texte[1] = TTF_RenderText_Solid(police, "Dans les etoileuuuuh", c);
+  texte[2] = TTF_RenderText_Solid(police, "Foret de Schlihpak", c);
+  texte[3] = TTF_RenderText_Solid(police, "Derriere les rochers", c);
+  printf("choix d'expedition");
+  do{
+    i %= 4;
+    SDL_PumpEvents();
+    const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+    dest.x = 0;
+    dest.y = 0;
+    SDL_BlitSurface(map, NULL, pSurface, &dest);
+    dest.x = SCREEN_WIDTH/4 -50;
+    dest.y = SCREEN_HEIGHT/4 +25;
+    SDL_BlitSurface(flag, NULL, pSurface, &dest);
+    dest.x = SCREEN_WIDTH/4*3;
+    dest.y = SCREEN_HEIGHT/4;
+    SDL_BlitSurface(flag, NULL, pSurface, &dest);
+    dest.x = SCREEN_WIDTH/4 + 100;
+    dest.y = SCREEN_HEIGHT/2 + 30;
+    SDL_BlitSurface(flag, NULL, pSurface, &dest);
+    dest.x = SCREEN_WIDTH/2 + flag->w/2;
+    dest.y = SCREEN_HEIGHT/2 - flag->h;
+    SDL_BlitSurface(flag, NULL, pSurface, &dest);
+
+    switch (i) {
+      case 0 :
+        dest.x = SCREEN_WIDTH/4 -50;
+        dest.y = SCREEN_HEIGHT/4 +25;
+        SDL_BlitSurface(texte[i], NULL, pSurface, &dest);
+        break;
+      case 1 :
+        dest.x = SCREEN_WIDTH/4*3;
+        dest.y = SCREEN_HEIGHT/4;
+        SDL_BlitSurface(texte[i], NULL, pSurface, &dest);
+        break;
+      case 2 :
+        dest.x = SCREEN_WIDTH/4 + 100;
+        dest.y = SCREEN_HEIGHT/2 + 30;
+        SDL_BlitSurface(texte[i], NULL, pSurface, &dest);
+        break;
+      case 3 :
+        dest.x = SCREEN_WIDTH/2 + flag->w/2;
+        dest.y = SCREEN_HEIGHT/2 - flag->h;
+        SDL_BlitSurface(texte[i], NULL, pSurface, &dest);
+        break;
+    }
+
+    if(state[SDL_SCANCODE_RETURN]){
+      while(state[SDL_SCANCODE_RETURN]){SDL_PumpEvents();}
+      test_touche++;
+    }
+    if(state[SDL_SCANCODE_RIGHT]){
+      while(state[SDL_SCANCODE_RIGHT]){SDL_PumpEvents();}
+      i++;
+    }
+    if(state[SDL_SCANCODE_LEFT]){
+      while(state[SDL_SCANCODE_LEFT]){SDL_PumpEvents();}
+      i+=3;
+    }
+
+    SDL_UpdateWindowSurface(screen);
+  }while(!test_touche);
+  return i;
+}

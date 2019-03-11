@@ -11,7 +11,7 @@
 #include "../combat/perso.h"
 #include "fonctions.h"
 
- 
+
 
 int main(){
 
@@ -62,7 +62,8 @@ int main(){
 
   int argent=0;
   int points=0;
-  int etat = 0;
+  int etat = 1;
+  int type_expedition;
   t_objet inv[nbObjets];
   load_inv(inv);
   Personnage * equipe[4];
@@ -105,8 +106,9 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
 
     switch (etat){
       case 0 : echange(screen, inv, &argent, &points); break;
-      //case 1 : commerce(pSurface); break;
-      //case 2 : expedition(pSurface); break;
+      case 1 : type_expedition = expedition(screen); break;
+      //case 2 : commerce(pSurface); break;
+
     }
 
 
