@@ -4,7 +4,7 @@
 
 #include "../combat/const.h"
 
-enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL };
+enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL, PLATEAU };
 
 typedef struct case_s{
   struct case_s *tab[6];
