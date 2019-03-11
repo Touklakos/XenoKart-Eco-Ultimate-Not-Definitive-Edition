@@ -13,13 +13,14 @@ CODE=code/
 
 COMBAT=${CODE}/combat/
 MENU=${CODE}/menu/
+MAP=${CODE}/map/
 LOBBY=${CODE}/lobby/
 
 LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm
 INCS=-I${SDL_INC_DIR}
 PROG=incroyable main
 
-all: sdl_text menu lobby clean
+all: sdl_text menu lobby clean map
 
 sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
@@ -36,7 +37,11 @@ sdl_text: ${COMBAT}incroyable.c
 
 menu: ${MENU}menu.c
 	${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o main menu.o ${LIBS} ${INCS} ${FLAGS}
+	${CC} -o menu menu.o ${LIBS} ${INCS} ${FLAGS}
+
+map: ${MAP}map.c
+	${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -o map map.o ${LIBS} ${INCS} ${FLAGS}
 
 clean:
 	rm -f *.o
