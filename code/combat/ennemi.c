@@ -216,7 +216,7 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
 
   int dis = distance(perso->posX, perso->posY, ennemi->posX, ennemi->posY)- perso->image->w/2;
 
-  if(dis >= ennemi->PRTAUTO) {
+  if(dis >= ennemi->PRTAUTO/2) {
 
     ennemi->vitX = vecX*VITDPL/dis;
 
@@ -256,14 +256,12 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 
       ennemi->orientationAbsolue = (equipe[ennemi->cible]->orientationAbsolue + 2)%4;
 
-      printf("orientation absolue Enn : %d\n", ennemi->orientationAbsolue);
-      printf("orientation absolue Pers: %d\n", equipe[ennemi->cible]->orientationAbsolue);
-      printf("orientation relative Pers: %d\n", equipe[ennemi->cible]->orientationRelative);
+
 
     }
 
     if(ennemi->vitX != 0 || ennemi->vitY != 0) ennemi->numFrame = (ennemi->numFrame+1)%60;
-    else ennemi->numFrame = 0;
+  //  else ennemi->numFrame = 0;
 
     SDL_Rect dest = { ennemi->posX - ennemi->image->w/2/4-camera.x+camera.w, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h, 0, 0};
     SDL_Rect img = { ennemi->image->w/4*(ennemi->numFrame/15), ennemi->image->h/4*ennemi->orientationAbsolue, ennemi->image->w/4, ennemi->image->h/4};
@@ -606,6 +604,7 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
     ennemi->PV -= degats;
     ennemi->hostilite[indice] += degats*2;
     art->recup = art->delaiRecup[equipe[indice]->orientationRelative];
+    art->delaiRecupAct = art->delaiRecup[equipe[indice]->orientationRelative];
     ennemi->etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
     ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemi->RES_ETATS[fournaise]/100*3;
     ennemi->etats[frisson].valeur += art->etats[equipe[indice]->orientationRelative][frisson];

@@ -15,6 +15,9 @@ typedef struct {
     int DMGMAX[4];         //D�gats maximum de l'art
     int delaiRecup[4];     //D�lai requis entre deux utilisation
     int recup;          //Variable qui prend la valeur de delaiRecup quand l'art est utilis� (l'art peut �tre quand cette variable est inf�rieure � 0)
+    int delaiRecupAct;  //Variable qui prend la valeur de delaiRecup quand l'art est utilisé (elle n'est pas décrémenté elle servira a afficher le cooldown))
+    int delaiAnimation;
+    int nbFrames;
     int PRTART[4];         //port�e de l'art
     int idArt;          //identifiant de l'art
     SDL_Surface *image; //image de l'art (en bas de l'ecran)
@@ -23,7 +26,7 @@ typedef struct {
 
 
     Modif buff[15];    //valeurs des differents buff applicable � un personnage
-    Modif debuff[4][15];    //valeurs des differents debuff applicable � un ennemi 
+    Modif debuff[4][15];    //valeurs des differents debuff applicable � un ennemi
 
 
     int soin;
@@ -31,5 +34,5 @@ typedef struct {
 } Art;
 
 int initArt(Art *art, char fichier[50]);
-void afficherArt(Art *art[], SDL_Surface* screen);
+void afficherArt(Art *art[], SDL_Surface* screen, SDL_Surface *cooldownArt);
 void recuperationArt(Art *art);

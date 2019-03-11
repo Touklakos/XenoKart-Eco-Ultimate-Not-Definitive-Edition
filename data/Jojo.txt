@@ -1,4 +1,4 @@
-./data/Couteau.bmp
+./data/Guts.png
 NV : 8;
 EXP : 50;
 MAXPV : 200;

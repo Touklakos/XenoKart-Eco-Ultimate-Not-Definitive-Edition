@@ -27,3 +27,9 @@ int distance(int a, int b, int c, int d) {
     return (int) sqrt(vecX*vecX + vecY*vecY);
 
 }
+
+int collision(int h1, int d1, int b1, int g1, int h2, int d2, int b2, int g2) {
+
+  return h1 > b2 && d1 < g2 && b1 < h2 && g1 > d2;
+
+}

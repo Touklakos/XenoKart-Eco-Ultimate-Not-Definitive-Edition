@@ -159,7 +159,6 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
 void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera) {
 
     if(perso->vitX != 0 || perso->vitY != 0) perso->numFrame = (perso->numFrame+1)%60;
-    else perso->numFrame = 0;
 
     SDL_Rect dest = { perso->posX - perso->image->w/2/4-camera.x+camera.w, perso->posY - perso->image->h/2/4-camera.y+camera.h, 0, 0};
     SDL_Rect img = { perso->image->w/4*(perso->numFrame/15), perso->image->h/4*perso->orientationAbsolue, perso->image->w/4, perso->image->h/4};
@@ -240,6 +239,8 @@ void utiliseArtBuff(Art* art, Personnage* equipe[3], int indicePersonnage, SDL_S
     if(art->recup < 0) {
 
         art->recup = art->delaiRecup[0];
+        art->delaiRecupAct = art->delaiRecup[0];
+
 
         for(int i = j; i < k; i++) {
 

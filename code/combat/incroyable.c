@@ -182,7 +182,7 @@ void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe
 
     cibleEnnemi(ennemi);
 
-    SDL_Rect rect ={equipe[ennemi->cible]->posX-camera.x+camera.w-equipe[ennemi->cible]->image->w/2, equipe[ennemi->cible]->posY-camera.y+camera.h+equipe[ennemi->cible]->image->h/2, equipe[ennemi->cible]->image->w, 10};
+    SDL_Rect rect ={equipe[ennemi->cible]->posX-camera.x+camera.w-equipe[ennemi->cible]->image->w/2/4, equipe[ennemi->cible]->posY-camera.y+camera.h+equipe[ennemi->cible]->image->h/2/4, equipe[ennemi->cible]->image->w/4, 10};
 
 
     SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 255, 0, 0));
@@ -375,7 +375,6 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi, Ennemi ennPoo
 
 
 
-
 int main(int argc, char** argv)
 {
 
@@ -508,6 +507,8 @@ int main(int argc, char** argv)
           initArt(&Guts.ArtPool[i], fichier);
 
       }
+
+      SDL_Surface *cooldownArt = IMG_Load("./data/cooldownArt.png");
 
 
       ArtJeu[0][0] = &Guts.ArtPool[3];        //affectation des art d'un personnage
@@ -1017,6 +1018,7 @@ for(int i = 0; i < 3; i++) {
             }
 
 
+
             deplacementPersonnage(equipe, indicePersonnage, ennemis);
 
 
@@ -1070,7 +1072,7 @@ for(int i = 0; i < 3; i++) {
             }
 
 
-            afficherArt(ArtJeu[indicePersonnage], pSurface);
+            afficherArt(ArtJeu[indicePersonnage], pSurface, cooldownArt);
 
             afficherCurseur(positionCurseur, pSurface);
 

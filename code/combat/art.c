@@ -8,6 +8,8 @@
 int initArt(Art *art, char fichier[50]) {
 
     art->recup = 0;
+    art->delaiRecupAct = 1;
+
 
     char stats[50];
 
@@ -25,6 +27,8 @@ int initArt(Art *art, char fichier[50]) {
     }
 
     art->soin = 0;
+
+    art->delaiRecupAct = 0;
 
     for(int i = MAXPV; i <= PRTAUTO; i++){
 
@@ -951,12 +955,19 @@ int initArt(Art *art, char fichier[50]) {
 
 /*Cette fonction sert � afficher les icones des arts du personnage que l'on controle en bas de l'�cran*/
 
-void afficherArt(Art *art[], SDL_Surface *pSurface) {
+void afficherArt(Art *art[], SDL_Surface *pSurface, SDL_Surface *cooldownArt) {
 
     for(int i = 0; i < 8; i++) {
 
         SDL_Rect dest = { i*(SCREEN_WIDTH/10)+64, SCREEN_HEIGHT-100, 0, 0};
         SDL_BlitSurface(art[i]->image, NULL, pSurface, &dest);
+        if(art[i]->recup > 0) {
+
+          int taille = (int) cooldownArt->h*art[i]->recup/art[i]->delaiRecupAct;
+          SDL_Rect cooldown = { 0, 0, cooldownArt->w, taille};
+          SDL_BlitSurface(cooldownArt, &cooldown, pSurface, &dest);
+
+        }
 
     }
 
