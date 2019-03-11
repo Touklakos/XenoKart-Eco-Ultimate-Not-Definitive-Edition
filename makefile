@@ -18,9 +18,9 @@ LOBBY=${CODE}/lobby/
 
 LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm
 INCS=-I${SDL_INC_DIR}
-PROG=incroyable main
+PROG=incroyable menu lobby map
 
-all: sdl_text menu lobby clean map
+all: sdl_text menu lobby map clean
 
 sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
