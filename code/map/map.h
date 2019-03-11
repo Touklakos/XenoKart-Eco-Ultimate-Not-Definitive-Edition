@@ -7,13 +7,13 @@
 enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL };
 
 typedef struct case_s{
-  case_s *tab[6];
+  struct case_s *tab[6];
   int val;
-}case;
+}case_t;
 
 typedef struct map_s{
-  case * deb;
+  case_t * deb;
   enum typemap type;
   int difficult;
   int taille;
-}case;
+}map_t;
