@@ -605,6 +605,8 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
     ennemi->hostilite[indice] += degats*2;
     art->recup = art->delaiRecup[equipe[indice]->orientationRelative];
     art->delaiRecupAct = art->delaiRecup[equipe[indice]->orientationRelative];
+    equipe[indice]->delaiArt = art->delaiAnimation;
+
     ennemi->etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
     ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemi->RES_ETATS[fournaise]/100*3;
     ennemi->etats[frisson].valeur += art->etats[equipe[indice]->orientationRelative][frisson];
@@ -783,8 +785,16 @@ void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi en
 
     }
 
-    equipe[i]->posX+=equipe[i]->vitX;
-    equipe[i]->posY+=equipe[i]->vitY;
+    if(equipe[i]->delaiArt >= 0) {
+
+      equipe[i]->vitX = 0;
+      equipe[i]->vitY = 0;
+
+    }
+
+      equipe[i]->posX+=equipe[i]->vitX;
+      equipe[i]->posY+=equipe[i]->vitY;
+
 
   }
 

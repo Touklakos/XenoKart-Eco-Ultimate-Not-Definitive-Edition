@@ -30,6 +30,9 @@ int initArt(Art *art, char fichier[50]) {
 
     art->delaiRecupAct = 0;
 
+    art->delaiAnimation = 100;
+
+
     for(int i = MAXPV; i <= PRTAUTO; i++){
 
       art->buff[i].valeur = -1;

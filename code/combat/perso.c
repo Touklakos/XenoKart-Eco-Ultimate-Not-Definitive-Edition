@@ -125,6 +125,7 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
     perso->ATTMIN=perso->FRC;
     perso->ATTMAX=perso->FRC+10;
     perso->delaiAuto=perso->VITATT;
+    perso->delaiArt = 0;
 
     perso->modif[MAXPV] = (float)perso->MAXPV;
     perso->modif[FRC] = (float)perso->FRC;
@@ -170,6 +171,8 @@ void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera) 
 
 void delaiModificationPerso(Personnage* perso) {
 
+    perso->delaiArt--;
+
     for(int i = 0; i < 15; i++) {
 
         for(int j = 0; j < perso->nbDelai[i]; j++) {          //on d�cr�mente toutes les delais des modifications des stats d'un personnage
@@ -204,7 +207,7 @@ void delaiModificationPerso(Personnage* perso) {
 /*Cette fonction v�rifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa derni�re utilisation)*/
 
 
-void utiliseArtBuff(Art* art, Personnage* equipe[3], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
     int j = 0, k = 3, l = -1;
 
@@ -240,6 +243,9 @@ void utiliseArtBuff(Art* art, Personnage* equipe[3], int indicePersonnage, SDL_S
 
         art->recup = art->delaiRecup[0];
         art->delaiRecupAct = art->delaiRecup[0];
+
+        equipe[indicePersonnage]->delaiArt = art->delaiAnimation;
+
 
 
         for(int i = j; i < k; i++) {

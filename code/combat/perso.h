@@ -54,6 +54,7 @@ typedef struct {
 
     int tension;
     int delaiAuto;
+    int delaiArt;
 
 
     int enCombat;
