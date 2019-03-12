@@ -19,6 +19,18 @@ void load_inv(t_objet inv[nbObjets]){
   inv[2].nombre = NULL;
 }
 
+void load_vendeur(t_objet inv[nbObjets]){
+  //temporaire jusqu a chargement de sauvegardes
+  strcpy(inv[0].nom, "pagne");
+  inv[0].nombre = 10;
+  inv[0].valeurArgent = 1;
+  inv[0].valeurPoints = 10;
+  strcpy(inv[1].nom, "vhs");
+  inv[1].nombre = 20;
+  inv[1].valeurArgent = 5;
+  inv[1].valeurPoints = 2;
+  inv[2].nombre = NULL;
+}
 
 
 void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *points){
@@ -116,7 +128,7 @@ void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *point
 }
 
 int expedition(SDL_Window * screen){
-  TTF_Font *police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
+  TTF_Font *police = TTF_OpenFont("./data/DejaVuSans.ttf", 15);
   SDL_Surface* pSurface = NULL;
   pSurface = SDL_GetWindowSurface(screen);
   SDL_Rect dest;
@@ -192,5 +204,75 @@ int expedition(SDL_Window * screen){
 
     SDL_UpdateWindowSurface(screen);
   }while(!test_touche);
+  SDL_FreeSurface(map);
+  SDL_FreeSurface(texte[0]);
+  SDL_FreeSurface(texte[1]);
+  SDL_FreeSurface(texte[2]);
+  SDL_FreeSurface(texte[3]);
+  TTF_CloseFont(police);
   return i;
+}
+
+void afficher_inv(SDL_Window * screen, int x, int y, int w, int h, t_objet inv[nbObjets]){
+  TTF_Font *police = TTF_OpenFont("./data/DejaVuSans.ttf", 15);
+  SDL_Surface * texte;
+  SDL_Surface* pSurface = NULL;
+  pSurface = SDL_GetWindowSurface(screen);
+  SDL_Color c = {0,0,0};
+  SDL_Rect rect;
+  SDL_Rect emplacement;
+  int i, j;
+  rect.x = x;
+  rect.y = y;
+  rect.h = h;
+  rect.w = w;
+  SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 80,80,80));
+  for(i = 0; i<2; i++){
+    for(j = 0; j<10; j++){
+      emplacement.x = 20 + j*122 + x;
+      emplacement.y = 30 + i*140 + y;
+      emplacement.h = 100;
+      emplacement.w = 100;
+      SDL_FillRect(pSurface, &emplacement, SDL_MapRGB(pSurface->format, 200,200,200));
+      if(inv[10*i+j].nombre && (10*i+j) <= nbObjets){
+        texte = TTF_RenderText_Solid(police, inv[10*i+j].nom, c);
+        SDL_BlitSurface(texte, NULL, pSurface, &emplacement);
+      }
+    }
+  }
+  SDL_FreeSurface(texte);
+  TTF_CloseFont(police);
+}
+
+void commerce(SDL_Window * screen, t_objet inv[nbObjets]){
+  t_objet vendeur[nbObjets];
+  load_vendeur(vendeur);
+  TTF_Font *police = TTF_OpenFont("./data/DejaVuSans.ttf", 15);
+  SDL_Surface* pSurface = NULL;
+  pSurface = SDL_GetWindowSurface(screen);
+  SDL_Rect select;
+  select.h = 110;
+  select.w = 110;
+  int i = 0, j = 0;
+  int test_touche = 0;
+  do{
+    SDL_PumpEvents();
+    const Uint8 *state = SDL_GetKeyboardState(NULL);
+    SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 0, 0, 0));
+
+    select.x = 40 + i*122;
+    select.y = 40 + j*140;
+    SDL_FillRect(pSurface, &select, SDL_MapRGB(pSurface->format, 200,0,0)); // marche pas  ---> opacit /  image transparente
+    afficher_inv(screen, 20, 20, SCREEN_WIDTH -40, SCREEN_HEIGHT/2 -60, inv);
+    afficher_inv(screen, 20, 400, SCREEN_WIDTH -40, SCREEN_HEIGHT/2 -60, vendeur);
+
+    if(state[SDL_SCANCODE_RETURN]){
+      while(state[SDL_SCANCODE_RETURN]){SDL_PumpEvents();}
+      test_touche++;
+    }
+
+    SDL_UpdateWindowSurface(screen);
+  }while(!test_touche);
+  printf("test\n");
+  TTF_CloseFont(police);
 }

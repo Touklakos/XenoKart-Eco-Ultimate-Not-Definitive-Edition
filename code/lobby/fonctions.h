@@ -25,10 +25,14 @@ typedef struct s_objet{
   int valeurArgent;
 }t_objet;
 
-void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *points);
+void echange(SDL_Window * , t_objet inv[nbObjets], int *, int *);
 
-void commerce(SDL_Surface * psurface);
+void commerce(SDL_Window * , t_objet inv[nbObjets]);
 
-int expedition(SDL_Window * screen);
+int expedition(SDL_Window *);
 
 void load_inv(t_objet inv[nbObjets]);
+
+void load_vendeur(t_objet inv[nbObjets]);
+
+void afficher_inv(SDL_Window *, int, int, int, int, t_objet inv[nbObjets]);

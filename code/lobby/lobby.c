@@ -62,7 +62,7 @@ int main(){
 
   int argent=0;
   int points=0;
-  int etat = 1;
+  int etat = 2;
   int type_expedition;
   t_objet inv[nbObjets];
   load_inv(inv);
@@ -96,7 +96,7 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
 
     debut = SDL_GetTicks();
     SDL_PollEvent(&event);
-    SDL_PumpEvents();
+    //SDL_PumpEvents();
     const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
 
 
@@ -107,19 +107,19 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
     switch (etat){
       case 0 : echange(screen, inv, &argent, &points); break;
       case 1 : type_expedition = expedition(screen); break;
-      //case 2 : commerce(pSurface); break;
+      case 2 : commerce(screen, inv); break;
 
     }
 
 
 
 
+printf("test2\n");
+
+    //SDL_UpdateWindowSurface(screen);
 
 
-    SDL_UpdateWindowSurface(screen);
-
-
-
+/*
 ///fps
     switch(event.type) {
 
@@ -143,7 +143,7 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
 
         SDL_Delay(delai);
 
-    }
+    }*/
     char quitter;
     printf("quitter ?\n");
     scanf("%c", &quitter);
@@ -151,5 +151,4 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
       return 0;
     }
   }
-
 }
