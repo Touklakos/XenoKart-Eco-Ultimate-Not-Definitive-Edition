@@ -83,7 +83,7 @@ void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* scre
       rect = tab[i].rec;
       rect.x = rect.x+tab[i].rec.w/2 - tab[i].txt->w/2;
       rect.y = rect.y+tab[i].rec.h/2 - tab[i].txt->h/2;
-      SDL_BlitSurface(tab[i].txt, NULL, pSurface, &test);
+      SDL_BlitSurface(tab[i].txt, NULL, pSurface, &rect);
   }
   SDL_UpdateWindowSurface(screen);
 }
