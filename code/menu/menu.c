@@ -9,15 +9,28 @@
 
 int fpsCount = 0;
 int fin = 0;
-int debut = 0;
+int deb = 0;
 int quit = 0;
 
 SDL_Event event;
 SDL_Color blanc = {255,255,255};
 SDL_Color noir = {0,0,0};
 
+/**
+  \file menu.c
+  \brief XenoKart Eco Plus
+  \author Benjamin Riviere
+  \version 0.01
+  \date 12 mars 2019
+*/
 
-void fonctionQuitter(){ //fonction qui permet de detecter si l'user veut arreter le programme via la croix
+/**
+    \fn void fonctionQuitter()
+    \brief Cette fonction vérifie si l'utilisateur veut fermer le programme avec la croix
+*/
+
+void fonctionQuitter(){
+
   SDL_PollEvent(&event);
 
   switch(event.type){
@@ -27,40 +40,63 @@ void fonctionQuitter(){ //fonction qui permet de detecter si l'user veut arreter
   }
 }
 
-void fonctionFin(){ //fonction qui affiche les statistiques a la fin d'une boucle dans les fonctions
+/**
+    \fn void fonctionFin()
+    \brief Cette fonction affiche les statistiques à la fin des boucles dans les fonctions
+*/
+
+void fonctionFin(){
   fin = SDL_GetTicks();
 
   printf("\nfps = %i\n", (fpsCount++)*1000/SDL_GetTicks());
   printf("fin = %i\n", fin/1000);
-  int delai = ((1000/FPS)-(fin-debut));
+  int delai = ((1000/FPS)-(fin-deb));
 
   if(delai > 0){
     SDL_Delay(delai);
   }
 }
 
-void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){ //fonction qui affiche toutes la SDL ( Rect et texte pour le menu )
+/**
+    \fn void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
+    \brief fonction qui affiche toutes la SDL ( Rectangle et texte pour le menu )
+    \param tab Tableau qui contient les rectangles et les textes contenu dans une structure affichage (SDL_Rect, SDL_Surface*)
+    \param tTab Taille du tableau
+    \param pSurface Surface sur laquel on affiche
+    \param screen Ecran sur lequel on affiche
+    \param police Police d'écriture
+*/
 
-  SDL_Rect test;
+void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
+
+  SDL_Rect rect;
 
   SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 0, 0, 0));
 
   for(int i = 1; i < tTab; i++){
       SDL_FillRect(pSurface, &tab[i].rec, SDL_MapRGB(pSurface->format, 255, 255, 255));
   }
+
   SDL_FillRect(pSurface, &tab[0].rec, SDL_MapRGB(pSurface->format, 255, 0, 0));
 
   for(int i = 1; i < tTab; i++){
-      test = tab[i].rec;
-      test.x = test.x+tab[i].rec.w/2 - tab[i].txt->w/2;
-      test.y = test.y+tab[i].rec.h/2 - tab[i].txt->h/2;
+      rect = tab[i].rec;
+      rect.x = rect.x+tab[i].rec.w/2 - tab[i].txt->w/2;
+      rect.y = rect.y+tab[i].rec.h/2 - tab[i].txt->h/2;
       SDL_BlitSurface(tab[i].txt, NULL, pSurface, &test);
   }
-
   SDL_UpdateWindowSurface(screen);
 }
 
-void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){ //fonction qui gere quand l'user va sur "GAME"
+/**
+    \fn fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
+    \brief fonction qui gère quand l'user va sur "GAME"
+    \param pSurface Surface sur laquel on affiche
+    \param screen Ecran sur lequel on affiche
+    \param police Police d'écriture
+*/
+
+void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   int decallageBouton = BUTTON_HEIGHT+DEC;
   int recupCurs = 0;
@@ -68,28 +104,27 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){ /
 
   int tailletab = 3;
 
-  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT,};
-  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT,};
+  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
+  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
   SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
 
   affichage tab[tailletab];
   tab[0].rec = choix;
   tab[1].rec = charger;
-  tab[2].rec = nouveau;
-
   tab[1].txt = TTF_RenderText_Solid(police, "LOAD SAVE", noir);
+  tab[2].rec = nouveau;
   tab[2].txt = TTF_RenderText_Solid(police, "NEW SAVE", noir);
 
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
   while(!quit){
 
-    debut = SDL_GetTicks();
+    deb = SDL_GetTicks();
 
     afficher(tab, tailletab, pSurface, screen, police);
     SDL_PumpEvents();
 
-    if(recupCurs-- < 0){
+    if(recupCurs-- < 0){ //permet la gestion de l'appuie des touches
 
       if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
@@ -145,7 +180,7 @@ int main(int argc, char** argv){
 
   int tailletab = 4;
 
-  SDL_Rect jeu = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect jeu = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
   SDL_Rect option = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
   SDL_Rect quitter = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,2*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
   SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
@@ -165,13 +200,14 @@ int main(int argc, char** argv){
 
     afficher(tab, tailletab, pSurface, screen, police);
 
-    debut = SDL_GetTicks();
+    deb = SDL_GetTicks();
 
     SDL_PumpEvents();
     const Uint8 *state = SDL_GetKeyboardState(NULL);
 
 
-    if(recupCurs-- < 0){
+    if(recupCurs-- < 0){ //permet la gestion de l'appuie des touches
+
       if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
         if(nbChoix == 3) nbChoix = 0;
