@@ -11,7 +11,8 @@
 #include <netdb.h>
 #include <signal.h>
 #include <unistd.h>
-
+#include <errno.h>
+#include <arpa/inet.h>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -37,7 +38,7 @@ int nbDgtTxt = 0;               //nombre de texte de d�gats affich� � l'�
 
 int etat = 1;                   //en combat = 0; hors combat = 1;
 
-int etatCombat = 0;             //Si on se bat normalement ou si on est en train de choisir une cible pour un art de soutien
+int etatCombat[3] = {0,0,0};             //Si on se bat normalement ou si on est en train de choisir une cible pour un art de soutien
 
 
 /**
@@ -387,9 +388,9 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi, Ennemi ennPoo
   SDL_UpdateWindowSurface(screen);
 
 
-  int nbNouvEnn;
+  int nbNouvEnn = 1;
 
-  scanf("%d", &nbNouvEnn);
+  //scanf("%d", &nbNouvEnn);
 
   for(int i = 0; i < nbNouvEnn; i++) {
 
@@ -404,22 +405,7 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi, Ennemi ennPoo
 
 
 
-int controleClavierSolo() {
 
-
-
-
-
-}
-
-
-
-typedef struct {
-
-  int enfonce;
-  int relache;
-
-} doublet;
 
 
 int testTouche(doublet clavier) {
@@ -472,48 +458,106 @@ void view_ip()
 }
 
 
+void quitter(int to_server_socket){
+	printf("[client] envoi message QUITTER au serveur\n");
+	send(to_server_socket,QUITTER,7,0);
+}
+
+
 int main(int argc, char** argv)
 {
 
-
+  int coop = 1;
+  int serveur = 0;
+  if(argc == 2)
+    serveur = 1;
 
 
 
   int ma_socket;
-  int client_socket;
-  struct sockaddr_in mon_address, client_address;
-  unsigned int mon_address_longueur, lg;
-  bzero(&mon_address,sizeof(mon_address));
-  mon_address.sin_port = htons(30000);
-  mon_address.sin_family = AF_INET;
-  mon_address.sin_addr.s_addr = htonl(INADDR_ANY);
+  int client_socket1, client_socket2;
+  struct sockaddr_in mon_address, client_address1, client_address2;
+  unsigned int mon_address_longueur, lg1, lg2;
 
-  char *hostname = "localhost";
-    char ip[100];
+  struct sockaddr_in serveur_addr;
+  struct hostent *serveur_info;
+  long hostAddr;
+  char buffer[512];
+  int to_server_socket;
 
-    hostname_to_ip(hostname , ip);
-  fprintf(stderr, "%s resolved to %s" , hostname , ip);
-  view_ip();
+    if(coop) {
 
-  /* creation de socket */
-  if ((ma_socket = socket(AF_INET,SOCK_STREAM,0))== -1) {
-    printf("Impossible de créer la socket\n");
-    exit(0);
+      if(serveur) {
+
+        bzero(&mon_address,sizeof(mon_address));
+        mon_address.sin_port = htons(30000);
+        mon_address.sin_family = AF_INET;
+        mon_address.sin_addr.s_addr = htonl(INADDR_ANY);
+
+        char *hostname = "localhost";
+          char ip[100];
+
+          hostname_to_ip(hostname , ip);
+        fprintf(stderr, "%s resolved to %s" , hostname , ip);
+        view_ip();
+
+        /* creation de socket */
+        if ((ma_socket = socket(AF_INET,SOCK_STREAM,0))== -1) {
+          printf("Impossible de créer la socket\n");
+          exit(0);
+        }
+
+        /* bind serveur - socket */
+        bind(ma_socket,(struct sockaddr *)&mon_address,sizeof(mon_address));
+        /* ecoute sur la socket */
+        listen(ma_socket,5);
+        /* accept la connexion */
+        mon_address_longueur = sizeof(client_address1);
+
+          /* on attend que le client se connecte */
+        client_socket1 = accept(ma_socket,(struct sockaddr *)&client_address1, &mon_address_longueur);
+
+
+      //  client_socket2 = accept(ma_socket,(struct sockaddr *)&client_address2, &mon_address_longueur);
+
+      } else {
+
+
+
+
+
+      	bzero(&serveur_addr,sizeof(serveur_addr));
+      	hostAddr = inet_addr(SERVEURNAME);
+      	if ( (long)hostAddr != (long)-1 ){
+      		bcopy(&hostAddr,&serveur_addr.sin_addr,sizeof(hostAddr));
+      	} else {
+      		serveur_info = gethostbyname(SERVEURNAME);
+      	  	if (serveur_info == NULL) {
+      			printf("Impossible de récupérer les infos du serveur\n");
+      			exit(0);
+      	  	}
+      	  	bcopy(serveur_info->h_addr,&serveur_addr.sin_addr,serveur_info->h_length);
+      	}
+      	serveur_addr.sin_port = htons(30000);
+      	serveur_addr.sin_family = AF_INET;
+
+      	if ( (to_server_socket = socket(AF_INET,SOCK_STREAM,0)) < 0) {
+      		printf("Impossible de créer la socket client\n");
+      	  	exit(0);
+      	}
+
+      	if(connect( to_server_socket, (struct sockaddr *)&serveur_addr, sizeof(serveur_addr)) < 0 ) {
+      		printf("Impossible de se connecter au serveur\n");
+      	  	exit(0);
+      	}
+
+
+
+
+
+      }
+
   }
-
-  /* bind serveur - socket */
-  bind(ma_socket,(struct sockaddr *)&mon_address,sizeof(mon_address));
-  /* ecoute sur la socket */
-  listen(ma_socket,5);
-  /* accept la connexion */
-  mon_address_longueur = sizeof(client_address);
-
-    /* on attend que le client se connecte */
-  client_socket = accept(ma_socket,(struct sockaddr *)&client_address, &mon_address_longueur);
-
-
-
-
 
 
 
@@ -714,72 +758,36 @@ int main(int argc, char** argv)
 
     int quit = 0;               //quitte le programme si on appui sur la croix rouge
 
-    int indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
+    int indicePersonnage = 1;       //variable qui indique quel personnage on est entrain de controller
 
-    int recupCibleEnn = 0;           //variable affect� a DELAI_CIBLE_ENN
+    if(serveur) indicePersonnage--;
 
-    int positionCurseur = 5;
+    int recupCibleEnn[3] = {0,0,0};           //variable affect� a DELAI_CIBLE_ENN
 
-    int recupCurseur = 0;           //variable affect� a DELAI_CURSEUR
+    int positionCurseur[3] = {0,0,0};
 
-    int cible = 0;                  //indique quel personnage on cible avec un art de soutien
+    int recupCurseur[3] = {0,0,0};           //variable affect� a DELAI_CURSEUR
 
-    int recupCible = 0;             //variable qui permet de naviguer entre les cibles
+    int cible[3] = {0,0,0};                  //indique quel personnage on cible avec un art de soutien
 
-    int coop = 0;
+    int recupCible[3] = {0,0,0};             //variable qui permet de naviguer entre les cibles
+
 
     long long unsigned debut, fin, fpsCount = 0;
 
-    doublet clavier[1000];
+    doublet clavier[3][1000];
 
-    for(int i = 0; i< 1000; i++) {
+    for(i = 0; i< 1000; i++) {
 
-      clavier[i].enfonce = 0;
-      clavier[i].relache = 0;
+      clavier[0][i].enfonce = 0;
+      clavier[0][i].relache = 0;
+
+      clavier[1][i].enfonce = 0;
+      clavier[1][i].relache = 0;
 
     }
 
     while(!quit) {
-
-
-
-      memset(buffer, 0, sizeof(buffer));
-      lg = recv(client_socket, buffer, 512,0);
-
-      if(strncmp("MSG", buffer, 3)==0){
-        printf("[serveur] message reçu : '%s'\n",buffer+4);
-        printf("[serveur] envoi de la réponse ");
-        sprintf(buffer,"REPONSE DU SERVEUR");
-        send(client_socket, buffer, 512, 0);
-      } else if(strncmp("BONJOUR", buffer, 7) == 0){
-        printf("[serveur] BONJOUR d'un client\n");
-        send(client_socket, "BONJOUR", 7, 0);
-      } else {
-        printf("[serveur] message inconnu : '%s'\n", buffer);
-      }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -793,28 +801,66 @@ int main(int argc, char** argv)
       SDL_PumpEvents();
       const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
 
-      for(int i = 0; i < 1000; i++) {
+      for(i = 0; i < 1000; i++) {
 
         if(state[i]) {
 
-           clavier[i].enfonce = 1;
+           clavier[indicePersonnage][i].enfonce = 1;
 
          } else {
 
-           clavier[i].enfonce = 0;
+           clavier[indicePersonnage][i].enfonce = 0;
 
          }
 
       }
 
 
+      if(coop) {
+
+        if(serveur) {
+
+          lg1 = recv(client_socket1, clavier[1], sizeof(clavier)/3,0);
+
+          send(client_socket1, clavier[0], sizeof(clavier)/3, 0);
+
+      /*    lg2 = recv(client_socket2, clavierJ3, sizeof(clavierJ3),0);
+
+          send(client_socket2, clavier, sizeof(clavier), 0);*/
+
+
+        } else {
+
+          send(to_server_socket, clavier[1], sizeof(clavier)/3, 0);
+
+        	recv(to_server_socket, clavier[0], sizeof(clavier)/3,0);
+
+        }
+
+      }
+
+
+      printf("\n\nizi le reseau : %d\n\n", clavier[0][SDL_SCANCODE_E].enfonce);
+
+
+
+
+
+
+
+
+
+
+      i = 0;
+
+      printf("etat : %d", etat);
 
       switch(etat) {
 
 
         case 0:   //en combat
 
-          for(int i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
+          for(i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
 
             if(ennemis[i].enCombat) {
 
@@ -834,116 +880,123 @@ int main(int argc, char** argv)
 
             }
 
-          }
 
 
-          switch(etatCombat) {
 
-            case 0:       //deplacement, choix et activations des arts, controle des personnages
+            switch(etatCombat[i]) {
 
-              if(!coop) {
+              case 0:       //deplacement, choix et activations des arts, controle des personnages
 
-                if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
+                if(!coop) {
 
-                  if(testTouche(clavier[SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'attaquer une cible
+                  if(clavier[0][SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
 
-                    equipe[(indicePersonnage+1)%3]->cible = equipe[indicePersonnage]->cible;
+                    if(testTouche(clavier[0][SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'attaquer une cible
 
-                  }
-
-                }
-
-                  if(clavier[SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
-
-                    if(testTouche(clavier[SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'aataquer une cible
-
-                      equipe[(indicePersonnage+2)%3]->cible = equipe[indicePersonnage]->cible;
+                      equipe[(indicePersonnage+1)%3]->cible = equipe[indicePersonnage]->cible;
 
                     }
 
                   }
 
-              }
+                    if(clavier[0][SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
 
-              if(recupCurseur-- < 0) {
+                      if(testTouche(clavier[0][SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'aataquer une cible
 
-                if(clavier[SDL_SCANCODE_RIGHT].enfonce) {     //deplacement du curseur dans un sens
+                        equipe[(indicePersonnage+2)%3]->cible = equipe[indicePersonnage]->cible;
 
-                  positionCurseur = (positionCurseur+1)%8;
+                      }
 
-                  recupCurseur = DELAI_CURSEUR;
-
-                } else if(clavier[SDL_SCANCODE_LEFT].enfonce) { //et dans l'autre
-
-                  positionCurseur--;
-
-                  if(positionCurseur < 0) positionCurseur = 7;
-
-                  recupCurseur = DELAI_CURSEUR;
+                    }
 
                 }
 
-              }
 
-              if(testTouche(clavier[SDL_SCANCODE_E]) && !clavier[SDL_SCANCODE_3].enfonce && !clavier[SDL_SCANCODE_3].enfonce) { //si on appuie sur A sans appuiyer sur les gachette on utilise l'art sur lequel est positionn� notre curseur
 
-                if(equipe[indicePersonnage]->delaiArt < 0) {
+                if(recupCurseur[i]-- < 0) {
 
-                  if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
+                  if(clavier[i][SDL_SCANCODE_RIGHT].enfonce) {     //deplacement du curseur dans un sens
 
-                    utiliseArt(ArtJeu[indicePersonnage][positionCurseur], equipe, &ennemis[equipe[indicePersonnage]->cible] ,indicePersonnage, dgtsTxt, &nbDgtTxt);
+                    positionCurseur[i] = (positionCurseur[i]+1)%8;
 
-                  } else if(ArtJeu[indicePersonnage][positionCurseur]->BUT == soutien) {
+                    recupCurseur[i] = DELAI_CURSEUR;
 
-                    if(ArtJeu[indicePersonnage][positionCurseur]->CIBLE_ALLIE == membreGroupe && ArtJeu[indicePersonnage][positionCurseur]->recup < 0) {
+                  } else if(clavier[i][SDL_SCANCODE_LEFT].enfonce) { //et dans l'autre
 
-                      etatCombat = 1;
+                    positionCurseur[i]--;
 
-                    } else {
+                    if(positionCurseur[i] < 0) positionCurseur[i] = 7;
 
-                      utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], equipe, indicePersonnage, pSurface, dgtsTxt, &nbDgtTxt);
+                    recupCurseur[i] = DELAI_CURSEUR;
+
+                  }
+
+                  printf("Position 1 ,2 c'est bon ça : %d", positionCurseur[i]);
+
+                }
+
+
+
+                if(testTouche(clavier[i][SDL_SCANCODE_E]) && !clavier[i][SDL_SCANCODE_3].enfonce && !clavier[i][SDL_SCANCODE_3].enfonce) { //si on appuie sur A sans appuiyer sur les gachette on utilise l'art sur lequel est positionn� notre curseur
+
+                  if(equipe[i]->delaiArt < 0) {
+
+                    if(ArtJeu[i][positionCurseur[i]]->BUT == attaque) {
+
+                      utiliseArt(ArtJeu[i][positionCurseur[i]], equipe, &ennemis[equipe[i]->cible] ,i, dgtsTxt, &nbDgtTxt);
+
+                    } else if(ArtJeu[i][positionCurseur[i]]->BUT == soutien) {
+
+                      if(ArtJeu[i][positionCurseur[i]]->CIBLE_ALLIE == membreGroupe && ArtJeu[i][positionCurseur[i]]->recup < 0) {
+
+                        etatCombat[i] = 1;
+
+                      } else {
+
+                        utiliseArtBuff(ArtJeu[i][positionCurseur[i]], equipe, i, pSurface, dgtsTxt, &nbDgtTxt);
+
+                      }
 
                     }
 
                   }
 
                 }
-
-              }
 
               break;
 
                 case 1:         //choix de la cible d'un art de soutien
 
-                  if(recupCible-- < 0) {
+                  if(recupCible[i]-- < 0) {
 
-                    if(clavier[SDL_SCANCODE_DOWN].enfonce) {
+                    if(clavier[i][SDL_SCANCODE_DOWN].enfonce) {
 
-                      cible += 1;
-                      cible %= 3;
+                      cible[i] += 1;
+                      cible[i] %= 3;
 
-                      recupCible = DELAI_CIBLE;
+                      recupCible[i] = DELAI_CIBLE;
 
-                    } else if(clavier[SDL_SCANCODE_UP].enfonce) {
+                    } else if(clavier[i][SDL_SCANCODE_UP].enfonce) {
 
-                      cible -= 1;
-                      if(cible < 0) cible = 2;
+                      cible[i] -= 1;
+                      if(cible[i] < 0) cible[i] = 2;
 
-                      recupCible = DELAI_CIBLE;
+                      recupCible[i] = DELAI_CIBLE;
 
                     }
 
-                    if(testTouche(clavier[SDL_SCANCODE_E])) {
+                    if(testTouche(clavier[i][SDL_SCANCODE_E])) {
 
-                      utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], equipe, cible, pSurface, dgtsTxt, &nbDgtTxt);
+                      utiliseArtBuff(ArtJeu[i][positionCurseur[i]], equipe, cible[i], pSurface, dgtsTxt, &nbDgtTxt);
 
-                      etatCombat = 0;
+                      etatCombat[i] = 0;
 
                     }
 
                   }
 
-                  break;
+
+                break;
 
                 }
 
@@ -951,43 +1004,43 @@ int main(int argc, char** argv)
 
               case 1:       //en exploration
 
-                if(recupCibleEnn-- < 0) {
+                if(recupCibleEnn[i]-- < 0) {
 
-                  if(clavier[SDL_SCANCODE_I].enfonce) {
+                  if(clavier[i][SDL_SCANCODE_I].enfonce) {
 
-                    equipe[indicePersonnage]->cible++;
+                    equipe[i]->cible++;
 
-                    equipe[indicePersonnage]->cible %= nbEnnemi;
+                    equipe[i]->cible %= nbEnnemi;
 
-                    equipe[indicePersonnage]->enChoixCible = 1;
+                    equipe[i]->enChoixCible = 1;
 
-                    recupCibleEnn = DELAI_CIBLE_ENN;
+                    recupCibleEnn[i] = DELAI_CIBLE_ENN;
 
                   }
 
-                  if(clavier[SDL_SCANCODE_P].enfonce) {
+                  if(clavier[i][SDL_SCANCODE_P].enfonce) {
 
-                    equipe[indicePersonnage]->cible--;
+                    equipe[i]->cible--;
 
-                    if(equipe[indicePersonnage]->cible < 0) equipe[indicePersonnage]->cible = nbEnnemi-1;
+                    if(equipe[i]->cible < 0) equipe[i]->cible = nbEnnemi-1;
 
-                    equipe[indicePersonnage]->enChoixCible = 1;
+                    equipe[i]->enChoixCible = 1;
 
-                    recupCibleEnn = DELAI_CIBLE_ENN;
+                    recupCibleEnn[i] = DELAI_CIBLE_ENN;
 
                   }
 
                 }
 
-                if(testTouche(clavier[SDL_SCANCODE_SPACE])) {
+                if(testTouche(clavier[i][SDL_SCANCODE_SPACE])) {
 
-                  for(int i = 0; i < 3; i++) {
+                  for(int j = 0; j < 3; j++) {
 
-                    equipe[i]->cible = equipe[indicePersonnage]->cible;
+                    equipe[j]->cible = equipe[i]->cible;
 
-                    equipe[i]->enCombat = 1;
+                    equipe[j]->enCombat = 1;
 
-                    equipe[i]->enChoixCible = 0;
+                    equipe[j]->enChoixCible = 0;
 
                   }
 
@@ -995,15 +1048,19 @@ int main(int argc, char** argv)
 
                 }
 
-                break;
+
+
+              break;
+
+              }
 
             }
 
             if(!coop) {
 
-              if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
+              if(clavier[0][SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
 
-                if(testTouche(clavier[SDL_SCANCODE_E])) {  //si on appuie sur E on controle le personnage
+                if(testTouche(clavier[0][SDL_SCANCODE_E])) {  //si on appuie sur E on controle le personnage
 
                   controlePerso(equipe, &indicePersonnage, droite);
 
@@ -1011,9 +1068,9 @@ int main(int argc, char** argv)
 
               }
 
-              if(clavier[SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
+              if(clavier[0][SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
 
-                if(testTouche(clavier[SDL_SCANCODE_E])) {
+                if(testTouche(clavier[0][SDL_SCANCODE_E])) {
 
                   controlePerso(equipe, &indicePersonnage, gauche);
 
@@ -1030,7 +1087,21 @@ int main(int argc, char** argv)
 
             } else {
 
-              deplacementClavier(indicePersonnage, equipe);
+              if(coop) {
+
+                for(i = 0; i < 3; i++) {
+
+                  printf("\nEn Mortal Kombat %d : %d\n", i, equipe[i]->enCombat);
+
+                  deplacementClavier(i, equipe, clavier[i]);
+
+                }
+
+              } else {
+
+                deplacementClavier(indicePersonnage, equipe, clavier[0]);
+
+              }
 
             }
 
@@ -1042,7 +1113,7 @@ int main(int argc, char** argv)
 
             for(int n = 0; n < nbEnnemi; n++) {
 
-              for(int i = 0; i < 3; i++) {
+              for(i = 0; i < 3; i++) {
 
                 etatEnnemi(&ennemis[n], i, dgtsTxt, &nbDgtTxt);
 
@@ -1070,9 +1141,20 @@ int main(int argc, char** argv)
 
               }
 
+              if(!coop) {
+
+                if(i != indicePersonnage && equipe[i]->enCombat) {
+
+                  persoPoursuit(equipe[i], ennemis+(equipe[i]->cible));
+
+                }
+
+              }
+
+
               deplacementPersonnage(equipe, indicePersonnage, ennemis);
 
-              for(int i = 0; i < nbEnnemi; i++) {
+              for(i = 0; i < nbEnnemi; i++) {
 
                 if(ennemis[i].enCombat) {
 
@@ -1124,7 +1206,7 @@ int main(int argc, char** argv)
 
               afficherArt(ArtJeu[indicePersonnage], pSurface, cooldownArt);
 
-              afficherCurseur(positionCurseur, pSurface);
+              afficherCurseur(positionCurseur[indicePersonnage], pSurface);
 
               afficherHUD(equipe, pSurface);
 
@@ -1148,10 +1230,10 @@ int main(int argc, char** argv)
 
               SDL_UpdateWindowSurface(screen);
 
-              for(int i = 0; i < 1000; i++) {
+              for(i = 0; i < 1000; i++) {
 
-                if(state[i]) clavier[i].relache = 0;
-                else clavier[i].relache = 1;
+                if(state[i]) clavier[0][i].relache = 0;
+                else clavier[0][i].relache = 1;
 
               }
 

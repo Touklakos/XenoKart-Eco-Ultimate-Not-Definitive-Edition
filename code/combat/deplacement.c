@@ -34,48 +34,45 @@ void deplacementManette(SDL_GameController* controller, int indiceJoueur, Person
 }
 
 
-void deplacementClavier(int indiceJoueur, Personnage* equipe[]) {
+void deplacementClavier(int indiceJoueur, Personnage* equipe[], doublet clavier[]) {
 
     equipe[indiceJoueur]->vitX=0;
     equipe[indiceJoueur]->vitY=0;
 
 
-    SDL_PumpEvents();
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
-
-    if (state[SDL_SCANCODE_W] == 1 && state[SDL_SCANCODE_D] == 1)
+    if (clavier[SDL_SCANCODE_W].enfonce && clavier[SDL_SCANCODE_D].enfonce)
     {
         equipe[indiceJoueur]->vitX = 4;
         equipe[indiceJoueur]->vitY = -4;
 
-    } else if (state[SDL_SCANCODE_A] == 1 && state[SDL_SCANCODE_W] == 1)
+    } else if (clavier[SDL_SCANCODE_A].enfonce && clavier[SDL_SCANCODE_W].enfonce)
     {
         equipe[indiceJoueur]->vitX = -4;
         equipe[indiceJoueur]->vitY = -4;
 
-    } else if (state[SDL_SCANCODE_D] == 1 && state[SDL_SCANCODE_S] == 1)
+    } else if (clavier[SDL_SCANCODE_D].enfonce && clavier[SDL_SCANCODE_S].enfonce)
     {
         equipe[indiceJoueur]->vitX = 4;
         equipe[indiceJoueur]->vitY = 4;
 
-    } else if (state[SDL_SCANCODE_S] == 1 && state[SDL_SCANCODE_A] == 1)
+    } else if (clavier[SDL_SCANCODE_S].enfonce && clavier[SDL_SCANCODE_A].enfonce)
     {
         equipe[indiceJoueur]->vitX = -4;
         equipe[indiceJoueur]->vitY = 4;
 
-    } else if (state[SDL_SCANCODE_W] == 1)
+    } else if (clavier[SDL_SCANCODE_W].enfonce)
     {
         equipe[indiceJoueur]->vitY = -5;
 
-    } else if (state[SDL_SCANCODE_D] == 1)
+    } else if (clavier[SDL_SCANCODE_D].enfonce)
     {
         equipe[indiceJoueur]->vitX = 5;
 
-    } else if (state[SDL_SCANCODE_S] == 1)
+    } else if (clavier[SDL_SCANCODE_S].enfonce)
     {
         equipe[indiceJoueur]->vitY = 5;
 
-    } else if (state[SDL_SCANCODE_A] == 1)
+    } else if (clavier[SDL_SCANCODE_A].enfonce)
     {
         equipe[indiceJoueur]->vitX = -5;
 

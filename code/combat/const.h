@@ -5,6 +5,11 @@
 #define DELAI_CURSEUR 5           //d�lai qui permet � l'utilisateur de d�placer son curseur d'art en art en maintenant le sticks droit d'un cot�
 #define DELAI_CIBLE_ENN 5
 
+//#define SERVEURNAME "192.168.1.106" // adresse IP de mon serveur
+#define SERVEURNAME "127.0.0.1"  // adresse IP de mon serveur
+
+#define QUITTER "QUITTER"
+
 
 #define SCREEN_WIDTH 1280
 #define SCREEN_HEIGHT 720

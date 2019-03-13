@@ -779,12 +779,7 @@ void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi en
 
   for(int i = 0; i < 3; i++) {
 
-    if(i != indicePersonnage && equipe[i]->enCombat) {
-
-      persoPoursuit(equipe[i], ennemis+(equipe[i]->cible));
-
-    }
-
+    
     if(equipe[i]->delaiArt >= 0) {
 
       equipe[i]->vitX = 0;
