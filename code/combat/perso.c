@@ -6,6 +6,22 @@
 #include "perso.h"
 
 
+/**
+  \file perso.c
+  \brief Fonctions qui incluent uniquement les personnages
+  \author Mano Brabant
+  \version 0.01
+  \date 13 fevrier 2019
+*/
+
+
+/**
+    \fn void initPersonnage(Personnage* perso, char fichier[50])
+    \brief initialise le personnage passé en parametre avec un ficher
+    \param perso le personnage que l'on initialise
+    \param fichier le fichier qui contient les information du personnage
+*/
+
 void initPersonnage(Personnage* perso, char fichier[50]) {
 
     perso->posX = rand()%1280;
@@ -157,6 +173,14 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
 
 
 
+/**
+    \fn void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera)
+    \brief afficher le personnage à l'écran 
+    \param perso personnage à afficher(coordonnées, image)
+    \param screen fenetre sur laquelle on affiche le personnage
+    \param camera coordonnées de la camera(qui represent le centre de l'écran)
+*/
+
 void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera) {
 
     if(perso->vitX != 0 || perso->vitY != 0) perso->numFrame = (perso->numFrame+1)%60;
@@ -168,6 +192,14 @@ void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera) 
     SDL_BlitSurface(perso->image, &img, SDL_GetWindowSurface(screen), &dest);
 
 }
+
+
+
+/**
+    \fn void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera)
+    \brief décrémente les valeurs de "delaiModif" d'un personnage et inverse leurs effets quand elles sont terminées 
+    \param perso personnage à modifier
+*/
 
 void delaiModificationPerso(Personnage* perso) {
 
@@ -206,6 +238,18 @@ void delaiModificationPerso(Personnage* perso) {
 
 /*Cette fonction v�rifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa derni�re utilisation)*/
 
+
+
+/**
+    \fn void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief Cette fonction vérifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa dernière utilisation)
+    \param art art quel le personnage utilise
+    \param equipe equipe qui profite des bonus
+    \param indicePersonnage indice du personnage qui utilise l'art 
+    \param pSurface fenetre sur laquelle on affiche les information de l'art (si il soigne on affiche la valeur de soin en vert au dessus des personnages soignés
+    \param dgtsTxt tableau des textes affiché sur l'écran
+    \param nbDgtTxt nombre de degats affiché sur l'écran
+*/
 
 void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
