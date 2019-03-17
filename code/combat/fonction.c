@@ -28,6 +28,21 @@ int distance(int a, int b, int c, int d) {
 
 }
 
+
+/**
+    \fn int collision(int h1, int d1, int b1, int g1, int h2, int d2, int b2, int g2)
+    \brief calcule si deux AABB(Axis Aligned Bounding Box) sont en collision
+    \param h1 taille minimum en y
+    \param d1 taille maximum en x
+    \param b1 taille maximum en y
+    \param g1 taille minimum en x
+    \param h2 taille minimum en y
+    \param d2 taille maximum en x
+    \param b2 taille maximum en y
+    \param g2 taille minimum en x
+*/
+
+
 int collision(int h1, int d1, int b1, int g1, int h2, int d2, int b2, int g2) {
 
   return h1 > b2 && d1 < g2 && b1 < h2 && g1 > d2;
