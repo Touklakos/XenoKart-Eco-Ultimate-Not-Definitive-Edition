@@ -7,6 +7,14 @@
 
 
 /**
+  \file ennemi.c
+  \brief fonctions des ennemis
+  \author Mano Brabant
+  \version 0.01
+  \date 13 fevrier 2019
+*/
+
+/**
     \fn void initEnnemi(Ennemi* ennemi, char fichier[50])
     \brief initialise l'ennemi passé en parametre avec un ficher
     \param ennemi l'ennemi que l'on initialise
