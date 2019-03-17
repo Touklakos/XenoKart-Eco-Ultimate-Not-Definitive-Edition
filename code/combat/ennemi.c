@@ -5,6 +5,14 @@
 
 #include "ennemi.h"
 
+
+/**
+    \fn void initEnnemi(Ennemi* ennemi, char fichier[50])
+    \brief initialise l'ennemi passé en parametre avec un ficher
+    \param ennemi l'ennemi que l'on initialise
+    \param fichier le fichier qui contient les information de l'ennemi
+*/
+
 void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 
     ennemi->posX = rand()%1280;
@@ -181,6 +189,13 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 }
 
 
+/**
+    \fn int cibleEnnemi(Ennemi *ennemi)
+    \brief modifie la valeur cible d'un ennemi passé en parametre avec les valeurs du tableau hostilite
+    \param ennemi l'ennemi que l'on modifie
+*/
+
+
 int cibleEnnemi(Ennemi *ennemi) {
 
   int max = 0;
@@ -206,6 +221,12 @@ int cibleEnnemi(Ennemi *ennemi) {
 
 }
 
+/**
+    \fn void ennemiPoursuit(Ennemi *ennemi, Personnage *perso)
+    \brief si un ennemi n'est pas à portée du personnage qu'il cible il se rapproche de lui
+    \param ennemi l'ennemi que l'on modifie
+    \param perso personnage poursuivit pas l'ennemi
+*/
 
 void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
 
@@ -232,6 +253,13 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
 
 }
 
+/**
+    \fn void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[])
+    \brief deplacement de l'ennemi si celui-ci veux bouger
+    \param ennemi l'ennemi que l'on deplace
+    \param equipe equipe de personnage que poursuit l'ennemi
+*/
+
 void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]) {
 
     cibleEnnemi(ennemi);
@@ -243,6 +271,16 @@ void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]) {
 
 }
 
+
+
+/**
+    \fn void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[], int etat)
+    \brief on affiche l'ennemi sur l'ecran
+    \param ennemi l'ennemi que l'on affiche
+    \param pSurface fenetre sur laquelle on affiche l'ennemi
+    \param camera camera qui represente le centre de l'ecran
+    \param equipe equipe de personnage que poursuit l'ennemi si il est en combat
+*/
 
 
 void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[], int etat) {
@@ -278,6 +316,14 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 
 }
 
+/**
+    \fn void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera)
+    \brief on affiche des information sur l'ennemi
+    \param ennemi l'ennemi d'ont on afficher les informations
+    \param pSurface fenetre sur laquelle on affiche les informations
+    \param camera camera qui represente le centre de l'ecran
+*/
+
 
 void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
@@ -307,6 +353,14 @@ void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
 
 }
+
+/**
+    \fn int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi)
+    \brief on modifie la valeur de orientaionAbsolue d'un personnage passé en parametre (orientation par rapport à l'ecran)
+    \param perso personnage que l'on modifie
+    \param ennemi l'ennemi que cible le personnage
+*/
+
 
 
 int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {
@@ -348,6 +402,12 @@ int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {
 }
 
 
+/**
+    \fn int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage, Ennemi* ennemi)
+    \brief on modifie la valeur de orientaionRelative d'un personnage passé en parametre (orientation par rapport à l'ennemi)
+    \param perso personnage que l'on modifie
+    \param ennemi l'ennemi que cible le personnage
+*/
 
 int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage, Ennemi* ennemi) {
 
@@ -358,6 +418,13 @@ int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage, E
     return equipe[indicePersonnage]->orientationRelative;
 
 }
+
+/**
+    \fn int typeCoupPerso(Personnage *perso, Ennemi *ennemi)
+    \brief quand un personnage assene un coup, ce coup est modifié, cela peut être un coup critique, le coup peut-être esquivé, gardé, etc...
+    \param perso personnage qui assene le coup
+    \param ennemi ennemi qui recoit le coup
+*/
 
 
 int typeCoupPerso(Personnage *perso, Ennemi *ennemi) {
@@ -387,6 +454,13 @@ int typeCoupPerso(Personnage *perso, Ennemi *ennemi) {
 }
 
 
+/**
+    \fn int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso)
+    \brief quand un ennemi assene un coup, ce coup est modifié, cela peut être un coup critique, le coup peut-être esquivé, gardé, etc...
+    \param ennemi ennemi qui assene le coup
+    \param perso personnage qui recoit le coup
+*/
+
 int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
 
   int precision = -perso->modif[AGI] + ennemi->modif[DEXT] + 100;
@@ -414,6 +488,16 @@ int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
 }
 
 
+
+/**
+    \fn int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief l'ennemi assene une auto attaque à un personnage
+    \param equipe equipe de personnage
+    \param ennemi ennemi qui assene le coup
+    \param indice indice du personnage ciblé
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
 
 
 int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
@@ -466,6 +550,15 @@ int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTx
 }
 
 
+/**
+    \fn int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief cette fonction verifie si un ennemi peut lancer un auto-attaque sur un personnage (verification de la distance et du delai depuis la derniere frappe)
+    \param equipe equipe de personnage
+    \param ennemi ennemi qui assene le coup
+    \param indice indice du personnage ciblé
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
 
 int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
@@ -487,6 +580,18 @@ int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgt
 
 
 /*Cette fonction calcule les d�gats qu'un personnage inflige � un ennemi avec une auto attaque*/
+
+
+/**
+    \fn int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief un personnage assene une auto attaque à un ennemi
+    \param equipe equipe de personnage
+    \param ennemi ennemi qui recoit le coup
+    \param indice indice du personnage qui attaque
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
+
 
 int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
@@ -541,6 +646,15 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
 
 /*Cette fonction v�rifie si un personnage peut attaquer un ennemi (en fonction du delai depuis sa derni�re attaque et de sa distance)*/
 
+/**
+    \fn int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief cette fonction verifie si un personnage peut lancer un auto-attaque sur un ennemi (verification de la distance et du delai depuis la derniere frappe)
+    \param equipe equipe de personnage
+    \param ennemi ennemi qui recoit le coup
+    \param indice indice du personnage qui attaque
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
 
 int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
@@ -564,6 +678,17 @@ int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dg
 
 
 /*Cette fonction calcule les d�gats qu'un personnage inflige � un ennemi en utilisant un de ses arts offensif*/
+
+/**
+    \fn int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief un personnage utilise un art sur un ennemi
+    \param art art que le personnage utilise
+    \param equipe equipe de personnage
+    \param ennemi ennemi qui recoit le coup
+    \param indice indice du personnage qui utilise l'art
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
 
 int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
@@ -633,6 +758,17 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
 
 /*Cette focntion v�rifie si un personnage peut utiliser un art offensif sur un ennemi (en fonction du delai depuis sa derni�re utilisation et de sa distance)*/
 
+/**
+    \fn int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief Cette fonction vérifie si un personnage peut utiliser un art offensif sur un ennemi (en fonction du delai depuis sa derniére utilisation et de sa distance)
+    \param art art que le personnage utilise
+    \param equipe equipe de personnage
+    \param ennemi ennemi qui recoit le coup
+    \param indice indice du personnage qui attaque
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
+
 int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
   if(equipe[indice]->PV > 0) {
@@ -651,6 +787,14 @@ int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degat
 
 }
 
+/**
+    \fn int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief cette fonction vérifie l'état d'un ennemi (si il brule, si il est empoisonné etc...)
+    \param ennemi ennemi que l'on modifie
+    \param type type d'etat (fournaise, frisson, poison, ect...)
+    \param dgtsTxt tableau des texte affichés à l'écran
+    \param nbDgtTxt nombre de parametre affichés à l'écran
+*/
 
 int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
@@ -702,6 +846,12 @@ int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
 /*Si les delais sont �gaux alors on les modifies l�g�rement pour que l'affichage des d�gats soit lisible*/
 
+/**
+    \fn void delaiEtat(Ennemi *ennemi)
+    \brief cette fonction modifie les delai des etat d'un ennemi pour que les degats ne soit pas affiché en même temps, pour plus de lisibilité
+    \param ennemi ennemi que l'on modifie
+*/
+
 void delaiEtat(Ennemi *ennemi) {
 
     if(ennemi->etats[fournaise].delai == ennemi->etats[frisson].delai) ennemi->etats[frisson].delai -= 10;
@@ -715,6 +865,11 @@ void delaiEtat(Ennemi *ennemi) {
 
 }
 
+/**
+    \fn void delaiModificationEnnemi(Ennemi *ennemi)
+    \brief décrémente les valeurs de "delaiModif" d'un ennemi et inverse leurs effets quand elles sont terminées 
+    \param ennemi ennemi que l'on modifie
+*/
 
 void delaiModificationEnnemi(Ennemi* ennemi) {
 
@@ -748,6 +903,15 @@ void delaiModificationEnnemi(Ennemi* ennemi) {
 
 }
 
+
+/**
+    \fn void persoPoursuit(Personnage *perso, Ennemi *ennemi)
+    \brief les personnage qui ne sont pas controlé par le joueur se dirige automatiquement vers l'ennemi qu'ils ciblent
+    \param perso personnage qui poursuit l'ennemi
+    \param ennemi ennemi qui est poursuivis
+*/
+
+
 void persoPoursuit(Personnage *perso, Ennemi *ennemi) {
 
 
@@ -773,6 +937,13 @@ void persoPoursuit(Personnage *perso, Ennemi *ennemi) {
   }
 
 }
+
+
+/**
+    \fn void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi ennemis[])
+    \brief deplacement des personnages
+    \param equipe equipe des personnages
+*/
 
 
 void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi ennemis[]) {
