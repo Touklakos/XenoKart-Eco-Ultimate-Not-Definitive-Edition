@@ -5,6 +5,16 @@
 
 #include "deplacement.h"
 
+
+/**
+    \fn void deplacementManette(SDL_GameController* controller, int indiceJoueur, Personnage* equipe[]) {
+    \brief permet de modifier les valeurs de vitesse du personnage que l'on controle avec une manette
+    \param controller manette que l'on utilise
+    \param indicePersonnage indique le personnage que l'on controle actuellement
+    \param equipe pointeurs des personnages del'equipe (equipe[indicePersonnage]) est le personnage que l'on controle
+*/
+
+
 void deplacementManette(SDL_GameController* controller, int indiceJoueur, Personnage* equipe[]) {
 
     //Valeur � partir de laquelle on se d�place � l'aide du stick analogique (compris entre 0 et 32767)
@@ -32,6 +42,15 @@ void deplacementManette(SDL_GameController* controller, int indiceJoueur, Person
     }
 
 }
+
+
+/**
+    \fn void deplacementClavier(int indiceJoueur, Personnage* equipe[], doublet clavier[])
+    \brief permet de modifier les valeurs de vitesse du personnage que l'on controle avec un le clavier
+    \param clavier tableau des touches du clavier 
+    \param indicePersonnage indique le personnage que l'on controle actuellement
+    \param equipe pointeurs des personnages del'equipe (equipe[indicePersonnage]) est le personnage que l'on controle
+*/
 
 
 void deplacementClavier(int indiceJoueur, Personnage* equipe[], doublet clavier[]) {
