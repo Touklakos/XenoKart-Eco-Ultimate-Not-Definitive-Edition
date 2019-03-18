@@ -655,11 +655,10 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
 /*Cette fonction v�rifie si un personnage peut attaquer un ennemi (en fonction du delai depuis sa derni�re attaque et de sa distance)*/
 
 /**
-    \fn int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
     \brief cette fonction verifie si un personnage peut lancer un auto-attaque sur un ennemi (verification de la distance et du delai depuis la derniere frappe)
     \param equipe equipe de personnage
     \param ennemi ennemi qui recoit le coup
-    \param indice indice du personnage qui attaque
     \param dgtsTxt tableau des texte affichés à l'écran
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
@@ -667,6 +666,8 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
 int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
   for(int i = 0; i < 3; i++) {
+
+    printf("izi : %d\n", equipe[i]->delaiAuto);
 
     if(equipe[i]->PV > 0) {
 
@@ -962,7 +963,7 @@ void persoPoursuit(Personnage *perso, Ennemi *ennemi) {
 */
 
 
-void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi ennemis[]) {
+void deplacementPersonnage(Personnage* equipe[]) {
 
   for(int i = 0; i < 3; i++) {
 
