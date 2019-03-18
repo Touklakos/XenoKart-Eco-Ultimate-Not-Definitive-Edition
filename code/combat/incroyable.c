@@ -36,7 +36,6 @@ degatsTxt dgtsTxt[500];         //tableau des textes affichés � l'�cran
 
 int nbDgtTxt = 0;               //nombre de texte de d�gats affich� � l'�cran
 
-int etat = 1;                   //en combat = 0; hors combat = 1;
 
 int etatCombat[3] = {0,0,0};             //Si on se bat normalement ou si on est en train de choisir une cible pour un art de soutien
 
@@ -296,7 +295,7 @@ int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
 
 
 
-int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *etat) {
+int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[]) {
 
   for(int i = 0; i < *nbEnnemi; i++) {
 
@@ -341,7 +340,6 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *eta
 
           }
 
-          *etat = 1;
 
       } else {
 
@@ -666,8 +664,7 @@ int main(int argc, char** argv)
 
     Art *ArtJeu[3][8];
 
-    int i;
-    for(i = 0; i < 9; i++) {
+    for(int i = 0; i < 9; i++) {
 
         char fichier[50];
         sprintf(fichier, "./data/JojoArt/");
@@ -677,7 +674,7 @@ int main(int argc, char** argv)
 
     }
 
-    for(i = 0; i < 9; i++) {
+    for(int i = 0; i < 9; i++) {
 
         char fichier[50];
         sprintf(fichier, "./data/DioArt/");
@@ -687,7 +684,7 @@ int main(int argc, char** argv)
 
     }
 
-    for(i = 0; i < 9; i++) {
+    for(int i = 0; i < 9; i++) {
 
         char fichier[50];
         sprintf(fichier, "./data/GutsArt/");
@@ -777,7 +774,7 @@ int main(int argc, char** argv)
 
     doublet clavier[3][1000];
 
-    for(i = 0; i< 1000; i++) {
+    for(int i = 0; i< 1000; i++) {
 
       clavier[0][i].enfonce = 0;
       clavier[0][i].relache = 0;
@@ -801,7 +798,7 @@ int main(int argc, char** argv)
       SDL_PumpEvents();
       const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
 
-      for(i = 0; i < 1000; i++) {
+      for(int i = 0; i < 1000; i++) {
 
         if(state[i]) {
 
@@ -820,7 +817,7 @@ int main(int argc, char** argv)
 
         if(serveur) {
 
-          lg1 = recv(client_socket1, clavier[1], sizeof(clavier)/3,0);
+          recv(client_socket1, clavier[1], sizeof(clavier)/3, 0);
 
           send(client_socket1, clavier[0], sizeof(clavier)/3, 0);
 
@@ -833,7 +830,7 @@ int main(int argc, char** argv)
 
           send(to_server_socket, clavier[1], sizeof(clavier)/3, 0);
 
-        	recv(to_server_socket, clavier[0], sizeof(clavier)/3,0);
+        	recv(to_server_socket, clavier[0], sizeof(clavier)/3, 0);
 
         }
 
@@ -851,16 +848,12 @@ int main(int argc, char** argv)
 
 
 
-      i = 0;
-
-      printf("etat : %d", etat);
-
-      switch(etat) {
 
 
-        case 0:   //en combat
 
-          for(i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
+
+
+          for(int i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
 
             if(ennemis[i].enCombat) {
 
@@ -872,14 +865,14 @@ int main(int argc, char** argv)
 
           }
 
-          for(i = 0; i < 3; i++) {        //les personnages attaques l'ennemi qu'ils ciblent
+          attaqueEnnemi(equipe, ennemis, dgtsTxt, &nbDgtTxt);  //les personnages attaques l'ennemi qu'ils ciblent
 
-            if(equipe[i]->delaiArt < 0) {
 
-              attaqueEnnemi(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, &nbDgtTxt);
+          for(int i = 0; i < 3; i++) {
 
-            }
 
+
+            printf("\nPosition 1 ,2 c'est bon ça : %d\n", clavier[i][SDL_SCANCODE_RIGHT].enfonce);
 
 
 
@@ -911,6 +904,9 @@ int main(int argc, char** argv)
 
                 }
 
+                fprintf(stderr, "IZLY1 = %d\n", i);
+
+
 
 
                 if(recupCurseur[i]-- < 0) {
@@ -931,9 +927,11 @@ int main(int argc, char** argv)
 
                   }
 
-                  printf("Position 1 ,2 c'est bon ça : %d", positionCurseur[i]);
 
                 }
+
+                fprintf(stderr, "IZLY2 = %d\n", i);
+
 
 
 
@@ -963,9 +961,14 @@ int main(int argc, char** argv)
 
                 }
 
+                fprintf(stderr, "IZLY3 = %d\n", i);
+
+
               break;
 
                 case 1:         //choix de la cible d'un art de soutien
+
+
 
                   if(recupCible[i]-- < 0) {
 
@@ -996,13 +999,16 @@ int main(int argc, char** argv)
                   }
 
 
+
+
                 break;
 
                 }
 
-              //  break;
 
-              case 1:       //en exploration
+
+              fprintf(stderr, "IZLY6 = %d\n", i);
+
 
                 if(recupCibleEnn[i]-- < 0) {
 
@@ -1032,6 +1038,9 @@ int main(int argc, char** argv)
 
                 }
 
+                fprintf(stderr, "IZLY7 = %d\n", i);
+
+
                 if(testTouche(clavier[i][SDL_SCANCODE_SPACE])) {
 
                   for(int j = 0; j < 3; j++) {
@@ -1044,17 +1053,17 @@ int main(int argc, char** argv)
 
                   }
 
-                  etat = 0;
 
                 }
 
 
 
-              break;
+
+              fprintf(stderr, "Mais que ce passe t-il ? = %d\n", i);
 
               }
 
-            }
+              printf("il est facile ce jeu\n");
 
             if(!coop) {
 
@@ -1089,9 +1098,8 @@ int main(int argc, char** argv)
 
               if(coop) {
 
-                for(i = 0; i < 3; i++) {
+                for(int i = 0; i < 3; i++) {
 
-                  printf("\nEn Mortal Kombat %d : %d\n", i, equipe[i]->enCombat);
 
                   deplacementClavier(i, equipe, clavier[i]);
 
@@ -1113,7 +1121,7 @@ int main(int argc, char** argv)
 
             for(int n = 0; n < nbEnnemi; n++) {
 
-              for(i = 0; i < 3; i++) {
+              for(int i = 0; i < 3; i++) {
 
                 etatEnnemi(&ennemis[n], i, dgtsTxt, &nbDgtTxt);
 
@@ -1123,7 +1131,7 @@ int main(int argc, char** argv)
 
             }
 
-            for(i = 0; i < 3; i++) {
+            for(int i = 0; i < 3; i++) {
 
                 for(int j = 0; j < 8; j++) {
 
@@ -1143,9 +1151,13 @@ int main(int argc, char** argv)
 
               if(!coop) {
 
-                if(i != indicePersonnage && equipe[i]->enCombat) {
+                for(int i = 0; i < 3; i++) {
 
-                  persoPoursuit(equipe[i], ennemis+(equipe[i]->cible));
+                  if(i != indicePersonnage && equipe[i]->enCombat) {
+
+                    persoPoursuit(equipe[i], ennemis+(equipe[i]->cible));
+
+                  }
 
                 }
 
@@ -1154,7 +1166,7 @@ int main(int argc, char** argv)
 
               deplacementPersonnage(equipe, indicePersonnage, ennemis);
 
-              for(i = 0; i < nbEnnemi; i++) {
+              for(int i = 0; i < nbEnnemi; i++) {
 
                 if(ennemis[i].enCombat) {
 
@@ -1190,7 +1202,7 @@ int main(int argc, char** argv)
 
               }
 
-              for(i = 0; i < 3; i++) {
+              for(int i = 0; i < 3; i++) {
 
                 afficherPersonnage(equipe[i], screen, camera);
 
@@ -1199,7 +1211,7 @@ int main(int argc, char** argv)
 
               for(int n = 0; n < nbEnnemi; n++) {
 
-                afficherEnnemi(&ennemis[n], pSurface, camera, equipe, etat);
+                afficherEnnemi(&ennemis[n], pSurface, camera, equipe);
 
               }
 
@@ -1216,11 +1228,11 @@ int main(int argc, char** argv)
 
               }
 
-              if(etatCombat == 1) afficherCible(cible, pSurface);
+              if(etatCombat[indicePersonnage] == 1) afficherCible(cible[indicePersonnage], pSurface);
 
               gererTexte(dgtsTxt, &nbDgtTxt, pSurface, camera);
 
-              gererEnnemis(ennemis, &nbEnnemi, equipe, &etat);
+              gererEnnemis(ennemis, &nbEnnemi, equipe);
 
               while(nbEnnemi == 0) {
 
@@ -1230,7 +1242,7 @@ int main(int argc, char** argv)
 
               SDL_UpdateWindowSurface(screen);
 
-              for(i = 0; i < 1000; i++) {
+              for(int i = 0; i < 1000; i++) {
 
                 if(state[i]) clavier[0][i].relache = 0;
                 else clavier[0][i].relache = 1;

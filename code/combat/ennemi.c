@@ -291,7 +291,7 @@ void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]) {
 */
 
 
-void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[], int etat) {
+void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]) {
 
 
     if(ennemi->enCombat) {
@@ -664,23 +664,31 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
-  if(equipe[indice]->PV > 0) {
+  for(int i = 0; i < 3; i++) {
 
-    equipe[indice]->delaiAuto--;
+    if(equipe[i]->PV > 0) {
 
-    orientationPersoCombatRelative(equipe, indice, ennemi);
+      if(equipe[i]->delaiArt < 0) {
 
-    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - ennemi->image->w/2/4 < equipe[indice]->PRTAUTO && equipe[indice]->delaiAuto < 0) {
+        equipe[i]->delaiAuto--;
 
-        return persoAutoAttaque(equipe, ennemi, indice, dgtsTxt, nbDgtTxt);
+        orientationPersoCombatRelative(equipe, i, &ennemis[equipe[i]->cible]);
+
+        if(distance(equipe[i]->posX, equipe[i]->posY, ennemis[equipe[i]->cible].posX, ennemis[equipe[i]->cible].posY) - ennemis[equipe[i]->cible].image->w/2/4 < equipe[i]->PRTAUTO && equipe[i]->delaiAuto < 0) {
+
+            persoAutoAttaque(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, nbDgtTxt);
+
+        }
+
+      }
 
     }
 
   }
 
-  return -1;
+  return 0;
 
 }
 
@@ -875,7 +883,7 @@ void delaiEtat(Ennemi *ennemi) {
 
 /**
     \fn void delaiModificationEnnemi(Ennemi *ennemi)
-    \brief décrémente les valeurs de "delaiModif" d'un ennemi et inverse leurs effets quand elles sont terminées 
+    \brief décrémente les valeurs de "delaiModif" d'un ennemi et inverse leurs effets quand elles sont terminées
     \param ennemi ennemi que l'on modifie
 */
 
@@ -958,7 +966,7 @@ void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi en
 
   for(int i = 0; i < 3; i++) {
 
-    
+
     if(equipe[i]->delaiArt >= 0) {
 
       equipe[i]->vitX = 0;
