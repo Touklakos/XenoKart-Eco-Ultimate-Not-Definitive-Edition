@@ -789,11 +789,18 @@ int main(int argc, char** argv)
 
     while(!quit) {
 
+      //////////////////////////////////////FONCTIONS D'AFFICHAGE DES FPS, DU BACKGROUND////////////////////////////////////////////
 
 
       debut = SDL_GetTicks();
 
       SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 255, 255)); //on nettoye l'�cran en affichant un grand rectangle blanc
+
+
+
+
+      //////////////////////////////////////FONCTIONS ++&+ SUR CANAL+////////////////////////////////////////////
+
 
 
       SDL_PollEvent(&event);
@@ -814,6 +821,9 @@ int main(int argc, char** argv)
          }
 
       }
+
+
+      //////////////////////////////////////FONCTIONS RECEPTION ET EMISSIONS DES INPUTS////////////////////////////////////////////
 
 
       if(coop) {
@@ -844,6 +854,7 @@ int main(int argc, char** argv)
 
 
 
+      //////////////////////////////////////FONCTIONS AUTOMATIQUE DURANT LE COMBAT////////////////////////////////////////////
 
 
 
@@ -854,13 +865,16 @@ int main(int argc, char** argv)
 
               cibleEnnemi(&ennemis[i]);
 
-            //  attaqueAllie(equipe, &ennemis[i], ennemis[i].cible, dgtsTxt, &nbDgtTxt);
+              attaqueAllie(equipe, &ennemis[i], ennemis[i].cible, dgtsTxt, &nbDgtTxt);
 
             }
 
           }
 
           attaqueEnnemi(equipe, ennemis, dgtsTxt, &nbDgtTxt);  //les personnages attaques l'ennemi qu'ils ciblent
+
+
+          //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
 
 
           for(int i = 0; i < 3; i++) {
@@ -919,11 +933,11 @@ int main(int argc, char** argv)
                 }
 
 
-                printf("Octo izi no pas desu : %d\n", clavier[i][SDL_SCANCODE_E].enfonce && !clavier[i][SDL_SCANCODE_1].enfonce && !clavier[i][SDL_SCANCODE_3].enfonce);
+              /*  printf("Octo izi no pas desu : %d\n", clavier[i][SDL_SCANCODE_E].enfonce && !clavier[i][SDL_SCANCODE_1].enfonce && !clavier[i][SDL_SCANCODE_3].enfonce);
 
                 printf("OctoDad : %d\n", equipe[i]->delaiArt);
 
-                printf("OctoBro : %d\n", ennemis[equipe[i]->cible].PV);
+                printf("OctoBro : %d\n", ennemis[equipe[i]->cible].PV);*/
 
 
                 if(testTouche(clavier[i][SDL_SCANCODE_E]) && !clavier[i][SDL_SCANCODE_1].enfonce && !clavier[i][SDL_SCANCODE_3].enfonce) { //si on appuie sur A sans appuiyer sur les gachette on utilise l'art sur lequel est positionn� notre curseur
@@ -1043,6 +1057,8 @@ int main(int argc, char** argv)
 
               }
 
+
+
             if(!coop) {
 
               if(clavier[0][SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
@@ -1068,6 +1084,13 @@ int main(int argc, char** argv)
             }
 
 
+
+
+
+
+            //////////////////////////////////////FONCTIONS D'INPUTS DE DEPLACEMENT////////////////////////////////////////////
+
+
             if(joy) {
 
               deplacementManette(controller, indicePersonnage, equipe);
@@ -1090,15 +1113,10 @@ int main(int argc, char** argv)
 
             }
 
-            for(int i = 0; i < 3; i++) {
 
-              if(equipe[i]->enCombat) {
 
-                orientationPersoCombatRelative(equipe, i, &ennemis[equipe[i]->cible]);
+            //////////////////////////////////////FONCTIONS DE DECREMENTATION DES ETATS////////////////////////////////////////////
 
-              }
-
-            }
 
             for(int n = 0; n < nbEnnemi; n++) {
 
@@ -1130,6 +1148,10 @@ int main(int argc, char** argv)
 
               }
 
+
+              //////////////////////////////////////FONCTIONS DE DEPLACEMENT////////////////////////////////////////////
+
+
               if(!coop) {
 
                 for(int i = 0; i < 3; i++) {
@@ -1145,6 +1167,8 @@ int main(int argc, char** argv)
               }
 
 
+
+
               deplacementPersonnage(equipe);
 
               for(int i = 0; i < nbEnnemi; i++) {
@@ -1156,6 +1180,10 @@ int main(int argc, char** argv)
                 }
 
               }
+
+
+
+              //////////////////////////////////////FONCTIONS DE CAMERA////////////////////////////////////////////
 
               if(equipe[indicePersonnage]->enChoixCible)  {
 
@@ -1170,6 +1198,9 @@ int main(int argc, char** argv)
                 SuiviCameraExploration(&camera, equipe[indicePersonnage]);
 
               }
+
+
+              //////////////////////////////////////FONCTIONS D'AFFICHAGE////////////////////////////////////////////
 
               background(sol, pSurface, camera);
 
