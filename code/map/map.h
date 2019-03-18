@@ -4,8 +4,8 @@
 
 #include "../combat/const.h"
 
-#define N 100
-#define M 50
+#define N 30
+#define M 30
 #define tmax 10
 
 enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL, PLATEAU };
@@ -13,19 +13,20 @@ enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL
 typedef struct case_s{
   struct case_s *voisin[6];
   int val;
+  int x,y;
 }case_t;
 
 typedef struct map_s{
-  case_t c[N][M];
+  case_t v[N][M];
   enum typemap type;
   int difficult;
   int taille;
 }map_t;
 
-case_t file[tmax];
+int file[tmax];
 int tete = 0, queue = tmax-1, nb=0;
 
-void ajouter(case_t c){
+void ajouter(int c){
   if(nb < tmax){
     if(queue == tmax-1) queue = 0;
     else queue++;
@@ -34,7 +35,7 @@ void ajouter(case_t c){
   }
 }
 
-void retirer(case_t * c){
+void retirer(int * c){
   if(nb > 0){
     *c = file[tete];
     nb--;
