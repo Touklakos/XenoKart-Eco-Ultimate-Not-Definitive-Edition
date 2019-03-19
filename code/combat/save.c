@@ -1,7 +1,107 @@
 
+    doublet clavier[3][1000];
+
+    for(int i = 0; i< 1000; i++) {
+
+      clavier[0][i].enfonce = 0;
+      clavier[0][i].relache = 0;
+
+      clavier[1][i].enfonce = 0;
+      clavier[1][i].relache = 0;
+
+      clavier[2][i].enfonce = 0;
+      clavier[2][i].relache = 0;
+
+    }
+
+    while(!quit) {
+
+      //////////////////////////////////////FONCTIONS D'AFFICHAGE DES FPS, DU BACKGROUND////////////////////////////////////////////
 
 
-//////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
+      debut = SDL_GetTicks();
+
+      SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 255, 255)); //on nettoye l'�cran en affichant un grand rectangle blanc
+
+
+
+
+      //////////////////////////////////////FONCTIONS ++&+ SUR CANAL+////////////////////////////////////////////
+
+
+
+      SDL_PollEvent(&event);
+
+      SDL_PumpEvents();
+      const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
+
+      for(int i = 0; i < 1000; i++) {
+
+        if(state[i]) {
+
+           clavier[indicePersonnage][i].enfonce = 1;
+
+         } else {
+
+           clavier[indicePersonnage][i].enfonce = 0;
+
+         }
+
+      }
+
+
+      //////////////////////////////////////FONCTIONS RECEPTION ET EMISSIONS DES INPUTS////////////////////////////////////////////
+
+
+      if(coop) {
+
+        if(serveur) {
+
+          recv(client_socket1, clavier[0], sizeof(clavier)/3, 0);
+
+          send(client_socket1, clavier[2], sizeof(clavier)/3, 0);
+
+      /*    lg2 = recv(client_socket2, clavierJ3, sizeof(clavierJ3),0);
+
+          send(client_socket2, clavier, sizeof(clavier), 0);*/
+
+
+        } else {
+
+          send(to_server_socket, clavier[0], sizeof(clavier)/3, 0);
+
+        	recv(to_server_socket, clavier[2], sizeof(clavier)/3, 0);
+
+        }
+
+      }
+
+
+
+
+
+
+      //////////////////////////////////////FONCTIONS AUTOMATIQUE DURANT LE COMBAT////////////////////////////////////////////
+
+
+
+
+          for(int i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
+
+            if(ennemis[i].enCombat) {
+
+              cibleEnnemi(&ennemis[i]);
+
+              attaqueAllie(equipe, &ennemis[i], ennemis[i].cible, dgtsTxt, &nbDgtTxt);
+
+            }
+
+          }
+
+          attaqueEnnemi(equipe, ennemis, dgtsTxt, &nbDgtTxt);  //les personnages attaques l'ennemi qu'ils ciblent
+
+
+          //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
 
 
           for(int i = 0; i < 3; i++) {
@@ -209,3 +309,10 @@
               }
 
             }
+
+
+
+
+
+
+            //////////////////////////////////////FONCTIONS D'INPUTS DE DEPLACEMENT////////////////////////////////////////////

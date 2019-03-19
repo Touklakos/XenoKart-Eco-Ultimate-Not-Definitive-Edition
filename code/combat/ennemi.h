@@ -56,23 +56,35 @@ typedef struct {
 
 } Ennemi;
 
+extern Ennemi ennPool[100];
+
+extern int nbEnnemiPool;
+
+extern Ennemi ennemis[100];
+
+int nbEnnemi;
+
+
+
+
+
 void initEnnemi(Ennemi* ennemi, char fichier[50]);
 int cibleEnnemi(Ennemi *ennemi);
 void ennemiPoursuit(Ennemi *ennemi, Personnage *perso);
 void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]);
 void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]);
 void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera);
-int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi);
-int orientationPersoCombatRelative(Personnage* equipe[], int indicePersonnage, Ennemi* ennemi);
+int orientationPersoCombatAbsolue(Personnage* perso);
+int orientationPersoCombatRelative(Personnage* equipe[], int indicePersonnage);
 int typeCoupPerso(Personnage *perso, Ennemi *ennemi);
 int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso);
-int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt);
-int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt);
-int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt);
-int attaqueEnnemi(Personnage* equipe[], Ennemi ennemi[], degatsTxt dgtsTxt[], int *nbDgtTxt);
-int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt);
-int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt);
-int etatEnnemi(Ennemi *enn, int type, degatsTxt dgtsTxt[], int *nbDgtTxt);
+int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice);
+int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice);
+int persoAutoAttaque(Personnage* equipe[], int indice);
+int attaqueEnnemi(Personnage* equipe[]);
+int lanceArt(Art *art, Personnage* equipe[], int indice);
+int utiliseArt(Art* art, Personnage* equipe[], int indice);
+int etatEnnemi(Ennemi *enn, int type);
 void delaiEtat(Ennemi *ennemi);
 void delaiModificationEnnemi(Ennemi* ennemi);
 void persoPoursuit(Personnage *perso, Ennemi *ennemi);

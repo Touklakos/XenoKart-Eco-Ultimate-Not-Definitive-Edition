@@ -15,5 +15,12 @@ typedef struct {
 
 } degatsTxt;
 
-void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type);
-void afficherDegatsTxt(degatsTxt *texte, SDL_Surface *pSurface, SDL_Rect camera);
+
+
+extern degatsTxt dgtsTxt[500];         //tableau des textes affichés � l'�cran
+
+extern int nbDgtTxt;               //nombre de texte de d�gats affich� � l'�cran
+
+
+void addDegatTxt(int dmg, int posX, int posY, int type);
+void afficherDegatsTxt(SDL_Surface *pSurface, SDL_Rect camera);

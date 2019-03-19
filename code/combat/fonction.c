@@ -24,6 +24,8 @@ int distance(int a, int b, int c, int d) {
     int vecX = c-a;
     int vecY = d-b;
 
+    if(vecX == 0 && vecY == 0) return 0;
+
     return (int) sqrt(vecX*vecX + vecY*vecY);
 
 }

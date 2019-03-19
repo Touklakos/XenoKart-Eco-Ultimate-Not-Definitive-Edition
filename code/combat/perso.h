@@ -68,4 +68,4 @@ typedef struct {
 void initPersonnage(Personnage* perso, char fichier[50]);
 void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera);
 void delaiModificationPerso(Personnage* perso);
-void utiliseArtBuff(Art* art, Personnage* equipe[3], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt);
+void utiliseArtBuff(Art* art, Personnage* equipe[3], int indicePersonnage, SDL_Surface *pSurface);

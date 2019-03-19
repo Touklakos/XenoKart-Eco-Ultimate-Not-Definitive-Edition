@@ -14,6 +14,13 @@
 */
 
 
+
+degatsTxt dgtsTxt[500];         //tableau des textes affichés � l'�cran
+
+int nbDgtTxt = 0;               //nombre de texte de d�gats affich� � l'�cran
+
+
+
 /**
     \fn void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
     \brief permet d'ajouter du texte à une certaine position sur l'écran
@@ -25,13 +32,14 @@
 */
 
 
-void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
+
+void addDegatTxt(int dmg, int posX, int posY, int type) {
 
 
-    texte->degats = dmg;
-    texte->posX = posX + rand()%150-75;
-    texte->posY = posY;
-    texte->vie = 100;   //temps avant que le message soit �ffac�
+    dgtsTxt[nbDgtTxt].degats = dmg;
+    dgtsTxt[nbDgtTxt].posX = posX + rand()%150-75;
+    dgtsTxt[nbDgtTxt].posY = posY;
+    dgtsTxt[nbDgtTxt].vie = 100;   //temps avant que le message soit �ffac�
 
     int taille = 40;
     int randTaille = 30;
@@ -40,7 +48,7 @@ void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
 
     if(type == esquiveC) {
 
-      sprintf(texte->message, "MISS");
+      sprintf(dgtsTxt[nbDgtTxt].message, "MISS");
 
       couleur.r = 200;
       couleur.g = 200;
@@ -51,7 +59,7 @@ void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
 
     } else {
 
-      sprintf(texte->message, "%d", texte->degats);
+      sprintf(dgtsTxt[nbDgtTxt].message, "%d", dgtsTxt[nbDgtTxt].degats);
 
       if(type == critiqueC) {
 
@@ -125,7 +133,9 @@ void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
     police = TTF_OpenFont("./data/DejaVuSans.ttf", (rand()%randTaille)+taille);   //taile de police plus ou moins grande
 
 
-    texte->txt = TTF_RenderText_Solid(police, texte->message, couleur);
+    dgtsTxt[nbDgtTxt].txt = TTF_RenderText_Solid(police, dgtsTxt[nbDgtTxt].message, couleur);
+
+    nbDgtTxt++;
 
     TTF_CloseFont(police);
 
@@ -141,16 +151,19 @@ void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
 
 */
 
-void afficherDegatsTxt(degatsTxt *texte, SDL_Surface *pSurface, SDL_Rect camera) {
+void afficherDegatsTxt(SDL_Surface *pSurface, SDL_Rect camera) {
 
+  for(int i = 0; i < nbDgtTxt; i++) {
 
     SDL_Rect dest;
 
-    dest.x = texte->posX - camera.x+camera.w;
-    dest.y = texte->posY+texte->vie - camera.y+camera.h;
+    dest.x = dgtsTxt[i].posX - camera.x+camera.w;
+    dest.y = dgtsTxt[i].posY+dgtsTxt[i].vie - camera.y+camera.h;
 
-    texte->vie-=(texte->vie/10)+1;      //Le texte remonte petit � petit avant de disparaitre
+    dgtsTxt[i].vie-=(dgtsTxt[i].vie/10)+1;      //Le texte remonte petit � petit avant de disparaitre
 
-    SDL_BlitSurface(texte->txt, NULL, pSurface, &dest);
+    SDL_BlitSurface(dgtsTxt[i].txt, NULL, pSurface, &dest);
+
+  }
 
 }

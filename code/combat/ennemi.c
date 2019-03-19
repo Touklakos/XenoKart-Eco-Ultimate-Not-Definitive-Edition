@@ -14,6 +14,15 @@
   \date 13 fevrier 2019
 */
 
+Ennemi ennPool[100];
+
+int nbEnnemiPool = 0;
+
+Ennemi ennemis[100];
+
+int nbEnnemi = 0;
+
+
 /**
     \fn void initEnnemi(Ennemi* ennemi, char fichier[50])
     \brief initialise l'ennemi passé en parametre avec un ficher
@@ -298,7 +307,7 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 
       cibleEnnemi(ennemi);
 
-      orientationPersoCombatAbsolue(equipe[ennemi->cible], ennemi);
+      orientationPersoCombatAbsolue(equipe[ennemi->cible]);
 
       ennemi->orientationAbsolue = (equipe[ennemi->cible]->orientationAbsolue + 2)%4;
 
@@ -371,14 +380,14 @@ void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
 
 
-int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {
+int orientationPersoCombatAbsolue(Personnage* perso) {
 
 
     int vecX, vecY;
 
-    vecX = perso->posX - ennemi->posX;
+    vecX = perso->posX - ennemis[perso->cible].posX;
 
-    vecY = perso->posY - ennemi->posY;
+    vecY = perso->posY - ennemis[perso->cible].posY;
 
 
 
@@ -417,11 +426,11 @@ int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi) {
     \param ennemi l'ennemi que cible le personnage
 */
 
-int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage, Ennemi* ennemi) {
+int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage) {
 
-    int orientationAbs1 = orientationPersoCombatAbsolue(equipe[indicePersonnage], ennemi);
+    int orientationAbs1 = orientationPersoCombatAbsolue(equipe[indicePersonnage]);
 
-    equipe[indicePersonnage]->orientationRelative = (orientationAbs1 - ennemi->orientationAbsolue + 2)%4;
+    equipe[indicePersonnage]->orientationRelative = (orientationAbs1 - ennemis[equipe[indicePersonnage]->cible].orientationAbsolue + 2)%4;
 
     return equipe[indicePersonnage]->orientationRelative;
 
@@ -508,7 +517,7 @@ int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
 */
 
 
-int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice) {
 
     int difference = ennemi->modif[ATTMAX] - ennemi->modif[ATTMIN];
     int random;
@@ -549,9 +558,7 @@ int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTx
     }
     ennemi->delaiAuto=ennemi->modif[VITATT];
 
-    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, equipe[indice]->posX, equipe[indice]->posY-equipe[indice]->image->h, type);
-
-    (*nbDgtTxt)++;
+    addDegatTxt(degats, equipe[indice]->posX, equipe[indice]->posY-equipe[indice]->image->h, type);
 
     return degats;
 
@@ -568,7 +575,7 @@ int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTx
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice) {
 
   if(ennemi->PV > 0) {
 
@@ -576,7 +583,7 @@ int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgt
 
     if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - equipe[indice]->image->w/2 < ennemi->PRTAUTO && ennemi->delaiAuto < 0) {
 
-        return ennemiAutoAttaque(equipe, ennemi, indice, dgtsTxt, nbDgtTxt);
+        return ennemiAutoAttaque(equipe, ennemi, indice);
 
     }
 
@@ -601,7 +608,7 @@ int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgt
 */
 
 
-int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int persoAutoAttaque(Personnage* equipe[], int indice) {
 
     int difference = equipe[indice]->modif[ATTMAX] - equipe[indice]->modif[ATTMIN];
 
@@ -617,7 +624,7 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
         random = 0;
     }
 
-    eCoup type = typeCoupPerso(equipe[indice], ennemi);
+    eCoup type = typeCoupPerso(equipe[indice], ennemis+(equipe[indice]->cible));
 
     int degats = min + random;
 
@@ -635,17 +642,15 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
 
     }
 
-    degats = degats*(100-ennemi->DEFPHY)/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
+    degats = degats*(100-ennemis[equipe[indice]->cible].DEFPHY)/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
-    ennemi->PV -= degats;
-    ennemi->hostilite[indice] += degats*2;
+    ennemis[equipe[indice]->cible].PV -= degats;
+    ennemis[equipe[indice]->cible].hostilite[indice] += degats*2;
     equipe[indice]->delaiAuto=(int)equipe[indice]->modif[VITATT];
 
-    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image->h/4, type);
+    addDegatTxt(degats, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY-ennemis[equipe[indice]->cible].image->h/4, type);
 
-    (*nbDgtTxt)++;
-
-    ennemi->enCombat = 1;
+    ennemis[equipe[indice]->cible].enCombat = 1;
 
     return degats;
 
@@ -663,7 +668,7 @@ int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int attaqueEnnemi(Personnage* equipe[]) {
 
   for(int i = 0; i < 3; i++) {
 
@@ -675,11 +680,11 @@ int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], degatsTxt dgtsTxt[], i
 
         equipe[i]->delaiAuto--;
 
-        orientationPersoCombatRelative(equipe, i, &ennemis[equipe[i]->cible]);
+        orientationPersoCombatRelative(equipe, i);
 
         if(distance(equipe[i]->posX, equipe[i]->posY, ennemis[equipe[i]->cible].posX, ennemis[equipe[i]->cible].posY) - ennemis[equipe[i]->cible].image->w/2/4 < equipe[i]->PRTAUTO && equipe[i]->delaiAuto < 0) {
 
-            persoAutoAttaque(equipe, &ennemis[equipe[i]->cible], i, dgtsTxt, nbDgtTxt);
+            persoAutoAttaque(equipe, i);
 
         }
 
@@ -707,9 +712,9 @@ int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], degatsTxt dgtsTxt[], i
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int lanceArt(Art *art, Personnage* equipe[], int indice) {
 
-    orientationPersoCombatRelative(equipe, indice, ennemi);
+    orientationPersoCombatRelative(equipe, indice);
 
     int difference = art->DMGMAX[equipe[indice]->orientationRelative] - art->DMGMIN[equipe[indice]->orientationRelative];
     int random;
@@ -721,21 +726,21 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
 
     int degats = art->DMGMIN[equipe[indice]->orientationRelative] + random;
 
-    if(art->TYPE == physique) degats = degats*(100-ennemi->DEFPHY)/100;
+    if(art->TYPE == physique) degats = degats*(100-ennemis[equipe[indice]->cible].DEFPHY)/100;
 
-    else if(art->TYPE == ether) degats = degats*(100-ennemi->DEFMGE)/100;
+    else if(art->TYPE == ether) degats = degats*(100-ennemis[equipe[indice]->cible].DEFMGE)/100;
 
     for(int i = 0; i < 15; i++) {
 
       if(art->debuff[equipe[indice]->orientationRelative][i].valeur > -1) {
 
-        ennemi->modif[i] *= art->debuff[equipe[indice]->orientationRelative][i].valeur;
+        ennemis[equipe[indice]->cible].modif[i] *= art->debuff[equipe[indice]->orientationRelative][i].valeur;
 
-        ennemi->delai[i][ennemi->nbDelai[i]].valeur = art->debuff[equipe[indice]->orientationRelative][i].valeur;
+        ennemis[equipe[indice]->cible].delai[i][ennemis[equipe[indice]->cible].nbDelai[i]].valeur = art->debuff[equipe[indice]->orientationRelative][i].valeur;
 
-        ennemi->delai[i][ennemi->nbDelai[i]].delai = art->debuff[equipe[indice]->orientationRelative][i].delai;
+        ennemis[equipe[indice]->cible].delai[i][ennemis[equipe[indice]->cible].nbDelai[i]].delai = art->debuff[equipe[indice]->orientationRelative][i].delai;
 
-        ennemi->nbDelai[i]++;
+        ennemis[equipe[indice]->cible].nbDelai[i]++;
 
       }
 
@@ -743,30 +748,28 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
 
 
 
-    ennemi->PV -= degats;
-    ennemi->hostilite[indice] += degats*2;
+    ennemis[equipe[indice]->cible].PV -= degats;
+    ennemis[equipe[indice]->cible].hostilite[indice] += degats*2;
     art->recup = art->delaiRecup[equipe[indice]->orientationRelative];
     art->delaiRecupAct = art->delaiRecup[equipe[indice]->orientationRelative];
     equipe[indice]->delaiArt = art->delaiAnimation;
 
-    ennemi->etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
-    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemi->RES_ETATS[fournaise]/100*3;
-    ennemi->etats[frisson].valeur += art->etats[equipe[indice]->orientationRelative][frisson];
-    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][frisson]*ennemi->RES_ETATS[frisson]/100*3;
-    ennemi->etats[poison].valeur += art->etats[equipe[indice]->orientationRelative][poison];
-    ennemi->hostilite[indice] += art->etats[equipe[indice]->orientationRelative][poison]*ennemi->RES_ETATS[poison]/100*3;
+    ennemis[equipe[indice]->cible].etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
+    ennemis[equipe[indice]->cible].hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemis[equipe[indice]->cible].RES_ETATS[fournaise]/100*3;
+    ennemis[equipe[indice]->cible].etats[frisson].valeur += art->etats[equipe[indice]->orientationRelative][frisson];
+    ennemis[equipe[indice]->cible].hostilite[indice] += art->etats[equipe[indice]->orientationRelative][frisson]*ennemis[equipe[indice]->cible].RES_ETATS[frisson]/100*3;
+    ennemis[equipe[indice]->cible].etats[poison].valeur += art->etats[equipe[indice]->orientationRelative][poison];
+    ennemis[equipe[indice]->cible].hostilite[indice] += art->etats[equipe[indice]->orientationRelative][poison]*ennemis[equipe[indice]->cible].RES_ETATS[poison]/100*3;
 
     for(int i = 0; i < 3; i++) {
 
-        if(ennemi->etats[i].valeur == art->etats[equipe[indice]->orientationRelative][i]) ennemi->etats[i].delai = 60;
+        if(ennemis[equipe[indice]->cible].etats[i].valeur == art->etats[equipe[indice]->orientationRelative][i]) ennemis[equipe[indice]->cible].etats[i].delai = 60;
 
     }
 
-    addDegatTxt(dgtsTxt + (*nbDgtTxt), degats, ennemi->posX, ennemi->posY-ennemi->image->h/4, normalC);
+    addDegatTxt(degats, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY-ennemis[equipe[indice]->cible].image->h/4, normalC);
 
-    (*nbDgtTxt)++;
-
-    ennemi->enCombat = 1;
+    ennemis[equipe[indice]->cible].enCombat = 1;
 
     return degats;
 
@@ -786,15 +789,17 @@ int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsT
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int utiliseArt(Art* art, Personnage* equipe[], int indice) {
 
   if(equipe[indice]->PV > 0) {
 
-    orientationPersoCombatRelative(equipe, indice, ennemi);
+    orientationPersoCombatRelative(equipe, indice);
 
-    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - ennemi->image->w/2/4 < art->PRTART[equipe[indice]->orientationRelative] && art->recup < 0) {
+    fprintf(stderr, "%d : %d : %d : %d\n", equipe[indice]->posX, equipe[indice]->posY, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY);
 
-        return lanceArt(art, equipe, ennemi, indice, dgtsTxt, nbDgtTxt);
+    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY) - ennemis[equipe[indice]->cible].image->w/2/4 < art->PRTART[equipe[indice]->orientationRelative] && art->recup < 0) {
+
+        return lanceArt(art, equipe, indice);
 
     }
 
@@ -813,7 +818,7 @@ int utiliseArt(Art* art, Personnage* equipe[], Ennemi* ennemi, int indice, degat
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt) {
+int etatEnnemi(Ennemi *ennemi, int type) {
 
     if(ennemi->etats[type].delai < 0) {
 
@@ -849,9 +854,7 @@ int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt) {
 
         }
 
-        addDegatTxt(dgtsTxt + (*nbDgtTxt), ret, ennemi->posX, ennemi->posY-ennemi->image->h/4, typeC);
-
-        (*nbDgtTxt)++;
+        addDegatTxt(ret, ennemi->posX, ennemi->posY-ennemi->image->h/4, typeC);
 
         return ret;
 
