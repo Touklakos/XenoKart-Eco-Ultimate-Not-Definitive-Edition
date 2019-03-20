@@ -58,6 +58,7 @@ void fonctionFin(){
 }
 
 void init_mat(case_t mat[N][M]){
+  printf("inimat\n");
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
       mat[i][j].val = 0;
@@ -66,87 +67,88 @@ void init_mat(case_t mat[N][M]){
 }
 
 int case_valide(case_t hexcase){
-  return((hexcase.x < 0 || hexcase.x > M) && (hexcase.y < 0 || hexcase.y > N));
+  return((hexcase.coord.x < 0 || hexcase.coord.x > M) && (hexcase.coord.y < 0 || hexcase.coord.y > N));
 }
 
 void afficher_matrice(case_t c[N][M]){
+    printf("affichermat\n");
 
   printf("---------------------------------------------- \n");
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
-      printf("%i|",c[i][j].val);
+      printf("%3i|",c[i][j].val);
     }
     printf("\n");
   }
 }
 
-case_t creerCase(){
+case_t creerCase(int x, int y){
+
+  printf("creercase\n");
   case_t hexcase;
+
+  printf("caseCount : %i \n", caseCount);
+
   hexcase.val = caseCount;
 
-  if(caseCount == 1){
-    hexcase.x = N/2;
-    hexcase.y = M/2;
-  }
+  hexcase.coord.x = x;
+  hexcase.coord.y = y;
+
   caseCount++;
-  ajouter(hexcase.val);
+
   return hexcase;
 }
 
-case_t creerCaseVoisin(case_t hexcase){
-  case_t t[6];
-  for(int i = 0; i < 6; i++){
-    while(caseCount < NB_CASE-1){
-      if(hexcase.voisin[i] != 0){
-        t[i] = creerCase();
-        ajouter(t[i].val);
-        hexcase.voisin[i] = &t[i];
-        caseCount++;
-      }
+void creerCases(map_t * map){
+
+  printf("creercases\n");
+
+  int i=0,j=0;
+
+  for(i=0; i<N; i++){
+    for(j; j<M; j+=4){
+      map->v[i][j] = creerCase(i,j);
     }
+  if((i+1)%2) j=2;
+  else j = 0;
   }
-  return hexcase;
 }
 
-case_t creerVoisin(case_t hexcase, map_t * map){
-  if(case_valide(map->v[hexcase.x][hexcase.y+2]) && map->v[hexcase.x][hexcase.y+2].val != 0) hexcase.voisin[0] = &map->v[hexcase.x][hexcase.y+2];
-  if(case_valide(map->v[hexcase.x+2][hexcase.y+1]) && map->v[hexcase.x+2][hexcase.y+1].val != 0) hexcase.voisin[1] = &map->v[hexcase.x+2][hexcase.y+1];
-  if(case_valide(map->v[hexcase.x+2][hexcase.y-1]) && map->v[hexcase.x+2][hexcase.y-1].val != 0) hexcase.voisin[2] = &map->v[hexcase.x+2][hexcase.y-1];
-  if(case_valide(map->v[hexcase.x][hexcase.y-2]) && map->v[hexcase.x][hexcase.y-2].val != 0) hexcase.voisin[3] = &map->v[hexcase.x][hexcase.y-2];
-  if(case_valide(map->v[hexcase.x-2][hexcase.y+1]) && map->v[hexcase.x-2][hexcase.y+1].val != 0) hexcase.voisin[4] = &map->v[hexcase.x-2][hexcase.y+1];
-  if(case_valide(map->v[hexcase.x-2][hexcase.y-1]) && map->v[hexcase.x-2][hexcase.y-1].val != 0) hexcase.voisin[5] = &map->v[hexcase.x-2][hexcase.y-1];
-  return hexcase;
+void afficherCase(case_t hexcase, case_t v[N][M]){
+  printf("affichercase\n");
+
+  printf("%d: ",hexcase.val);
+
+  //if(case_valide());
+  //else printf("0 ");
+
+  printf("\n");
 }
 
 
 map_t * creerMap(enum typemap type){
-
+  printf("creermap\n");
   map_t * map = NULL ;
   map = malloc(sizeof(*map));
 
   init_mat(map->v);
 
-  map->v[N/2][M/2] = creerCase();
-
-  creerCaseVoisin(map->v[N/2][M/2]);
-
-  creerVoisin(map->v[N/2][M/2], map);
-
+  creerCases(map);
 
   return map;
 }
 
 
 
-case_t recherchecase(int i, case_t map[N][M]){
+/*case_t recherchecase(int i, case_t map[N][M]){
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
       if(map[i][j].val = i) return map[i][j];
     }
   }
-}
+}*/
 
 /*void afficher_voisin(case_t hexcase, SDL_Surface* pSurface, SDL_Window* screen){
 
@@ -170,17 +172,29 @@ case_t recherchecase(int i, case_t map[N][M]){
   SDL_BlitSurface(img, NULL, pSurface, &test);
   SDL_UpdateWindowSurface(screen);
 
-}
+}*/
 
-void afficherMap(case_t c[N][M], SDL_Surface* pSurface, SDL_Window* screen){
+void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
-  for(int i = 1; i != caseCount; i++){
-    afficher_voisin(recherchecase(i,c), pSurface, screen);
+
+  SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
+  SDL_Surface * img = NULL;
+  img = IMG_Load("code/map/hexagone.png");
+
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      if(map->v[i][j].val){
+        test.x = map->v[i][j].coord.x * HEX_WIDTH;
+        test.x = map->v[i][j].coord.y * HEX_HEIGHT;
+
+        SDL_BlitSurface(img, NULL, pSurface, &test);
+
+        SDL_UpdateWindowSurface(screen);
+      }
     }
-
-  SDL_UpdateWindowSurface(screen);
+  }
 }
-*/
+
 
 
 
@@ -198,8 +212,6 @@ int main(){
 
   map_t * map = creerMap(1);
 
-
-
   afficher_matrice(map->v);
 
   while(!quit) {
@@ -208,7 +220,8 @@ int main(){
 
     SDL_PumpEvents();
 
-    //afficherMap(map->v,pSurface, screen);
+
+    afficherMap(map, pSurface, screen);
 
     //fonctionFin();
     fonctionQuitter();

@@ -18,3 +18,6 @@
 #define BUTTON_HEIGHT 80
 #define BUTTON_WIDTH 250
 #define DEC 30
+
+#define HEX_HEIGHT 100
+#define HEX_WIDTH 100
