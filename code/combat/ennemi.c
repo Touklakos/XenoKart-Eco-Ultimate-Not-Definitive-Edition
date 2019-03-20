@@ -213,26 +213,28 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 */
 
 
-int cibleEnnemi(Ennemi *ennemi) {
+int cibleEnnemis() {
 
   int max = 0;
   int indice = -1;
 
-  for(int i = 0; i < 3; i++) {
+  for(int n = 0; n < nbEnnemi; n++) {
 
-    if(max + 100 < ennemi->hostilite[i]) {
+    for(int i = 0; i < 3; i++) {
 
-      max = ennemi->hostilite[i];
+      if(max + 100 < ennemis[n].hostilite[i]) {
 
-      indice = i;
+        max = ennemis[n].hostilite[i];
+
+        indice = i;
+
+      }
 
     }
 
+    if(indice >= 0) ennemis[n].cible = indice;
+
   }
-
-  if(indice == -1) return -1;
-
-  ennemi->cible = indice;
 
   return 0;
 
@@ -245,26 +247,30 @@ int cibleEnnemi(Ennemi *ennemi) {
     \param perso personnage poursuivit pas l'ennemi
 */
 
-void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
+void ennemiPoursuit(Personnage *equipe[]) {
 
-  int vecX, vecY;
+  for(int i = 0; i < nbEnnemi; i++) {
 
-  vecX = perso->posX - ennemi->posX;
-  vecY = perso->posY - ennemi->posY;
+    int vecX, vecY;
 
-  int dis = distance(perso->posX, perso->posY, ennemi->posX, ennemi->posY)- perso->image->w/2;
+    vecX = equipe[ennemis[i].cible]->posX - ennemis[i].posX;
+    vecY = equipe[ennemis[i].cible]->posY - ennemis[i].posY;
 
-  if(dis >= ennemi->PRTAUTO/2) {
+    int dis = distance(equipe[ennemis[i].cible]->posX, equipe[ennemis[i].cible]->posY, ennemis[i].posX, ennemis[i].posY)- equipe[ennemis[i].cible]->image->w/2;
 
-    ennemi->vitX = vecX*VITDPL/dis;
+    if(ennemis[i].enCombat && dis >= ennemis[i].PRTAUTO/2) {
 
-    ennemi->vitY = vecY*VITDPL/dis;
+      ennemis[i].vitX = vecX*VITDPL/dis;
 
-  } else {
+      ennemis[i].vitY = vecY*VITDPL/dis;
 
-    ennemi->vitX = 0;
+    } else {
 
-    ennemi->vitY = 0;
+      ennemis[i].vitX = 0;
+
+      ennemis[i].vitY = 0;
+
+    }
 
   }
 
@@ -277,14 +283,18 @@ void ennemiPoursuit(Ennemi *ennemi, Personnage *perso) {
     \param equipe equipe de personnage que poursuit l'ennemi
 */
 
-void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]) {
+void deplacementEnnemi(Personnage *equipe[]) {
 
-    cibleEnnemi(ennemi);
+  cibleEnnemis();
 
-    ennemiPoursuit(ennemi, equipe[ennemi->cible]);
+  ennemiPoursuit(equipe);
 
-    ennemi->posX+=ennemi->vitX;
-    ennemi->posY+=ennemi->vitY;
+  for(int i = 0; i < nbEnnemi; i++) {
+
+    ennemis[i].posX+=ennemis[i].vitX;
+    ennemis[i].posY+=ennemis[i].vitY;
+
+  }
 
 }
 
@@ -300,34 +310,35 @@ void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]) {
 */
 
 
-void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]) {
+void afficherEnnemis(SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]) {
 
+  for(int i = 0; i < nbEnnemi; i++) {
 
-    if(ennemi->enCombat) {
+    if(ennemis[i].enCombat) {
 
-      cibleEnnemi(ennemi);
+      orientationPersoCombatAbsolue(equipe[ennemis[i].cible]);
 
-      orientationPersoCombatAbsolue(equipe[ennemi->cible]);
-
-      ennemi->orientationAbsolue = (equipe[ennemi->cible]->orientationAbsolue + 2)%4;
+      ennemis[i].orientationAbsolue = (equipe[ennemis[i].cible]->orientationAbsolue + 2)%4;
 
 
 
     }
 
-    if(ennemi->vitX != 0 || ennemi->vitY != 0) ennemi->numFrame = (ennemi->numFrame+1)%60;
+    if(ennemis[i].vitX != 0 || ennemis[i].vitY != 0) ennemis[i].numFrame = (ennemis[i].numFrame+1)%60;
   //  else ennemi->numFrame = 0;
 
-    SDL_Rect dest = { ennemi->posX - ennemi->image->w/2/4-camera.x+camera.w, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h, 0, 0};
-    SDL_Rect img = { ennemi->image->w/4*(ennemi->numFrame/15), ennemi->image->h/4*ennemi->orientationAbsolue, ennemi->image->w/4, ennemi->image->h/4};
+    SDL_Rect dest = { ennemis[i].posX - ennemis[i].image->w/2/4-camera.x+camera.w, ennemis[i].posY - ennemis[i].image->h/2/4-camera.y+camera.h, 0, 0};
+    SDL_Rect img = { ennemis[i].image->w/4*(ennemis[i].numFrame/15), ennemis[i].image->h/4*ennemis[i].orientationAbsolue, ennemis[i].image->w/4, ennemis[i].image->h/4};
 
-    SDL_BlitSurface(ennemi->image, &img, pSurface, &dest);
+    SDL_BlitSurface(ennemis[i].image, &img, pSurface, &dest);
 
-    if(ennemi->enCombat) {
+    if(ennemis[i].enCombat) {
 
-      SDL_Rect rect ={ennemi->posX - ennemi->image->w/2/4-camera.x+camera.w, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h, ennemi->PV*ennemi->image->w/4/ennemi->MAXPV, 5};
+      SDL_Rect rect ={ennemis[i].posX - ennemis[i].image->w/2/4-camera.x+camera.w, ennemis[i].posY - ennemis[i].image->h/2/4-camera.y+camera.h, ennemis[i].PV*ennemis[i].image->w/4/ennemis[i].MAXPV, 5};
 
       SDL_FillRect(pSurface, &rect, SDL_MapRGB(pSurface->format, 255, 0, 0));
+
+    }
 
   }
 
@@ -342,14 +353,9 @@ void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Pers
 */
 
 
-void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
+void hudEnnemi(SDL_Surface *pSurface, SDL_Rect camera) {
 
   SDL_Surface *HUD = IMG_Load("./data/hud.png");
-
-  SDL_Rect rect = {ennemi->posX - camera.x + camera.w - HUD->w/2, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h-HUD->h, 0, 0};
-
-  SDL_BlitSurface(HUD, NULL, pSurface, &rect);
-
 
   SDL_Surface *nom;
 
@@ -359,11 +365,21 @@ void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera) {
 
   SDL_Color couleur = {255,255,255};
 
-  nom = TTF_RenderText_Solid(police, ennemi->nom, couleur);
 
-  SDL_Rect rect2 = {ennemi->posX - camera.x + camera.w - nom->w/2, ennemi->posY - ennemi->image->h/2/4-camera.y+camera.h-HUD->h, 0, 0};
+  for(int i = 0; i < nbEnnemi; i++) {
 
-  SDL_BlitSurface(nom, NULL, pSurface, &rect2);
+    SDL_Rect rect = {ennemis[i].posX - camera.x + camera.w - HUD->w/2, ennemis[i].posY - ennemis[i].image->h/2/4-camera.y+camera.h-HUD->h, 0, 0};
+
+    SDL_BlitSurface(HUD, NULL, pSurface, &rect);
+
+
+    nom = TTF_RenderText_Solid(police, ennemis[i].nom, couleur);
+
+    SDL_Rect rect2 = {ennemis[i].posX - camera.x + camera.w - nom->w/2, ennemis[i].posY - ennemis[i].image->h/2/4-camera.y+camera.h-HUD->h, 0, 0};
+
+    SDL_BlitSurface(nom, NULL, pSurface, &rect2);
+
+  }
 
   TTF_CloseFont(police);
 
@@ -444,9 +460,9 @@ int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage) {
 */
 
 
-int typeCoupPerso(Personnage *perso, Ennemi *ennemi) {
+int typeCoupPerso(Personnage *perso) {
 
-  int precision = -ennemi->modif[AGI] + perso->modif[DEXT] + 100;
+  int precision = -ennemis[perso->cible].modif[AGI] + perso->modif[DEXT] + 100;
 
   if(precision > 95) precision = 95;
 
@@ -460,7 +476,7 @@ int typeCoupPerso(Personnage *perso, Ennemi *ennemi) {
 
     return critiqueC;
 
-  } else if(rand()%100 <= ennemi->modif[GARDE]) {
+  } else if(rand()%100 <= ennemis[perso->cible].modif[GARDE]) {
 
     return gardeC;
 
@@ -517,7 +533,7 @@ int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
 */
 
 
-int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice) {
+int ennemiAutoAttaque(Personnage* equipe[], Ennemi *ennemi, int indice) {
 
     int difference = ennemi->modif[ATTMAX] - ennemi->modif[ATTMIN];
     int random;
@@ -575,15 +591,19 @@ int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice) {
+int attaqueAllie(Personnage* equipe[]) {
 
-  if(ennemi->PV > 0) {
+  for(int i = 0; i < nbEnnemi; i++) {
 
-    ennemi->delaiAuto--;
+    if(ennemis[i].PV > 0 && ennemis[i].enCombat) {
 
-    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemi->posX, ennemi->posY) - equipe[indice]->image->w/2 < ennemi->PRTAUTO && ennemi->delaiAuto < 0) {
+      ennemis[i].delaiAuto--;
 
-        return ennemiAutoAttaque(equipe, ennemi, indice);
+      if(distance(equipe[ennemis[i].cible]->posX, equipe[ennemis[i].cible]->posY, ennemis[i].posX, ennemis[i].posY) - equipe[ennemis[i].cible]->image->w/2 < ennemis[i].PRTAUTO && ennemis[i].delaiAuto < 0) {
+
+          ennemiAutoAttaque(equipe, ennemis+i, ennemis[i].cible);
+
+      }
 
     }
 
@@ -624,7 +644,7 @@ int persoAutoAttaque(Personnage* equipe[], int indice) {
         random = 0;
     }
 
-    eCoup type = typeCoupPerso(equipe[indice], ennemis+(equipe[indice]->cible));
+    eCoup type = typeCoupPerso(equipe[indice]);
 
     int degats = min + random;
 
@@ -818,49 +838,59 @@ int utiliseArt(Art* art, Personnage* equipe[], int indice) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int etatEnnemi(Ennemi *ennemi, int type) {
+int etatEnnemi() {
 
-    if(ennemi->etats[type].delai < 0) {
+  fprintf(stderr, "Zanza ennemi.c = %p\n", ennemis);
+  fprintf(stderr, "Dickson ennemi.c = %p\n", ennemis+1);
 
-        ennemi->etats[type].valeur -= ennemi->etats[type].valeur*ennemi->RES_ETATS[type]/100;
+  for(int i = 0; i < nbEnnemi; i++) {
 
-        if(ennemi->etats[type].valeur < 100) {
+    for(int t = 0; t < 3; t++) {
 
-            ennemi->etats[type].valeur = 0;
-            return -1;
+      if(ennemis[i].etats[t].delai < 0) {
+
+        ennemis[i].etats[t].valeur -= ennemis[i].etats[t].valeur*ennemis[i].RES_ETATS[t]/100;
+
+        if(ennemis[i].etats[t].valeur < 100) {
+
+          ennemis[i].etats[t].valeur = 0;
+          return -1;
 
         }
 
-        ennemi->PV -= ennemi->etats[type].valeur;
+        ennemis[i].PV -= ennemis[i].etats[t].valeur;
 
-        int ret = ennemi->etats[type].valeur;
+        int ret = ennemis[i].etats[t].valeur;
 
-        ennemi->etats[type].delai = 120;
+        ennemis[i].etats[t].delai = 120;
 
         eCoup typeC;
 
-        if(type == fournaise) {
+        if(t == fournaise) {
 
           typeC = fournaiseC;
 
-        } else if(type == frisson) {
+        } else if(t == frisson) {
 
           typeC = frissonC;
 
-        } else if(type == poison) {
+        } else if(t == poison) {
 
           typeC = poisonC;
 
-
         }
 
-        addDegatTxt(ret, ennemi->posX, ennemi->posY-ennemi->image->h/4, typeC);
+        addDegatTxt(ret, ennemis[i].posX, ennemis[i].posY-ennemis[i].image->h/4, typeC);
 
         return ret;
 
+      }
+
     }
 
-    return -1;
+  }
+
+  return -1;
 
 }
 
@@ -872,15 +902,19 @@ int etatEnnemi(Ennemi *ennemi, int type) {
     \param ennemi ennemi que l'on modifie
 */
 
-void delaiEtat(Ennemi *ennemi) {
+void delaiEtatEnnemis() {
 
-    if(ennemi->etats[fournaise].delai == ennemi->etats[frisson].delai) ennemi->etats[frisson].delai -= 10;
-    if(ennemi->etats[fournaise].delai == ennemi->etats[poison].delai) ennemi->etats[poison].delai -= 10;
-    if(ennemi->etats[frisson].delai == ennemi->etats[poison].delai) ennemi->etats[poison].delai -= 10;
+  for(int i = 0; i < nbEnnemi; i++) {
 
-    ennemi->etats[fournaise].delai--;
-    ennemi->etats[frisson].delai--;
-    ennemi->etats[poison].delai--;
+    if(ennemis[i].etats[fournaise].delai == ennemis[i].etats[frisson].delai) ennemis[i].etats[frisson].delai -= 10;
+    if(ennemis[i].etats[fournaise].delai == ennemis[i].etats[poison].delai) ennemis[i].etats[poison].delai -= 10;
+    if(ennemis[i].etats[frisson].delai == ennemis[i].etats[poison].delai) ennemis[i].etats[poison].delai -= 10;
+
+    ennemis[i].etats[fournaise].delai--;
+    ennemis[i].etats[frisson].delai--;
+    ennemis[i].etats[poison].delai--;
+
+  }
 
 
 }
@@ -891,35 +925,39 @@ void delaiEtat(Ennemi *ennemi) {
     \param ennemi ennemi que l'on modifie
 */
 
-void delaiModificationEnnemi(Ennemi* ennemi) {
+void delaiModificationEnnemi() {
+
+  for(int n = 0; n < nbEnnemi; n++) {
 
     for(int i = 0; i < 15; i++) {
 
-        for(int j = 0; j < ennemi->nbDelai[i]; j++) {          //on d�cr�mente toutes les delais des modifications des stats d'un personnage
+      for(int j = 0; j < ennemis[n].nbDelai[i]; j++) {          //on d�cr�mente toutes les delais des modifications des stats d'un personnage
 
-                ennemi->delai[i][j].delai--;
+        ennemis[n].delai[i][j].delai--;
 
-        }
+      }
 
-        for(int j = ennemi->nbDelai[i]-1; j >= 0; j--) {      //si le delai est inf�rieur � 0 on retire la modification
+      for(int j = ennemis[n].nbDelai[i]-1; j >= 0; j--) {      //si le delai est inf�rieur � 0 on retire la modification
 
-            if(ennemi->delai[i][j].delai < 0) {
+        if(ennemis[n].delai[i][j].delai < 0) {
 
-                for(int k = j; k < ennemi->nbDelai[i]-1; k++) {
+          for(int k = j; k < ennemis[n].nbDelai[i]-1; k++) {
 
-                    ennemi->delai[i][k] =  ennemi->delai[i][k+1];
+            ennemis[n].delai[i][k] =  ennemis[n].delai[i][k+1];
 
-                }
+          }
 
-                ennemi->modif[i] /= ennemi->delai[i][j].valeur;
+          ennemis[n].modif[i] /= ennemis[n].delai[i][j].valeur;
 
-                ennemi->nbDelai[i]--;
-
-            }
+          ennemis[n].nbDelai[i]--;
 
         }
+
+      }
 
     }
+
+  }
 
 }
 
@@ -932,15 +970,15 @@ void delaiModificationEnnemi(Ennemi* ennemi) {
 */
 
 
-void persoPoursuit(Personnage *perso, Ennemi *ennemi) {
+void persoPoursuit(Personnage *perso) {
 
 
   int vecX, vecY;
 
-  vecX = ennemi->posX - perso->posX;
-  vecY = ennemi->posY - perso->posY;
+  vecX = ennemis[perso->cible].posX - perso->posX;
+  vecY = ennemis[perso->cible].posY - perso->posY;
 
-  int dis = distance(perso->posX, perso->posY, ennemi->posX, ennemi->posY)- perso->image->w/2;
+  int dis = distance(perso->posX, perso->posY, ennemis[perso->cible].posX, ennemis[perso->cible].posY)- perso->image->w/2;
 
   if(dis >= perso->PRTAUTO) {
 

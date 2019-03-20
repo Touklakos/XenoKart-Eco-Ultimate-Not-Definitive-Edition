@@ -62,30 +62,30 @@ extern int nbEnnemiPool;
 
 extern Ennemi ennemis[100];
 
-int nbEnnemi;
+extern int nbEnnemi;
 
 
 
 
 
 void initEnnemi(Ennemi* ennemi, char fichier[50]);
-int cibleEnnemi(Ennemi *ennemi);
-void ennemiPoursuit(Ennemi *ennemi, Personnage *perso);
-void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[]);
-void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]);
-void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera);
+int cibleEnnemis();
+void ennemiPoursuit(Personnage *equipe[]);
+void deplacementEnnemi(Personnage *equipe[]);
+void afficherEnnemis(SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]);
+void hudEnnemi(SDL_Surface *pSurface, SDL_Rect camera);
 int orientationPersoCombatAbsolue(Personnage* perso);
 int orientationPersoCombatRelative(Personnage* equipe[], int indicePersonnage);
-int typeCoupPerso(Personnage *perso, Ennemi *ennemi);
+int typeCoupPerso(Personnage *perso);
 int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso);
 int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice);
-int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice);
+int attaqueAllie(Personnage* equipe[]);
 int persoAutoAttaque(Personnage* equipe[], int indice);
 int attaqueEnnemi(Personnage* equipe[]);
 int lanceArt(Art *art, Personnage* equipe[], int indice);
 int utiliseArt(Art* art, Personnage* equipe[], int indice);
-int etatEnnemi(Ennemi *enn, int type);
-void delaiEtat(Ennemi *ennemi);
-void delaiModificationEnnemi(Ennemi* ennemi);
-void persoPoursuit(Personnage *perso, Ennemi *ennemi);
+int etatEnnemi();
+void delaiEtatEnnemis();
+void delaiModificationEnnemi();
+void persoPoursuit(Personnage *perso);
 void deplacementPersonnage(Personnage *equipe[]);

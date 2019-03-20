@@ -196,8 +196,6 @@ void background(SDL_Surface *sol, SDL_Surface *pSurface, SDL_Rect camera) {
 void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe[], SDL_Rect camera) {
 
 
-    cibleEnnemi(ennemi);
-
     SDL_Rect rect ={equipe[ennemi->cible]->posX-camera.x+camera.w-equipe[ennemi->cible]->image->w/2/4, equipe[ennemi->cible]->posY-camera.y+camera.h+equipe[ennemi->cible]->image->h/2/4, equipe[ennemi->cible]->image->w/4, 10};
 
 
@@ -640,7 +638,6 @@ int main(int argc, char** argv)
 
 
 
-    Personnage* equipe[3];      //durant un combat l'équipe est composé de trois personnage
     Personnage Jojo;
     Personnage Dio;
     Personnage Guts;
@@ -720,26 +717,25 @@ int main(int argc, char** argv)
     ArtJeu[2][6] = &Jojo.ArtPool[6];
     ArtJeu[2][7] = &Jojo.ArtPool[7];
 
-    Ennemi Zanza;
+    /*Ennemi Zanza;
 
-    Ennemi Dickson;
+    Ennemi Dickson;*/
 
-    initEnnemi(&Zanza, "./data/Zanza.txt");
+    initEnnemi(&ennPool[nbEnnemiPool++], "./data/Zanza.txt");
 
-    initEnnemi(&Dickson, "./data/Dickson.txt");
-
-
-    ennPool[nbEnnemiPool++] = Zanza;
-
-    ennPool[nbEnnemiPool++] = Dickson;
+    initEnnemi(&ennPool[nbEnnemiPool++], "./data/Dickson.txt");
 
 
 
-    ennemis[nbEnnemi++] = Zanza;
-
-    ennemis[nbEnnemi++] = Dickson;
 
 
+    ennemis[nbEnnemi] = ennPool[nbEnnemi];
+
+    nbEnnemi++;
+
+    ennemis[nbEnnemi] = ennPool[nbEnnemi];
+
+    nbEnnemi++;
 
     SDL_Event event;
 
@@ -869,28 +865,19 @@ int main(int argc, char** argv)
 
 
 
-          for(int i = 0; i < nbEnnemi; i++) {   //les ennemis en combat attaque les personnages
 
-            if(ennemis[i].enCombat) {
+      attaqueAllie(equipe);
 
-              cibleEnnemi(&ennemis[i]);
-
-              attaqueAllie(equipe, &ennemis[i], ennemis[i].cible);
-
-          /////    send(client_socket1, clavier, sizeof(clavier)/3, 0);
+      /////    send(client_socket1, clavier, sizeof(clavier)/3, 0);
 
 
-            }
-
-          }
-
-          attaqueEnnemi(equipe);  //les personnages attaques l'ennemi qu'ils ciblent
+      attaqueEnnemi(equipe);  //les personnages attaques l'ennemi qu'ils ciblent
 
       /////    send(client_socket1, clavier, sizeof(clavier)/3, 0);
 
 
 
-          //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
+      //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
 
 
             switch(etatCombat) {
@@ -944,7 +931,6 @@ int main(int argc, char** argv)
 
 
                 }
-
 
 
 
@@ -1036,8 +1022,11 @@ int main(int argc, char** argv)
 
                 }
 
+                for(int i = 0; i < nbEnnemi; i++) {
 
+                  fprintf(stderr, "fournaise de %s : %d\n", ennemis[i].nom, ennemis[i].etats[fournaise].valeur);
 
+                }
 
                 if(recupCibleEnn-- < 0) {
 
@@ -1052,6 +1041,7 @@ int main(int argc, char** argv)
                     recupCibleEnn = DELAI_CIBLE_ENN;
 
                   }
+
 
                   if(clavier[SDL_SCANCODE_P].enfonce) {
 
@@ -1110,10 +1100,6 @@ int main(int argc, char** argv)
             }
 
 
-
-
-
-
             //////////////////////////////////////FONCTIONS D'INPUTS DE DEPLACEMENT////////////////////////////////////////////
 
 
@@ -1132,35 +1118,30 @@ int main(int argc, char** argv)
             //////////////////////////////////////FONCTIONS DE DECREMENTATION DES ETATS////////////////////////////////////////////
 
 
-            for(int n = 0; n < nbEnnemi; n++) {
 
-              for(int i = 0; i < 3; i++) {
+            etatEnnemi();
 
-                etatEnnemi(&ennemis[n], i);
+            fprintf(stderr, "Zanza incroyable.c = %p\n", ennPool);
+            fprintf(stderr, "Dickson incroyable.c = %p\n", ennPool+1);
 
-              }
 
-              delaiEtat(&ennemis[n]);
+            delaiEtatEnnemis();
 
-            }
 
             for(int i = 0; i < 3; i++) {
 
-                for(int j = 0; j < 8; j++) {
+              for(int j = 0; j < 8; j++) {
 
-                  recuperationArt(ArtJeu[i][j]);      //d�cr�mentations des arts des personnages
-
-                }
-
-                delaiModificationPerso(equipe[i]);           //d�crementations des modifications des personnages
+                recuperationArt(ArtJeu[i][j]);      //d�cr�mentations des arts des personnages
 
               }
 
-              for(int n = 0; n < nbEnnemi; n++) {
+              delaiModificationPerso(equipe[i]);           //d�crementations des modifications des personnages
 
-                delaiModificationEnnemi(&ennemis[n]);
+            }
 
-              }
+
+            delaiModificationEnnemi();
 
 
               //////////////////////////////////////FONCTIONS DE DEPLACEMENT////////////////////////////////////////////
@@ -1172,7 +1153,7 @@ int main(int argc, char** argv)
 
                   if(i != indicePersonnage && equipe[i]->enCombat) {
 
-                    persoPoursuit(equipe[i], ennemis+(equipe[i]->cible));
+                    persoPoursuit(equipe[i]);
 
                   }
 
@@ -1188,18 +1169,11 @@ int main(int argc, char** argv)
         /////      send(client_socket1, clavier, sizeof(clavier)/3, 0);
 
 
-              for(int i = 0; i < nbEnnemi; i++) {
 
-                if(ennemis[i].enCombat) {
 
-                  deplacementEnnemi(ennemis+i, equipe);
+              deplacementEnnemi(equipe);
 
           /////        send(client_socket1, clavier, sizeof(clavier)/3, 0);
-
-
-                }
-
-              }
 
 
 
@@ -1241,11 +1215,9 @@ int main(int argc, char** argv)
               }
 
 
-              for(int n = 0; n < nbEnnemi; n++) {
 
-                afficherEnnemi(&ennemis[n], pSurface, camera, equipe);
+              afficherEnnemis(pSurface, camera, equipe);
 
-              }
 
 
               afficherArt(ArtJeu[indicePersonnage], pSurface, cooldownArt);
@@ -1254,11 +1226,9 @@ int main(int argc, char** argv)
 
               afficherHUD(equipe, pSurface);
 
-              if(equipe[indicePersonnage]->enChoixCible || equipe[indicePersonnage]->enCombat) {
 
-                hudEnnemi(ennemis+(equipe[indicePersonnage]->cible), pSurface, camera);
+              hudEnnemi(pSurface, camera);
 
-              }
 
               if(etatCombat == 1) afficherCible(cible, pSurface);
 

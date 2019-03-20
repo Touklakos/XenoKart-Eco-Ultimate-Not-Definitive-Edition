@@ -14,6 +14,7 @@
   \date 13 fevrier 2019
 */
 
+Personnage* equipe[3];      //durant un combat l'équipe est composé de trois personnage
 
 /**
     \fn void initPersonnage(Personnage* perso, char fichier[50])
@@ -305,7 +306,7 @@ void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Su
               equipe[i]->PV += soin;
 
               addDegatTxt(soin, equipe[i]->posX, equipe[i]->posY-equipe[i]->image->h, soinC);
-              
+
             }
 
           }
