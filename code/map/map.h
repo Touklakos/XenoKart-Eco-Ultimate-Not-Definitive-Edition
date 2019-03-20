@@ -10,10 +10,14 @@
 
 enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL, PLATEAU };
 
+typedef struct coord_s{
+  int x;
+  int y;
+}coord_t;
+
 typedef struct case_s{
-  struct case_s *voisin[6];
+  coord_t coord;
   int val;
-  int x,y;
 }case_t;
 
 typedef struct map_s{
@@ -22,24 +26,3 @@ typedef struct map_s{
   int difficult;
   int taille;
 }map_t;
-
-int file[tmax];
-int tete = 0, queue = tmax-1, nb=0;
-
-void ajouter(int c){
-  if(nb < tmax){
-    if(queue == tmax-1) queue = 0;
-    else queue++;
-    file[queue] = c;
-    nb++;
-  }
-}
-
-void retirer(int * c){
-  if(nb > 0){
-    *c = file[tete];
-    nb--;
-    if(tete == tmax-1) tete = 0;
-    else tete++;
-  }
-}
