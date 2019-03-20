@@ -182,15 +182,19 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
     \param camera coordonnées de la camera(qui represent le centre de l'écran)
 */
 
-void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera) {
+void afficherPersonnages(SDL_Window* screen, SDL_Rect camera) {
 
-    if(perso->vitX != 0 || perso->vitY != 0) perso->numFrame = (perso->numFrame+1)%60;
+  for(int i = 0; i < 3; i++) {
 
-    SDL_Rect dest = { perso->posX - perso->image->w/2/4-camera.x+camera.w, perso->posY - perso->image->h/2/4-camera.y+camera.h, 0, 0};
-    SDL_Rect img = { perso->image->w/4*(perso->numFrame/15), perso->image->h/4*perso->orientationAbsolue, perso->image->w/4, perso->image->h/4};
+    if(equipe[i]->vitX != 0 || equipe[i]->vitY != 0) equipe[i]->numFrame = (equipe[i]->numFrame+1)%60;
+
+    SDL_Rect dest = { equipe[i]->posX - equipe[i]->image->w/2/4-camera.x+camera.w, equipe[i]->posY - equipe[i]->image->h/2/4-camera.y+camera.h, 0, 0};
+    SDL_Rect img = { equipe[i]->image->w/4*(equipe[i]->numFrame/15), equipe[i]->image->h/4*equipe[i]->orientationAbsolue, equipe[i]->image->w/4, equipe[i]->image->h/4};
 
 
-    SDL_BlitSurface(perso->image, &img, SDL_GetWindowSurface(screen), &dest);
+    SDL_BlitSurface(equipe[i]->image, &img, SDL_GetWindowSurface(screen), &dest);
+
+  }
 
 }
 
@@ -202,37 +206,42 @@ void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera) 
     \param perso personnage à modifier
 */
 
-void delaiModificationPerso(Personnage* perso) {
+void delaiModificationPerso() {
 
-    perso->delaiArt--;
+  for(int n = 0; n < 3; n++) {
+
+
+    equipe[n]->delaiArt--;
 
     for(int i = 0; i < 15; i++) {
 
-        for(int j = 0; j < perso->nbDelai[i]; j++) {          //on d�cr�mente toutes les delais des modifications des stats d'un personnage
+      for(int j = 0; j < equipe[n]->nbDelai[i]; j++) {          //on d�cr�mente toutes les delais des modifications des stats d'un personnage
 
-                perso->delai[i][j].delai--;
+        equipe[n]->delai[i][j].delai--;
 
-        }
+      }
 
-        for(int j = perso->nbDelai[i]-1; j >= 0; j--) {      //si le delai est inf�rieur � 0 on retire la modification
+      for(int j = equipe[n]->nbDelai[i]-1; j >= 0; j--) {      //si le delai est inf�rieur � 0 on retire la modification
 
-            if(perso->delai[i][j].delai < 0) {
+        if(equipe[n]->delai[i][j].delai < 0) {
 
-                for(int k = j; k < perso->nbDelai[i]-1; k++) {
+          for(int k = j; k < equipe[n]->nbDelai[i]-1; k++) {
 
-                    perso->delai[i][k] =  perso->delai[i][k+1];
+            equipe[n]->delai[i][k] =  equipe[n]->delai[i][k+1];
 
-                }
+          }
 
-                perso->modif[i] /= perso->delai[i][j].valeur;
+          equipe[n]->modif[i] /= equipe[n]->delai[i][j].valeur;
 
-                perso->nbDelai[i]--;
-
-            }
+          equipe[n]->nbDelai[i]--;
 
         }
+
+      }
 
     }
+
+  }
 
 }
 
@@ -252,7 +261,7 @@ void delaiModificationPerso(Personnage* perso) {
     \param nbDgtTxt nombre de degats affiché sur l'écran
 */
 
-void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface) {
+void utiliseArtBuff(Art* art, int indicePersonnage, SDL_Surface *pSurface) {
 
     int j = 0, k = 3, l = -1;
 
