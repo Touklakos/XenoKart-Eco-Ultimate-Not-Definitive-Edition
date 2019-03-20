@@ -957,7 +957,7 @@ int main(int argc, char** argv)
 
                       } else {
 
-                        utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], equipe, indicePersonnage, pSurface);
+                        utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], indicePersonnage, pSurface);
 
                         char data[100];
 
@@ -1001,7 +1001,7 @@ int main(int argc, char** argv)
 
                     if(testTouche(clavier[SDL_SCANCODE_E])) {
 
-                      utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], equipe, cible, pSurface);
+                      utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], cible, pSurface);
 
                       char data[100];
 
@@ -1136,9 +1136,10 @@ int main(int argc, char** argv)
 
               }
 
-              delaiModificationPerso(equipe[i]);           //d�crementations des modifications des personnages
-
             }
+
+              delaiModificationPerso();           //d�crementations des modifications des personnages
+
 
 
             delaiModificationEnnemi();
@@ -1208,11 +1209,9 @@ int main(int argc, char** argv)
 
               }
 
-              for(int i = 0; i < 3; i++) {
 
-                afficherPersonnage(equipe[i], screen, camera);
+              afficherPersonnages(screen, camera);
 
-              }
 
 
 
