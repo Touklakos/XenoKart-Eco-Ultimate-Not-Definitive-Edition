@@ -69,6 +69,6 @@ extern Personnage* equipe[3];      //durant un combat l'équipe est composé de 
 
 
 void initPersonnage(Personnage* perso, char fichier[50]);
-void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera);
-void delaiModificationPerso(Personnage* perso);
-void utiliseArtBuff(Art* art, Personnage* equipe[3], int indicePersonnage, SDL_Surface *pSurface);
+void afficherPersonnages(SDL_Window* screen, SDL_Rect camera);
+void delaiModificationPerso();
+void utiliseArtBuff(Art* art, int indicePersonnage, SDL_Surface *pSurface);
