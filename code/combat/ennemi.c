@@ -840,12 +840,15 @@ int utiliseArt(Art* art, Personnage* equipe[], int indice) {
 
 int etatEnnemi() {
 
-  fprintf(stderr, "Zanza ennemi.c = %p\n", ennemis);
-  fprintf(stderr, "Dickson ennemi.c = %p\n", ennemis+1);
+  fprintf(stderr, "ennemi.c = %s\n", ennemis[0].nom);
+  fprintf(stderr, "Dickson ennemi.c = %s\n", ennemis[1].nom);
 
   for(int i = 0; i < nbEnnemi; i++) {
 
     for(int t = 0; t < 3; t++) {
+
+      fprintf(stderr, "%s.etat[%d] = %d\n", ennemis[i].nom, t, ennemis[i].etats[t].delai);
+
 
       if(ennemis[i].etats[t].delai < 0) {
 
@@ -854,35 +857,34 @@ int etatEnnemi() {
         if(ennemis[i].etats[t].valeur < 100) {
 
           ennemis[i].etats[t].valeur = 0;
-          return -1;
+
+        } else {
+
+          ennemis[i].PV -= ennemis[i].etats[t].valeur;
+
+          int ret = ennemis[i].etats[t].valeur;
+
+          ennemis[i].etats[t].delai = 120;
+
+          eCoup typeC;
+
+          if(t == fournaise) {
+
+            typeC = fournaiseC;
+
+          } else if(t == frisson) {
+
+            typeC = frissonC;
+
+          } else if(t == poison) {
+
+            typeC = poisonC;
+
+          }
+
+          addDegatTxt(ret, ennemis[i].posX, ennemis[i].posY-ennemis[i].image->h/4, typeC);
 
         }
-
-        ennemis[i].PV -= ennemis[i].etats[t].valeur;
-
-        int ret = ennemis[i].etats[t].valeur;
-
-        ennemis[i].etats[t].delai = 120;
-
-        eCoup typeC;
-
-        if(t == fournaise) {
-
-          typeC = fournaiseC;
-
-        } else if(t == frisson) {
-
-          typeC = frissonC;
-
-        } else if(t == poison) {
-
-          typeC = poisonC;
-
-        }
-
-        addDegatTxt(ret, ennemis[i].posX, ennemis[i].posY-ennemis[i].image->h/4, typeC);
-
-        return ret;
 
       }
 
