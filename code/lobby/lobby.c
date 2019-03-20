@@ -60,9 +60,9 @@ int main(){
 
 
 
-  int argent=0;
+  int argent=20000;
   int points=0;
-  int etat = 2;
+  int etat = 0;
   int type_expedition;
   t_objet inv[nbObjets];
   load_inv(inv);
@@ -105,12 +105,12 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
     //SDL_BlitSurface(test, NULL, pSurface, &dest);
 
     switch (etat){
-      case 0 : echange(screen, inv, &argent, &points); break;
+      case 0 : if(!inv_vide(inv)){echange(screen, inv, &argent, &points);} break;
       case 1 : type_expedition = expedition(screen); break;
-      case 2 : commerce(screen, inv); break;
+      case 2 : commerce(screen, inv, &argent); break;
 
     }
-
+    etat++;
 
 
 
@@ -143,11 +143,14 @@ printf("test2\n");
 
         SDL_Delay(delai);
 
-    }*/
+    }
     char quitter;
     printf("quitter ?\n");
     scanf("%c", &quitter);
     if(quitter == 'y'){
+      return 0;
+    }*/
+    if(etat == 3){
       return 0;
     }
   }
