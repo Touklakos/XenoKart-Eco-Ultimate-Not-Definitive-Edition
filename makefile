@@ -16,7 +16,7 @@ MENU=${CODE}/menu/
 MAP=${CODE}/map/
 LOBBY=${CODE}/lobby/
 
-LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm
+LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm -lpthread
 INCS=-I${SDL_INC_DIR}
 PROG=incroyable menu lobby map
 

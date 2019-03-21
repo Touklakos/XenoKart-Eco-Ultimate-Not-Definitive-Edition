@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <arpa/inet.h>
+#include <pthread.h>
+
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -826,7 +828,7 @@ int main(int argc, char** argv)
               fscanf(stderr, "%d;\n", &perso);
               fscanf(stderr, "%d;\n", &curse);
 
-              utiliseArt(ArtJeu[perso][curse], equipe, perso);
+              utiliseArt(ArtJeu[perso][curse], perso);
               break;
 
           }
@@ -940,7 +942,7 @@ int main(int argc, char** argv)
 
                     if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
 
-                      utiliseArt(ArtJeu[indicePersonnage][positionCurseur], equipe, indicePersonnage);
+                      utiliseArt(ArtJeu[indicePersonnage][positionCurseur], indicePersonnage);
 
                       char data[100];
 
@@ -1215,7 +1217,7 @@ int main(int argc, char** argv)
 
 
 
-              afficherEnnemis(pSurface, camera, equipe);
+              afficherEnnemis(pSurface, camera);
 
 
 

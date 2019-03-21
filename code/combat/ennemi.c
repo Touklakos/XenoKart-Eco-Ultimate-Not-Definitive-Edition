@@ -247,7 +247,7 @@ int cibleEnnemis() {
     \param perso personnage poursuivit pas l'ennemi
 */
 
-void ennemiPoursuit(Personnage *equipe[]) {
+void ennemiPoursuit() {
 
   for(int i = 0; i < nbEnnemi; i++) {
 
@@ -283,11 +283,11 @@ void ennemiPoursuit(Personnage *equipe[]) {
     \param equipe equipe de personnage que poursuit l'ennemi
 */
 
-void deplacementEnnemi(Personnage *equipe[]) {
+void deplacementEnnemi() {
 
   cibleEnnemis();
 
-  ennemiPoursuit(equipe);
+  ennemiPoursuit();
 
   for(int i = 0; i < nbEnnemi; i++) {
 
@@ -310,13 +310,13 @@ void deplacementEnnemi(Personnage *equipe[]) {
 */
 
 
-void afficherEnnemis(SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[]) {
+void afficherEnnemis(SDL_Surface *pSurface, SDL_Rect camera) {
 
   for(int i = 0; i < nbEnnemi; i++) {
 
     if(ennemis[i].enCombat) {
 
-      orientationPersoCombatAbsolue(equipe[ennemis[i].cible]);
+      orientationPersoCombatAbsolue(ennemis[i].cible);
 
       ennemis[i].orientationAbsolue = (equipe[ennemis[i].cible]->orientationAbsolue + 2)%4;
 
@@ -396,41 +396,41 @@ void hudEnnemi(SDL_Surface *pSurface, SDL_Rect camera) {
 
 
 
-int orientationPersoCombatAbsolue(Personnage* perso) {
+int orientationPersoCombatAbsolue(int indice) {
 
 
     int vecX, vecY;
 
-    vecX = perso->posX - ennemis[perso->cible].posX;
+    vecX = equipe[indice]->posX - ennemis[equipe[indice]->cible].posX;
 
-    vecY = perso->posY - ennemis[perso->cible].posY;
+    vecY = equipe[indice]->posY - ennemis[equipe[indice]->cible].posY;
 
 
 
 
     if(vecX < 0 && vecY < 0) {
 
-      if((vecX*-1) > (vecY*-1)) perso->orientationAbsolue = gauche;
-      else  perso->orientationAbsolue = haut;
+      if((vecX*-1) > (vecY*-1)) equipe[indice]->orientationAbsolue = gauche;
+      else  equipe[indice]->orientationAbsolue = haut;
 
     } else if(vecX < 0 && vecY > 0) {
 
-      if((vecX*-1) > vecY) perso->orientationAbsolue = gauche;
-      else  perso->orientationAbsolue = bas;
+      if((vecX*-1) > vecY) equipe[indice]->orientationAbsolue = gauche;
+      else  equipe[indice]->orientationAbsolue = bas;
 
     } else if(vecX > 0 && vecY < 0) {
 
-      if(vecX > (vecY*-1)) perso->orientationAbsolue = droite;
-      else  perso->orientationAbsolue = haut;
+      if(vecX > (vecY*-1)) equipe[indice]->orientationAbsolue = droite;
+      else  equipe[indice]->orientationAbsolue = haut;
 
     } else if(vecX > 0 && vecY > 0) {
 
-      if(vecX > vecY) perso->orientationAbsolue = droite;
-      else  perso->orientationAbsolue = bas;
+      if(vecX > vecY) equipe[indice]->orientationAbsolue = droite;
+      else  equipe[indice]->orientationAbsolue = bas;
 
     }
 
-    return perso->orientationAbsolue;
+    return equipe[indice]->orientationAbsolue;
 
 }
 
@@ -442,13 +442,13 @@ int orientationPersoCombatAbsolue(Personnage* perso) {
     \param ennemi l'ennemi que cible le personnage
 */
 
-int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage) {
+int orientationPersoCombatRelative(int indice) {
 
-    int orientationAbs1 = orientationPersoCombatAbsolue(equipe[indicePersonnage]);
+    int orientationAbs1 = orientationPersoCombatAbsolue(indice);
 
-    equipe[indicePersonnage]->orientationRelative = (orientationAbs1 - ennemis[equipe[indicePersonnage]->cible].orientationAbsolue + 2)%4;
+    equipe[indice]->orientationRelative = (orientationAbs1 - ennemis[equipe[indice]->cible].orientationAbsolue + 2)%4;
 
-    return equipe[indicePersonnage]->orientationRelative;
+    return equipe[indice]->orientationRelative;
 
 }
 
@@ -460,9 +460,9 @@ int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage) {
 */
 
 
-int typeCoupPerso(Personnage *perso) {
+int typeCoupPerso(int indice) {
 
-  int precision = -ennemis[perso->cible].modif[AGI] + perso->modif[DEXT] + 100;
+  int precision = -ennemis[equipe[indice]->cible].modif[AGI] + equipe[indice]->modif[DEXT] + 100;
 
   if(precision > 95) precision = 95;
 
@@ -472,11 +472,11 @@ int typeCoupPerso(Personnage *perso) {
 
     return esquiveC;
 
-  } else if(rand()%100 <= perso->modif[CRIT]) {
+  } else if(rand()%100 <= equipe[indice]->modif[CRIT]) {
 
     return critiqueC;
 
-  } else if(rand()%100 <= ennemis[perso->cible].modif[GARDE]) {
+  } else if(rand()%100 <= ennemis[equipe[indice]->cible].modif[GARDE]) {
 
     return gardeC;
 
@@ -494,9 +494,9 @@ int typeCoupPerso(Personnage *perso) {
     \param perso personnage qui recoit le coup
 */
 
-int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
+int typeCoupEnnemi(int indice) {
 
-  int precision = -perso->modif[AGI] + ennemi->modif[DEXT] + 100;
+  int precision = -equipe[ennemis[indice].cible]->modif[AGI] + ennemis[indice].modif[DEXT] + 100;
 
   if(precision > 95) precision = 95;
 
@@ -506,11 +506,11 @@ int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
 
     return esquiveC;
 
-  } else if(rand()%100 <= ennemi->modif[CRIT]) {
+  } else if(rand()%100 <= ennemis[indice].modif[CRIT]) {
 
     return critiqueC;
 
-  } else if(rand()%100 <= perso->modif[GARDE]) {
+  } else if(rand()%100 <= equipe[ennemis[indice].cible]->modif[GARDE]) {
 
     return gardeC;
 
@@ -533,9 +533,9 @@ int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso) {
 */
 
 
-int ennemiAutoAttaque(Personnage* equipe[], Ennemi *ennemi, int indice) {
+int ennemiAutoAttaque(int indice) {
 
-    int difference = ennemi->modif[ATTMAX] - ennemi->modif[ATTMIN];
+    int difference = ennemis[indice].modif[ATTMAX] - ennemis[indice].modif[ATTMIN];
     int random;
     if(difference != 0) {
         random = rand()%difference;     //l'attaque inflige des d�gats compris entre les variables modifATTMIN et modifATTMAX
@@ -543,9 +543,9 @@ int ennemiAutoAttaque(Personnage* equipe[], Ennemi *ennemi, int indice) {
         random = 0;
     }
 
-    eCoup type = typeCoupEnnemi(ennemi, equipe[indice]);
+    eCoup type = typeCoupEnnemi(indice);
 
-    int degats = ennemi->modif[ATTMIN] + random;
+    int degats = ennemis[indice].modif[ATTMIN] + random;
 
     if(type == critiqueC) {
 
@@ -561,20 +561,20 @@ int ennemiAutoAttaque(Personnage* equipe[], Ennemi *ennemi, int indice) {
 
     }
 
-    degats = degats*(100-equipe[indice]->modif[DEFPHY])/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
+    degats = degats*(100-equipe[ennemis[indice].cible]->modif[DEFPHY])/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
-    equipe[indice]->PV -= degats;
-    if(equipe[indice]->PV <= 0) ennemi->hostilite[indice] = 0;
+    equipe[ennemis[indice].cible]->PV -= degats;
+    if(equipe[ennemis[indice].cible]->PV <= 0) ennemis[indice].hostilite[indice] = 0;
     else {
 
-      ennemi->hostilite[indice] -= degats;
+      ennemis[indice].hostilite[ennemis[indice].cible] -= degats;
 
-      if(ennemi->hostilite[indice] < 0) ennemi->hostilite[indice] = 0;
+      if(ennemis[indice].hostilite[ennemis[indice].cible] < 0) ennemis[indice].hostilite[ennemis[indice].cible] = 0;
 
     }
-    ennemi->delaiAuto=ennemi->modif[VITATT];
+    ennemis[indice].delaiAuto=ennemis[indice].modif[VITATT];
 
-    addDegatTxt(degats, equipe[indice]->posX, equipe[indice]->posY-equipe[indice]->image->h, type);
+    addDegatTxt(degats, equipe[ennemis[indice].cible]->posX, equipe[ennemis[indice].cible]->posY-equipe[ennemis[indice].cible]->image->h, type);
 
     return degats;
 
@@ -601,7 +601,7 @@ int attaqueAllie(Personnage* equipe[]) {
 
       if(distance(equipe[ennemis[i].cible]->posX, equipe[ennemis[i].cible]->posY, ennemis[i].posX, ennemis[i].posY) - equipe[ennemis[i].cible]->image->w/2 < ennemis[i].PRTAUTO && ennemis[i].delaiAuto < 0) {
 
-          ennemiAutoAttaque(equipe, ennemis+i, ennemis[i].cible);
+          ennemiAutoAttaque(i);
 
       }
 
@@ -628,7 +628,7 @@ int attaqueAllie(Personnage* equipe[]) {
 */
 
 
-int persoAutoAttaque(Personnage* equipe[], int indice) {
+int persoAutoAttaque(int indice) {
 
     int difference = equipe[indice]->modif[ATTMAX] - equipe[indice]->modif[ATTMIN];
 
@@ -644,7 +644,7 @@ int persoAutoAttaque(Personnage* equipe[], int indice) {
         random = 0;
     }
 
-    eCoup type = typeCoupPerso(equipe[indice]);
+    eCoup type = typeCoupPerso(indice);
 
     int degats = min + random;
 
@@ -700,11 +700,11 @@ int attaqueEnnemi(Personnage* equipe[]) {
 
         equipe[i]->delaiAuto--;
 
-        orientationPersoCombatRelative(equipe, i);
+        orientationPersoCombatRelative(i);
 
         if(distance(equipe[i]->posX, equipe[i]->posY, ennemis[equipe[i]->cible].posX, ennemis[equipe[i]->cible].posY) - ennemis[equipe[i]->cible].image->w/2/4 < equipe[i]->PRTAUTO && equipe[i]->delaiAuto < 0) {
 
-            persoAutoAttaque(equipe, i);
+            persoAutoAttaque(i);
 
         }
 
@@ -732,9 +732,9 @@ int attaqueEnnemi(Personnage* equipe[]) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int lanceArt(Art *art, Personnage* equipe[], int indice) {
+int lanceArt(Art *art, int indice) {
 
-    orientationPersoCombatRelative(equipe, indice);
+    orientationPersoCombatRelative(indice);
 
     int difference = art->DMGMAX[equipe[indice]->orientationRelative] - art->DMGMIN[equipe[indice]->orientationRelative];
     int random;
@@ -809,17 +809,17 @@ int lanceArt(Art *art, Personnage* equipe[], int indice) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int utiliseArt(Art* art, Personnage* equipe[], int indice) {
+int utiliseArt(Art* art, int indice) {
 
   if(equipe[indice]->PV > 0) {
 
-    orientationPersoCombatRelative(equipe, indice);
+    orientationPersoCombatRelative(indice);
 
     fprintf(stderr, "%d : %d : %d : %d\n", equipe[indice]->posX, equipe[indice]->posY, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY);
 
     if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY) - ennemis[equipe[indice]->cible].image->w/2/4 < art->PRTART[equipe[indice]->orientationRelative] && art->recup < 0) {
 
-        return lanceArt(art, equipe, indice);
+        return lanceArt(art, indice);
 
     }
 
