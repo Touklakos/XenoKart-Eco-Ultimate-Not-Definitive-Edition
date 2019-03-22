@@ -476,8 +476,8 @@ void * recoit(void *sock) {
     fprintf(stderr, "Secondaire : %s\n", data);
 
 
-    int vitX;
-    int vitY;
+    int posX;
+    int posY;
     int cible;
     int positionCurseur;
     int indicePersonnage;
@@ -485,10 +485,10 @@ void * recoit(void *sock) {
 
     switch (data[0]) {
 
-      case 'v':
-        sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &vitX, &vitY);
-        equipe[indicePersonnage]->vitX = vitX;
-        equipe[indicePersonnage]->vitY = vitY;
+      case 'p':
+        sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &posX, &posY);
+        equipe[indicePersonnage]->posX = posX;
+        equipe[indicePersonnage]->posY = posY;
 
         break;
 
@@ -1232,30 +1232,28 @@ int main(int argc, char** argv)
 
               deplacementPersonnage(equipe);
 
-              char data[100];
+              if(equipe[indicePersonnage]->vitX != 0 || equipe[indicePersonnage]->vitY != 0) {
 
-              sprintf(data, "v;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->vitX, equipe[indicePersonnage]->vitY);
+                char data[100];
 
-              fprintf(stderr, "Principale : %s\n", data);
+                sprintf(data, "p;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
 
-              if(serveur) {
+                fprintf(stderr, "Principale : %s\n", data);
 
-                send(client_socket1, data, sizeof(data), 0);
+                if(serveur) {
 
-              } else {
+                  send(client_socket1, data, sizeof(data), 0);
 
-                send(to_server_socket, data, sizeof(data), 0);
+                } else {
+
+                  send(to_server_socket, data, sizeof(data), 0);
+
+                }
 
               }
 
-        /////      send(client_socket1, clavier, sizeof(clavier)/3, 0);
-
-
-
 
               deplacementEnnemi(equipe);
-
-          /////        send(client_socket1, clavier, sizeof(clavier)/3, 0);
 
 
 
@@ -1293,12 +1291,7 @@ int main(int argc, char** argv)
 
               afficherPersonnages(screen, camera);
 
-
-
-
               afficherEnnemis(pSurface, camera);
-
-
 
               afficherArt(indicePersonnage, pSurface, cooldownArt);
 
