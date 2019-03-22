@@ -24,10 +24,10 @@ all: sdl_text menu lobby map clean
 
 sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}art.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}deplacement.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -c ${COMBAT}ennemi.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -c ${COMBAT}art.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -c ${COMBAT}deplacement.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -c ${COMBAT}degatsTxt.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -c ${COMBAT}fonction.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -c ${LOBBY}lobby.c ${LIBS} ${INCS} ${FLAGS}

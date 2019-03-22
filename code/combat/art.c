@@ -5,6 +5,9 @@
 
 #include "art.h"
 
+Art *ArtJeu[3][8];
+
+
 int initArt(Art *art, char fichier[50]) {
 
     art->recup = 0;
@@ -958,15 +961,15 @@ int initArt(Art *art, char fichier[50]) {
 
 /*Cette fonction sert � afficher les icones des arts du personnage que l'on controle en bas de l'�cran*/
 
-void afficherArt(Art *art[], SDL_Surface *pSurface, SDL_Surface *cooldownArt) {
+void afficherArt(int indicePersonnage, SDL_Surface *pSurface, SDL_Surface *cooldownArt) {
 
     for(int i = 0; i < 8; i++) {
 
         SDL_Rect dest = { i*(SCREEN_WIDTH/10)+64, SCREEN_HEIGHT-100, 0, 0};
-        SDL_BlitSurface(art[i]->image, NULL, pSurface, &dest);
-        if(art[i]->recup > 0) {
+        SDL_BlitSurface(ArtJeu[indicePersonnage][i]->image, NULL, pSurface, &dest);
+        if(ArtJeu[indicePersonnage][i]->recup > 0) {
 
-          int taille = (int) cooldownArt->h*art[i]->recup/art[i]->delaiRecupAct;
+          int taille = (int) cooldownArt->h*ArtJeu[indicePersonnage][i]->recup/ArtJeu[indicePersonnage][i]->delaiRecupAct;
           SDL_Rect cooldown = { 0, 0, cooldownArt->w, taille};
           SDL_BlitSurface(cooldownArt, &cooldown, pSurface, &dest);
 
@@ -976,8 +979,16 @@ void afficherArt(Art *art[], SDL_Surface *pSurface, SDL_Surface *cooldownArt) {
 
 }
 
-void recuperationArt(Art *art) {
+void recuperationArt() {
 
-    art->recup--;       //d�cr�mentation de la variable "recup" (quand celle-ci est inf�rieur � 0 on peut utiliser l'art)
+  for(int i = 0; i < 3; i++) {
+
+    for(int j = 0; j < 8; j++) {
+
+      ArtJeu[i][j]->recup--;       //d�cr�mentation de la variable "recup" (quand celle-ci est inf�rieur � 0 on peut utiliser l'art)
+
+    }
+
+  }
 
 }

@@ -564,7 +564,7 @@ int ennemiAutoAttaque(int indice) {
     degats = degats*(100-equipe[ennemis[indice].cible]->modif[DEFPHY])/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
     equipe[ennemis[indice].cible]->PV -= degats;
-    if(equipe[ennemis[indice].cible]->PV <= 0) ennemis[indice].hostilite[indice] = 0;
+    if(equipe[ennemis[indice].cible]->PV <= 0) ennemis[indice].hostilite[ennemis[indice].cible] = 0;
     else {
 
       ennemis[indice].hostilite[ennemis[indice].cible] -= degats;
@@ -692,8 +692,6 @@ int attaqueEnnemi(Personnage* equipe[]) {
 
   for(int i = 0; i < 3; i++) {
 
-    printf("izi : %d\n", equipe[i]->delaiAuto);
-
     if(equipe[i]->PV > 0) {
 
       if(equipe[i]->delaiArt < 0) {
@@ -732,11 +730,11 @@ int attaqueEnnemi(Personnage* equipe[]) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int lanceArt(Art *art, int indice) {
+int lanceArt(int indiceArt, int indicePersonnage) {
 
-    orientationPersoCombatRelative(indice);
+    orientationPersoCombatRelative(indicePersonnage);
 
-    int difference = art->DMGMAX[equipe[indice]->orientationRelative] - art->DMGMIN[equipe[indice]->orientationRelative];
+    int difference = ArtJeu[indicePersonnage][indiceArt]->DMGMAX[equipe[indicePersonnage]->orientationRelative] - ArtJeu[indicePersonnage][indiceArt]->DMGMIN[equipe[indicePersonnage]->orientationRelative];
     int random;
     if(difference != 0) {
         random = rand()%difference;
@@ -744,23 +742,23 @@ int lanceArt(Art *art, int indice) {
         random = 0;
     }
 
-    int degats = art->DMGMIN[equipe[indice]->orientationRelative] + random;
+    int degats = ArtJeu[indicePersonnage][indiceArt]->DMGMIN[equipe[indicePersonnage]->orientationRelative] + random;
 
-    if(art->TYPE == physique) degats = degats*(100-ennemis[equipe[indice]->cible].DEFPHY)/100;
+    if(ArtJeu[indicePersonnage][indiceArt]->TYPE == physique) degats = degats*(100-ennemis[equipe[indicePersonnage]->cible].DEFPHY)/100;
 
-    else if(art->TYPE == ether) degats = degats*(100-ennemis[equipe[indice]->cible].DEFMGE)/100;
+    else if(ArtJeu[indicePersonnage][indiceArt]->TYPE == ether) degats = degats*(100-ennemis[equipe[indicePersonnage]->cible].DEFMGE)/100;
 
     for(int i = 0; i < 15; i++) {
 
-      if(art->debuff[equipe[indice]->orientationRelative][i].valeur > -1) {
+      if(ArtJeu[indicePersonnage][indiceArt]->debuff[equipe[indicePersonnage]->orientationRelative][i].valeur > -1) {
 
-        ennemis[equipe[indice]->cible].modif[i] *= art->debuff[equipe[indice]->orientationRelative][i].valeur;
+        ennemis[equipe[indicePersonnage]->cible].modif[i] *= ArtJeu[indicePersonnage][indiceArt]->debuff[equipe[indicePersonnage]->orientationRelative][i].valeur;
 
-        ennemis[equipe[indice]->cible].delai[i][ennemis[equipe[indice]->cible].nbDelai[i]].valeur = art->debuff[equipe[indice]->orientationRelative][i].valeur;
+        ennemis[equipe[indicePersonnage]->cible].delai[i][ennemis[equipe[indicePersonnage]->cible].nbDelai[i]].valeur = ArtJeu[indicePersonnage][indiceArt]->debuff[equipe[indicePersonnage]->orientationRelative][i].valeur;
 
-        ennemis[equipe[indice]->cible].delai[i][ennemis[equipe[indice]->cible].nbDelai[i]].delai = art->debuff[equipe[indice]->orientationRelative][i].delai;
+        ennemis[equipe[indicePersonnage]->cible].delai[i][ennemis[equipe[indicePersonnage]->cible].nbDelai[i]].delai = ArtJeu[indicePersonnage][indiceArt]->debuff[equipe[indicePersonnage]->orientationRelative][i].delai;
 
-        ennemis[equipe[indice]->cible].nbDelai[i]++;
+        ennemis[equipe[indicePersonnage]->cible].nbDelai[i]++;
 
       }
 
@@ -768,28 +766,28 @@ int lanceArt(Art *art, int indice) {
 
 
 
-    ennemis[equipe[indice]->cible].PV -= degats;
-    ennemis[equipe[indice]->cible].hostilite[indice] += degats*2;
-    art->recup = art->delaiRecup[equipe[indice]->orientationRelative];
-    art->delaiRecupAct = art->delaiRecup[equipe[indice]->orientationRelative];
-    equipe[indice]->delaiArt = art->delaiAnimation;
+    ennemis[equipe[indicePersonnage]->cible].PV -= degats;
+    ennemis[equipe[indicePersonnage]->cible].hostilite[indicePersonnage] += degats*2;
+    ArtJeu[indicePersonnage][indiceArt]->recup = ArtJeu[indicePersonnage][indiceArt]->delaiRecup[equipe[indicePersonnage]->orientationRelative];
+    ArtJeu[indicePersonnage][indiceArt]->delaiRecupAct = ArtJeu[indicePersonnage][indiceArt]->delaiRecup[equipe[indicePersonnage]->orientationRelative];
+    equipe[indicePersonnage]->delaiArt = ArtJeu[indicePersonnage][indiceArt]->delaiAnimation;
 
-    ennemis[equipe[indice]->cible].etats[fournaise].valeur += art->etats[equipe[indice]->orientationRelative][fournaise];
-    ennemis[equipe[indice]->cible].hostilite[indice] += art->etats[equipe[indice]->orientationRelative][fournaise]*ennemis[equipe[indice]->cible].RES_ETATS[fournaise]/100*3;
-    ennemis[equipe[indice]->cible].etats[frisson].valeur += art->etats[equipe[indice]->orientationRelative][frisson];
-    ennemis[equipe[indice]->cible].hostilite[indice] += art->etats[equipe[indice]->orientationRelative][frisson]*ennemis[equipe[indice]->cible].RES_ETATS[frisson]/100*3;
-    ennemis[equipe[indice]->cible].etats[poison].valeur += art->etats[equipe[indice]->orientationRelative][poison];
-    ennemis[equipe[indice]->cible].hostilite[indice] += art->etats[equipe[indice]->orientationRelative][poison]*ennemis[equipe[indice]->cible].RES_ETATS[poison]/100*3;
+    ennemis[equipe[indicePersonnage]->cible].etats[fournaise].valeur += ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][fournaise];
+    ennemis[equipe[indicePersonnage]->cible].hostilite[indicePersonnage] += ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][fournaise]*ennemis[equipe[indicePersonnage]->cible].RES_ETATS[fournaise]/100*3;
+    ennemis[equipe[indicePersonnage]->cible].etats[frisson].valeur += ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][frisson];
+    ennemis[equipe[indicePersonnage]->cible].hostilite[indicePersonnage] += ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][frisson]*ennemis[equipe[indicePersonnage]->cible].RES_ETATS[frisson]/100*3;
+    ennemis[equipe[indicePersonnage]->cible].etats[poison].valeur += ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][poison];
+    ennemis[equipe[indicePersonnage]->cible].hostilite[indicePersonnage] += ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][poison]*ennemis[equipe[indicePersonnage]->cible].RES_ETATS[poison]/100*3;
 
     for(int i = 0; i < 3; i++) {
 
-        if(ennemis[equipe[indice]->cible].etats[i].valeur == art->etats[equipe[indice]->orientationRelative][i]) ennemis[equipe[indice]->cible].etats[i].delai = 60;
+        if(ennemis[equipe[indicePersonnage]->cible].etats[i].valeur == ArtJeu[indicePersonnage][indiceArt]->etats[equipe[indicePersonnage]->orientationRelative][i]) ennemis[equipe[indicePersonnage]->cible].etats[i].delai = 60;
 
     }
 
-    addDegatTxt(degats, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY-ennemis[equipe[indice]->cible].image->h/4, normalC);
+    addDegatTxt(degats, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY-ennemis[equipe[indicePersonnage]->cible].image->h/4, normalC);
 
-    ennemis[equipe[indice]->cible].enCombat = 1;
+    ennemis[equipe[indicePersonnage]->cible].enCombat = 1;
 
     return degats;
 
@@ -809,17 +807,17 @@ int lanceArt(Art *art, int indice) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int utiliseArt(Art* art, int indice) {
+int utiliseArt(int indiceArt, int indicePersonnage) {
 
-  if(equipe[indice]->PV > 0) {
+  if(equipe[indicePersonnage]->PV > 0) {
 
-    orientationPersoCombatRelative(indice);
+    orientationPersoCombatRelative(indicePersonnage);
 
-    fprintf(stderr, "%d : %d : %d : %d\n", equipe[indice]->posX, equipe[indice]->posY, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY);
+    fprintf(stderr, "%d : %d : %d : %d\n", equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY);
 
-    if(distance(equipe[indice]->posX, equipe[indice]->posY, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY) - ennemis[equipe[indice]->cible].image->w/2/4 < art->PRTART[equipe[indice]->orientationRelative] && art->recup < 0) {
+    if(distance(equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY) - ennemis[equipe[indicePersonnage]->cible].image->w/2/4 < ArtJeu[indicePersonnage][indiceArt]->PRTART[equipe[indicePersonnage]->orientationRelative] && ArtJeu[indicePersonnage][indiceArt]->recup < 0) {
 
-        return lanceArt(art, indice);
+        return lanceArt(indiceArt, indicePersonnage);
 
     }
 
@@ -840,14 +838,10 @@ int utiliseArt(Art* art, int indice) {
 
 int etatEnnemi() {
 
-  fprintf(stderr, "ennemi.c = %s\n", ennemis[0].nom);
-  fprintf(stderr, "Dickson ennemi.c = %s\n", ennemis[1].nom);
 
   for(int i = 0; i < nbEnnemi; i++) {
 
     for(int t = 0; t < 3; t++) {
-
-      fprintf(stderr, "%s.etat[%d] = %d\n", ennemis[i].nom, t, ennemis[i].etats[t].delai);
 
 
       if(ennemis[i].etats[t].delai < 0) {
@@ -972,27 +966,34 @@ void delaiModificationEnnemi() {
 */
 
 
-void persoPoursuit(Personnage *perso) {
+void persoPoursuit(int indicePersonnage) {
 
+  for(int i = 0; i < 3; i++) {
 
-  int vecX, vecY;
+    if(i != indicePersonnage && equipe[i]->enCombat) {
 
-  vecX = ennemis[perso->cible].posX - perso->posX;
-  vecY = ennemis[perso->cible].posY - perso->posY;
+      int vecX, vecY;
 
-  int dis = distance(perso->posX, perso->posY, ennemis[perso->cible].posX, ennemis[perso->cible].posY)- perso->image->w/2;
+      vecX = ennemis[equipe[i]->cible].posX - equipe[i]->posX;
+      vecY = ennemis[equipe[i]->cible].posY - equipe[i]->posY;
 
-  if(dis >= perso->PRTAUTO) {
+      int dis = distance(equipe[i]->posX, equipe[i]->posY, ennemis[equipe[i]->cible].posX, ennemis[equipe[i]->cible].posY)- equipe[i]->image->w/2;
 
-    perso->vitX = vecX*VITDPL/dis;
+      if(dis >= equipe[i]->PRTAUTO) {
 
-    perso->vitY = vecY*VITDPL/dis;
+        equipe[i]->vitX = vecX*VITDPL/dis;
 
-  } else {
+        equipe[i]->vitY = vecY*VITDPL/dis;
 
-    perso->vitX = 0;
+      } else {
 
-    perso->vitY = 0;
+        equipe[i]->vitX = 0;
+
+        equipe[i]->vitY = 0;
+
+      }
+
+    }
 
   }
 
@@ -1006,7 +1007,7 @@ void persoPoursuit(Personnage *perso) {
 */
 
 
-void deplacementPersonnage(Personnage* equipe[]) {
+void deplacementPersonnage() {
 
   for(int i = 0; i < 3; i++) {
 
@@ -1023,5 +1024,111 @@ void deplacementPersonnage(Personnage* equipe[]) {
 
 
   }
+
+}
+
+
+/*Cette fonction v�rifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa derni�re utilisation)*/
+
+
+
+/**
+    \fn void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \brief Cette fonction vérifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa dernière utilisation)
+    \param art art quel le personnage utilise
+    \param equipe equipe qui profite des bonus
+    \param indicePersonnage indice du personnage qui utilise l'art
+    \param pSurface fenetre sur laquelle on affiche les information de l'art (si il soigne on affiche la valeur de soin en vert au dessus des personnages soignés
+    \param dgtsTxt tableau des textes affiché sur l'écran
+    \param nbDgtTxt nombre de degats affiché sur l'écran
+*/
+
+void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
+
+    int j = 0, k = 3, l = -1;
+
+    if(ArtJeu[indicePersonnage][indiceArt]->CIBLE_ALLIE == groupe) {        //L'art cible tout le groupe
+
+        j = 0;
+
+        k = 3;
+
+    } else if(ArtJeu[indicePersonnage][indiceArt]->CIBLE_ALLIE == membreGroupe) {  //L'art cible un seul membre du groupe
+
+        j = cible;   //même chose que pour "soiMême" (c'est à l'appel de la fonction que l'on demande à l'utilisateur l'indice du personnage ciblé)
+
+        k = j+1;
+
+    } else if(ArtJeu[indicePersonnage][indiceArt]->CIBLE_ALLIE == allie) {               //L'art cible uniquement les allies du lanceur
+
+        j = 0;
+
+        k = 3;
+
+        l = indicePersonnage; //Dans la boucle on verifie que l'indice du personnage que l'on modifie est different de celui du lanceur
+
+    } else if(ArtJeu[indicePersonnage][indiceArt]->CIBLE_ALLIE == soiMeme) {             //L'art cible uniquement le lanceur
+
+        j = indicePersonnage; //même chose que pour "membreGroupe" (à l'appel de la fonction le lanceur met son indice de personnage dans "indicePersonnage")
+
+        k = j+1;
+
+    }
+
+    if(ArtJeu[indicePersonnage][indiceArt]->recup < 0) {
+
+        ArtJeu[indicePersonnage][indiceArt]->recup = ArtJeu[indicePersonnage][indiceArt]->delaiRecup[0];
+        ArtJeu[indicePersonnage][indiceArt]->delaiRecupAct = ArtJeu[indicePersonnage][indiceArt]->delaiRecup[0];
+
+        equipe[indicePersonnage]->delaiArt = ArtJeu[indicePersonnage][indiceArt]->delaiAnimation;
+
+
+
+        for(int i = j; i < k; i++) {
+
+          if(ArtJeu[indicePersonnage][indiceArt]->soin > 0 && equipe[i]->PV < equipe[i]->modif[MAXPV]) {
+
+            int soin = ArtJeu[indicePersonnage][indiceArt]->soin;
+
+            if(soin > equipe[i]->modif[MAXPV] - equipe[i]->PV) soin = equipe[i]->modif[MAXPV] - equipe[i]->PV;
+
+            if(soin > 0) {
+
+              equipe[i]->PV += soin;
+
+              addDegatTxt(soin, equipe[i]->posX, equipe[i]->posY-equipe[i]->image->h, soinC);
+
+            }
+
+          }
+
+        }
+
+
+        for(int z = 0; z < 15; z++) {
+
+            if(ArtJeu[indicePersonnage][indiceArt]->buff[z].valeur != -1) {
+
+                for(int i = j; i < k; i++) {
+
+                    if(i != l) {
+
+                        equipe[i]->modif[z] *= ArtJeu[indicePersonnage][indiceArt]->buff[z].valeur;
+
+                        equipe[i]->delai[z][equipe[i]->nbDelai[z]].valeur = ArtJeu[indicePersonnage][indiceArt]->buff[z].valeur;
+
+                        equipe[i]->delai[z][equipe[i]->nbDelai[z]].delai = ArtJeu[indicePersonnage][indiceArt]->buff[z].delai;
+
+                        equipe[i]->nbDelai[z]++;
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
 
 }

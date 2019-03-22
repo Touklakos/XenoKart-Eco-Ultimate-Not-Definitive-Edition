@@ -458,6 +458,63 @@ void quitter(int to_server_socket){
 }
 
 
+
+
+
+
+void * recoit(void *sock) {
+
+  char data[100];
+
+  int *socket1 = sock;
+
+  while(1) {
+
+
+    recv(*socket1, data, sizeof(data), 0);
+
+    fprintf(stderr, "Secondaire : %s\n", data);
+
+
+    int vitX;
+    int vitY;
+    int cible;
+    int positionCurseur;
+    int indicePersonnage;
+    char type;
+
+    switch (data[0]) {
+
+      case 'v':
+        sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &vitX, &vitY);
+        equipe[indicePersonnage]->vitX = vitX;
+        equipe[indicePersonnage]->vitY = vitY;
+
+        break;
+
+      case 'a':
+        sscanf(data, "%c;%d;%d", &type, &positionCurseur, &indicePersonnage);
+        utiliseArt(positionCurseur, indicePersonnage);
+        break;
+
+      case 'b':
+        sscanf(data, "%c;%d;%d;%d", &type, &positionCurseur, &indicePersonnage, &cible);
+        utiliseArtBuff(positionCurseur, indicePersonnage, cible);
+        break;
+
+    }
+
+    strcpy(data, "");
+
+  }
+
+}
+
+
+
+
+
+
 int main(int argc, char** argv)
 {
 
@@ -554,12 +611,35 @@ int main(int argc, char** argv)
   }
 
 
+	pthread_t monThreadCompteur;
+
+  if(serveur) {
+
+    pthread_create (&monThreadCompteur, NULL, recoit, &client_socket1);
+
+  } else {
+
+    pthread_create (&monThreadCompteur, NULL, recoit, &to_server_socket);
+
+  }
+
+/*
+  while(1) {
+
+    if(serveur) {
+
+      send(client_socket1, "bonjour client", 100, 0);
+
+    } else {
+
+      send(to_server_socket, "bonjour serveur", 100, 0);
+
+    }
 
 
+  }
 
-
-
-
+*/
 
 
     srand(time(NULL));
@@ -638,15 +718,15 @@ int main(int argc, char** argv)
 
 
 
-
-
-    Personnage Jojo;
-    Personnage Dio;
     Personnage Guts;
+    Personnage Dio;
+    Personnage Jojo;
 
     equipe[0] = &Guts;
     equipe[1] = &Dio;
     equipe[2] = &Jojo;
+
+
 
     initPersonnage(&Guts, "./data/Guts.txt");   //initialisation des personnages selon des fichiers txt
     initPersonnage(&Dio, "./data/Dio.txt");
@@ -657,7 +737,6 @@ int main(int argc, char** argv)
     sol = IMG_Load("./data/Sable.png");
 
 
-    Art *ArtJeu[3][8];
 
     for(int i = 0; i < 9; i++) {
 
@@ -807,37 +886,12 @@ int main(int argc, char** argv)
 
       //////////////////////////////////////FONCTIONS RECEPTION ET EMISSIONS DES INPUTS////////////////////////////////////////////
 
-      char data[100];
 
       if(coop) {
 
         if(serveur) {
 
-          recv(client_socket1, data, sizeof(data), 0);
 
-          fprintf(stderr, "izi le rasal de ses moure : %s\n", data);
-
-          switch (data[0]) {
-
-            case 'a':
-              fprintf(stderr, "pike\n");
-
-              int perso;
-              int curse;
-
-              fscanf(stderr, "%d;\n", &perso);
-              fscanf(stderr, "%d;\n", &curse);
-
-              utiliseArt(ArtJeu[perso][curse], perso);
-              break;
-
-          }
-
-          fprintf(stderr, "nike\n");
-
-          strcpy(data, "");
-
-          send(client_socket1, data, sizeof(data), 0);
 
       /*    lg2 = recv(client_socket2, clavierJ3, sizeof(clavierJ3),0);
 
@@ -846,11 +900,7 @@ int main(int argc, char** argv)
 
         } else {
 
-          strcpy(data, "");
 
-          send(to_server_socket, data, sizeof(data), 0);
-
-          recv(to_server_socket, data, sizeof(data), 0);
 
 
         }
@@ -942,13 +992,23 @@ int main(int argc, char** argv)
 
                     if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
 
-                      utiliseArt(ArtJeu[indicePersonnage][positionCurseur], indicePersonnage);
+                      utiliseArt(positionCurseur, indicePersonnage);
 
                       char data[100];
 
-                      sprintf(data, "a%d%d", indicePersonnage, positionCurseur);
+                      sprintf(data, "a;%d;%d", positionCurseur, indicePersonnage);
 
-                      send(to_server_socket, data, sizeof(data), 0);
+                      fprintf(stderr, "Principale : %s\n", data);
+
+                      if(serveur) {
+
+                        send(client_socket1, data, sizeof(data), 0);
+
+                      } else {
+
+                        send(to_server_socket, data, sizeof(data), 0);
+
+                      }
 
 
                     } else if(ArtJeu[indicePersonnage][positionCurseur]->BUT == soutien) {
@@ -959,13 +1019,23 @@ int main(int argc, char** argv)
 
                       } else {
 
-                        utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], indicePersonnage, pSurface);
+                        utiliseArtBuff(positionCurseur, indicePersonnage, 0);
 
                         char data[100];
 
-                        sprintf(data, "a%d%d", indicePersonnage, positionCurseur);
+                        sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, 0);
 
-                    /////    send(client_socket1, data, sizeof(data), 0);
+                        fprintf(stderr, "Principale : %s\n", data);
+
+                        if(serveur) {
+
+                          send(client_socket1, data, sizeof(data), 0);
+
+                        } else {
+
+                          send(to_server_socket, data, sizeof(data), 0);
+
+                        }
 
 
                       }
@@ -1003,13 +1073,24 @@ int main(int argc, char** argv)
 
                     if(testTouche(clavier[SDL_SCANCODE_E])) {
 
-                      utiliseArtBuff(ArtJeu[indicePersonnage][positionCurseur], cible, pSurface);
+                      utiliseArtBuff(positionCurseur, indicePersonnage, cible);
 
                       char data[100];
 
-                      sprintf(data, "a;%d;%d;", indicePersonnage, positionCurseur);
+                      sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, cible);
 
-                  /////    send(client_socket1, data, sizeof(data), 0);
+                      fprintf(stderr, "Principale : %s\n", data);
+
+                      if(serveur) {
+
+                        send(client_socket1, data, sizeof(data), 0);
+
+                      } else {
+
+                        send(to_server_socket, data, sizeof(data), 0);
+
+                      }
+
 
                       etatCombat = 0;
 
@@ -1026,7 +1107,8 @@ int main(int argc, char** argv)
 
                 for(int i = 0; i < nbEnnemi; i++) {
 
-                  fprintf(stderr, "fournaise de %s : %d\n", ennemis[i].nom, ennemis[i].etats[fournaise].valeur);
+                  for(int j = 0; j < 3; j++)
+                    fprintf(stderr, "hostilite de %s : %d\n", ennemis[i].nom, ennemis[i].hostilite[j]);
 
                 }
 
@@ -1123,24 +1205,13 @@ int main(int argc, char** argv)
 
             etatEnnemi();
 
-            fprintf(stderr, "Zanza incroyable.c = %p\n", ennPool);
-            fprintf(stderr, "Dickson incroyable.c = %p\n", ennPool+1);
-
-
             delaiEtatEnnemis();
 
 
-            for(int i = 0; i < 3; i++) {
 
-              for(int j = 0; j < 8; j++) {
+            recuperationArt();      //d�cr�mentations des arts des personnages
 
-                recuperationArt(ArtJeu[i][j]);      //d�cr�mentations des arts des personnages
-
-              }
-
-            }
-
-              delaiModificationPerso();           //d�crementations des modifications des personnages
+            delaiModificationPerso();           //d�crementations des modifications des personnages
 
 
 
@@ -1152,15 +1223,7 @@ int main(int argc, char** argv)
 
               if(!coop) {
 
-                for(int i = 0; i < 3; i++) {
-
-                  if(i != indicePersonnage && equipe[i]->enCombat) {
-
-                    persoPoursuit(equipe[i]);
-
-                  }
-
-                }
+                persoPoursuit(indicePersonnage);
 
               }
 
@@ -1168,6 +1231,22 @@ int main(int argc, char** argv)
 
 
               deplacementPersonnage(equipe);
+
+              char data[100];
+
+              sprintf(data, "v;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->vitX, equipe[indicePersonnage]->vitY);
+
+              fprintf(stderr, "Principale : %s\n", data);
+
+              if(serveur) {
+
+                send(client_socket1, data, sizeof(data), 0);
+
+              } else {
+
+                send(to_server_socket, data, sizeof(data), 0);
+
+              }
 
         /////      send(client_socket1, clavier, sizeof(clavier)/3, 0);
 
@@ -1221,7 +1300,7 @@ int main(int argc, char** argv)
 
 
 
-              afficherArt(ArtJeu[indicePersonnage], pSurface, cooldownArt);
+              afficherArt(indicePersonnage, pSurface, cooldownArt);
 
               afficherCurseur(positionCurseur, pSurface);
 
