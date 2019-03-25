@@ -8,7 +8,7 @@
 #define M 30
 #define tmax 10
 
-enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL, PLATEAU };
+enum typemap{ VOLCAN, JUNGLE, DESERT, TUNDRA, PLAINE, MARAIS, MONTAGNE, ARCHIPEL, PLATEAU, DONJON, PIC };
 
 typedef struct coord_s{
   int x;
@@ -26,3 +26,13 @@ typedef struct map_s{
   int difficult;
   int taille;
 }map_t;
+
+void fonctionQuitter();
+void fonctionFin();
+void init_mat(case_t c[N][M]);
+int case_valide(case_t);
+case_t creerCase(int, int);
+void creerCases(map_t *);
+map_t * creerMap(enum typemap);
+void afficherMap(map_t *, SDL_Surface*, SDL_Window*);
+void afficher_matrice(case_t c[N][M]);

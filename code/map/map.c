@@ -21,7 +21,7 @@ int caseCount = 1;
   \brief XenoKart Eco Plus
   \author Benjamin Riviere
   \version 0.01
-  \date 12 mars 2019
+  \date 25 mars 2019
 */
 
 /**
@@ -57,6 +57,12 @@ void fonctionFin(){
   }
 }
 
+/**
+    \fn void init_mat(case_t)
+    \brief Cette fonction initialise les cases de la matrice à 0
+    \param mat[N][M] Matrice de la carte
+*/
+
 void init_mat(case_t mat[N][M]){
   printf("inimat\n");
   for(int i = 0; i < N; i++){
@@ -66,22 +72,23 @@ void init_mat(case_t mat[N][M]){
   }
 }
 
+/**
+    \fn case_valide(case_t mat[N][M])
+    \brief Cette fonction permet de vérifier que les coordonnées de la case sont valides
+    \param hexcase une case t_case
+*/
+
+
 int case_valide(case_t hexcase){
   return((hexcase.coord.x < 0 || hexcase.coord.x > M) && (hexcase.coord.y < 0 || hexcase.coord.y > N));
 }
 
-void afficher_matrice(case_t c[N][M]){
-    printf("affichermat\n");
-
-  printf("---------------------------------------------- \n");
-
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      printf("%3i|",c[i][j].val);
-    }
-    printf("\n");
-  }
-}
+/**
+    \fn case_t creerCase(int x, int y)
+    \brief Cette fonction permet de générer une case
+    \param x Coordonnée X de la case
+    \param y Coordonnée Y de la case
+*/
 
 case_t creerCase(int x, int y){
 
@@ -100,6 +107,12 @@ case_t creerCase(int x, int y){
   return hexcase;
 }
 
+/**
+    \fn void creerCases(map_t * map)
+    \brief Cette fonction permet de générer toutes les cases de la matrice
+    \param map La carte
+*/
+
 void creerCases(map_t * map){
 
   printf("creercases\n");
@@ -107,25 +120,19 @@ void creerCases(map_t * map){
   int i=0,j=0;
 
   for(i=0; i<N; i++){
-    for(j; j<M; j+=4){
+    for(;j<M; j+=2){
       map->v[i][j] = creerCase(i,j);
     }
-  if((i+1)%2) j=2;
+  if((i+1)%2) j=1;
   else j = 0;
   }
 }
 
-void afficherCase(case_t hexcase, case_t v[N][M]){
-  printf("affichercase\n");
-
-  printf("%d: ",hexcase.val);
-
-  //if(case_valide());
-  //else printf("0 ");
-
-  printf("\n");
-}
-
+/**
+    \fn map_t * creerMap(enum typemap type)
+    \brief Cette fonction permet de créer la carte
+    \param type Le type de carte
+*/
 
 map_t * creerMap(enum typemap type){
   printf("creermap\n");
@@ -140,6 +147,44 @@ map_t * creerMap(enum typemap type){
 }
 
 
+void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
+
+
+  SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
+  SDL_Surface * img = NULL;
+  img = IMG_Load("code/map/hex.png");
+
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      if(map->v[i][j].val){
+        test.x = map->v[i][j].coord.y * (HEX_WIDTH - HEX_HEIGHT/4);
+        test.y = map->v[i][j].coord.x * (HEX_HEIGHT - HEX_HEIGHT/2);
+
+        SDL_BlitSurface(img, NULL, pSurface, &test);
+        SDL_UpdateWindowSurface(screen);
+      }
+    }
+  }
+}
+
+/**
+    \fn afficher_matrice(case_t [][])
+    \brief Cette fonction permet de vérifier que les coordonnées de la case sont valides
+    \param mat[N][M] Matrice de la carte
+*/
+
+void afficher_matrice(case_t c[N][M]){
+    printf("affichermat\n");
+
+  printf("---------------------------------------------- \n");
+
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      printf("%3i|",c[i][j].val);
+    }
+    printf("\n");
+  }
+}
 
 /*case_t recherchecase(int i, case_t map[N][M]){
 
@@ -174,38 +219,22 @@ map_t * creerMap(enum typemap type){
 
 }*/
 
-void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
+/**
+    \fn afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen)
+    \brief Cette fonction permet d'afficher la carte avec la SDL
+    \param map La carte
+    \param pSurface Surface sur laquel on affiche
+    \param screen Ecran sur lequel on affiche
+*/
 
 
-  SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
-  SDL_Surface * img = NULL;
-  img = IMG_Load("code/map/hexagone.png");
-
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(map->v[i][j].val){
-        test.x = map->v[i][j].coord.x * HEX_WIDTH;
-        test.x = map->v[i][j].coord.y * HEX_HEIGHT;
-
-        SDL_BlitSurface(img, NULL, pSurface, &test);
-
-        SDL_UpdateWindowSurface(screen);
-      }
-    }
-  }
-}
-
-
-
-
-
-int main(){
+int main(int argc, char** argv){
 
   SDL_Init(SDL_INIT_EVERYTHING);
   TTF_Init();
   IMG_Init(IMG_INIT_PNG);
 
-  SDL_Window* screen = SDL_CreateWindow("Menu - XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+  SDL_Window* screen = SDL_CreateWindow("Map - XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 
   SDL_Surface* pSurface = NULL;
   pSurface = SDL_GetWindowSurface(screen);
@@ -214,17 +243,16 @@ int main(){
 
   afficher_matrice(map->v);
 
-  while(!quit) {
+  afficherMap(map, pSurface, screen);
+
+  while(!quit){
 
     deb = SDL_GetTicks();
-
     SDL_PumpEvents();
 
-
-    afficherMap(map, pSurface, screen);
-
-    //fonctionFin();
+    fonctionFin();
     fonctionQuitter();
+
   }
   switch(quit){
     case 1 : printf("Programme fermé par la croix\n"); break;
