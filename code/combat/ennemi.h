@@ -65,6 +65,10 @@ extern Ennemi ennemis[100];
 extern int nbEnnemi;
 
 
+extern int client_socket1, client_socket2, to_server_socket;
+
+extern int coop;
+extern int serveur;
 
 
 
@@ -78,9 +82,9 @@ int orientationPersoCombatAbsolue(int indice);
 int orientationPersoCombatRelative(int indice);
 int typeCoupPerso(int indice);
 int typeCoupEnnemi(int indice);
-int ennemiAutoAttaque(int indice);
+int ennemiAutoAttaque(int indice, int degats, int type);
 int attaqueAllie();
-int persoAutoAttaque(int indice);
+int persoAutoAttaque(int indice, int degats, int type);
 int attaqueEnnemi();
 int lanceArt(int indiceArt, int indicePersonnage);
 int utiliseArt(int indiceArt, int indicePersonnage);

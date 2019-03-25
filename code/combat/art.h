@@ -3,6 +3,7 @@
 #include "const.h"
 #include "fonction.h"
 #include "degatsTxt.h"
+#include <stdarg.h>
 
 /*Structure des arts (attaque sp�ciales des personnages)*/
 
