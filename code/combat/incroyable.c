@@ -627,7 +627,7 @@ int main(int argc, char** argv)
   }
 
 
-//	pthread_t monThreadCompteur;
+	pthread_t monThreadCompteur;
 
   if(coop) {
 
