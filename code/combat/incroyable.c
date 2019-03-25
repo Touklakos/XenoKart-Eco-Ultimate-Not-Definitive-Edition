@@ -883,6 +883,9 @@ int main(int argc, char** argv)
       }
 
 
+      fprintf(stderr, "Bite : %d|%d\n", equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
+
+
 
 
 
