@@ -98,7 +98,6 @@ void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *point
   SDL_Rect dest;
   SDL_Surface * texte;
   SDL_Color c = {0,0,0};
-  SDL_Color vert = {0,200,0};
   char string[20];
   int objets_gardes = 0;
   printf("échange des loots\n");

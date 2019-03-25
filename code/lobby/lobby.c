@@ -36,15 +36,15 @@ int main(){
 
     //////Initailisation de la police d'écriture//////
 
-    TTF_Font *police = NULL;
+    /*TTF_Font *police = NULL;
 
-    police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
+    police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);*/
 //fenetre
 
   SDL_Event event;
   int quit = 0;
 
-  long long unsigned debut, fin , fpsCount = 0;
+  long long unsigned debut;/*, fin , fpsCount = 0;*/
 
   SDL_Surface* pSurface = NULL;
 
@@ -52,7 +52,7 @@ int main(){
 
   SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 0, 0, 0));
 
-  SDL_Color c = {255,255,255};
+  //SDL_Color c = {255,255,255};
 
 
 
@@ -66,7 +66,7 @@ int main(){
   int type_expedition;
   t_objet inv[nbObjets];
   load_inv(inv);
-  Personnage * equipe[4];
+  //Personnage * equipe[4];
   /*SDL_Rect dest;
   dest.x = 100;
   dest.y = 100;
@@ -97,7 +97,7 @@ initPersonnage(&Picksou, "./data/Picksou.txt");
     debut = SDL_GetTicks();
     SDL_PollEvent(&event);
     //SDL_PumpEvents();
-    const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
+    //const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
 
 
 

@@ -20,7 +20,7 @@ LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm -lpthread
 INCS=-I${SDL_INC_DIR}
 PROG=incroyable menu lobby map
 
-all: sdl_text menu lobby map clean
+all: sdl_text menu lobby map rentacleTape clean
 
 sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
@@ -42,6 +42,11 @@ menu: ${MENU}menu.c
 map: ${MAP}map.c
 	${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -o map map.o ${LIBS} ${INCS} ${FLAGS}
+
+rentacleTape : ${MAP}rentacleTape.c
+	${CC} -c ${MAP}rentacleTape.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -o rentacleTape rentacleTape.o fonctions.o perso.o map.o ${LIBS} ${INCS} ${FLAGS}
 
 clean:
 	rm -f *.o
