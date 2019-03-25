@@ -2,6 +2,8 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 
+#include <time.h>
+
 #include "map.h"
 #include "../combat/const.h"
 
@@ -80,8 +82,52 @@ void init_mat(case_t mat[N][M]){
 
 
 int case_valide(case_t hexcase){
-  return((hexcase.coord.x < 0 || hexcase.coord.x > M) && (hexcase.coord.y < 0 || hexcase.coord.y > N));
+  return((hexcase.coord.x < 0 && hexcase.coord.x > M) && (hexcase.coord.y < 0 && hexcase.coord.y > N));
 }
+
+int coord_valide(int x, int y){
+  return((x < 0 && x > M) && (y < 0 && y > N));
+}
+
+int choixType(case_t hexcase, map_t * map){
+  int choix[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+
+  int valrand, somme = 0;
+
+
+  choix[map->type] += 35;
+  choix[(map->type+11)%12] += 10;
+  choix[(map->type+1)%12] += 10;
+  choix[10] += 15;
+
+
+  if(coord_valide(hexcase.coord.x-2, hexcase.coord.y) && map->v[hexcase.coord.x-2][hexcase.coord.y].val != 0) choix[map->v[hexcase.coord.x-2][hexcase.coord.y].type] += 5;
+  else choix[map->type] += 5;
+  if(coord_valide(hexcase.coord.x-1, hexcase.coord.y+1)&& map->v[hexcase.coord.x-1][hexcase.coord.y+1].val != 0) choix[map->v[hexcase.coord.x-1][hexcase.coord.y+1].type] += 5;
+  else choix[map->type] += 5;
+  if(coord_valide(hexcase.coord.x+1, hexcase.coord.y+1)&& map->v[hexcase.coord.x+1][hexcase.coord.y+1].val != 0) choix[map->v[hexcase.coord.x+1][hexcase.coord.y+1].type] += 5;
+  else choix[map->type] += 5;
+  if(coord_valide(hexcase.coord.x+2, hexcase.coord.y)&& map->v[hexcase.coord.x+2][hexcase.coord.y].val != 0) choix[map->v[hexcase.coord.x+2][hexcase.coord.y].type] += 5;
+  else choix[map->type] += 5;
+  if(coord_valide(hexcase.coord.x+1, hexcase.coord.y-1)&& map->v[hexcase.coord.x+1][hexcase.coord.y-1].val != 0) choix[map->v[hexcase.coord.x+1][hexcase.coord.y-1].type] += 5;
+  else choix[map->type] += 5;
+  if(coord_valide(hexcase.coord.x-1, hexcase.coord.y-1)&& map->v[hexcase.coord.x-1][hexcase.coord.y-1].val != 0) choix[map->v[hexcase.coord.x-1][hexcase.coord.y-1].type] += 5;
+  else choix[map->type] += 5;
+
+  for(int i = 0; i < 12; i++){
+    printf("%i |", choix[i]);
+  }
+  printf("\n");
+
+  valrand = rand()%100+1;
+
+  for(int i = 0; i < 12; i++){
+    somme+= choix[i];
+    if(somme >= valrand) return i;
+  }
+  return choix[map->type];
+}
+
 
 /**
     \fn case_t creerCase(int x, int y)
@@ -90,7 +136,7 @@ int case_valide(case_t hexcase){
     \param y Coordonnée Y de la case
 */
 
-case_t creerCase(int x, int y){
+case_t creerCase(int x, int y, map_t * map){
 
   printf("creercase\n");
   case_t hexcase;
@@ -101,6 +147,8 @@ case_t creerCase(int x, int y){
 
   hexcase.coord.x = x;
   hexcase.coord.y = y;
+
+  hexcase.type = choixType(hexcase, map);
 
   caseCount++;
 
@@ -119,9 +167,12 @@ void creerCases(map_t * map){
 
   int i=0,j=0;
 
+
+  srand(time(NULL));
+
   for(i=0; i<N; i++){
     for(;j<M; j+=2){
-      map->v[i][j] = creerCase(i,j);
+      map->v[i][j] = creerCase(i,j,map);
     }
   if((i+1)%2) j=1;
   else j = 0;
@@ -141,6 +192,8 @@ map_t * creerMap(enum typemap type){
 
   init_mat(map->v);
 
+  map->type = type;
+
   creerCases(map);
 
   return map;
@@ -152,7 +205,6 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
   SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
   SDL_Surface * img = NULL;
-  img = IMG_Load("code/map/hex.png");
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
@@ -160,11 +212,27 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
         test.x = map->v[i][j].coord.y * (HEX_WIDTH - HEX_HEIGHT/4);
         test.y = map->v[i][j].coord.x * (HEX_HEIGHT - HEX_HEIGHT/2);
 
+        switch(map->v[i][j].type){
+          case 0 : img = IMG_Load("code/map/hex/hex_volcan.png"); break;
+          case 1 : img = IMG_Load("code/map/hex/hex_montagne.png"); break;
+          case 2 : img = IMG_Load("code/map/hex/hex_pic.png"); break;
+          case 3 : img = IMG_Load("code/map/hex/hex_desert.png"); break;
+          case 4 : img = IMG_Load("code/map/hex/hex_plateau.png"); break;
+          case 5 : img = IMG_Load("code/map/hex/hex_plaine.png"); break;
+          case 6 : img = IMG_Load("code/map/hex/hex_donjon.png"); break;
+          case 7 : img = IMG_Load("code/map/hex/hex_marais.png"); break;
+          case 8 : img = IMG_Load("code/map/hex/hex_tundra.png"); break;
+          case 9 : img = IMG_Load("code/map/hex/hex_foret.png"); break;
+          case 10 : img = IMG_Load("code/map/hex/hex_ocean.png"); break;
+          case 11 : img = IMG_Load("code/map/hex/hex_archipel.png"); break;
+          default : img = IMG_Load("code/map/hex/hex.png"); break;
+        }
+
         SDL_BlitSurface(img, NULL, pSurface, &test);
-        SDL_UpdateWindowSurface(screen);
       }
     }
   }
+  SDL_UpdateWindowSurface(screen);
 }
 
 /**
@@ -224,7 +292,7 @@ void afficher_matrice(case_t c[N][M]){
     \brief Cette fonction permet d'afficher la carte avec la SDL
     \param map La carte
     \param pSurface Surface sur laquel on affiche
-    \param screen Ecran sur lequel on affiche
+    \param screen Ecran sur lequel on afficheMARAIS, TU
 */
 
 
@@ -239,7 +307,7 @@ int main(int argc, char** argv){
   SDL_Surface* pSurface = NULL;
   pSurface = SDL_GetWindowSurface(screen);
 
-  map_t * map = creerMap(1);
+  map_t * map = creerMap(8);
 
   afficher_matrice(map->v);
 
@@ -250,12 +318,13 @@ int main(int argc, char** argv){
     deb = SDL_GetTicks();
     SDL_PumpEvents();
 
-    fonctionFin();
+    //fonctionFin();
     fonctionQuitter();
 
   }
   switch(quit){
     case 1 : printf("Programme fermé par la croix\n"); break;
     case 2 : printf("Programme fermé par le bouton\n"); break;
+
   }
 }
