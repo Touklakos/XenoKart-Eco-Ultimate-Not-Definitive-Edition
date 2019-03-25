@@ -534,54 +534,6 @@ void * recoit(void *sock) {
 
 
 
-pthread_cond_t condition = PTHREAD_COND_INITIALIZER; /* Création de la condition */
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; /* Création du mutex */
-
-void* threadCompteur (void* arg)
-{
-	int compteur = 0, nombre = 0;
-
-	srand(time(NULL));
-
-	while(1) /* Boucle infinie */
-	{
-		nombre = rand()%10; /* On tire un nombre entre 0 et 10 */
-		compteur += nombre; /* On ajoute ce nombre à la variable compteur */
-
-		fprintf(stderr, "\n%d", compteur);
-
-		if(compteur >= 20) /* Si compteur est plus grand ou égal à 20 */
-		{
-			pthread_mutex_lock (&mutex); /* On verrouille le mutex */
-			pthread_cond_signal (&condition); /* On délivre le signal : condition remplie */
-			pthread_mutex_unlock (&mutex); /* On déverrouille le mutex */
-      fprintf(stderr, "izi\n");
-
-			compteur = 0; /* On remet la variable compteur à 0 */
-		}
-
-		sleep (3); /* On laisse 1 seconde de repos */
-    fprintf(stderr, "pas tant izi\n");
-	}
-
-	pthread_exit(NULL); /* Fin du thread */
-}
-
-void* threadAlarme (void* arg)
-{
-	while(1) /* Boucle infinie */
-	{
-		pthread_mutex_lock(&mutex); /* On verrouille le mutex */
-		pthread_cond_wait (&condition, &mutex); /* On attend que la condition soit remplie */
-		printf("\nLE COMPTEUR A DÉPASSÉ 20.");
-		pthread_mutex_unlock(&mutex); /* On déverrouille le mutex */
-	}
-
-	pthread_exit(NULL); /* Fin du thread */
-}
-
-
-
 int main(int argc, char** argv)
 {
 
@@ -590,17 +542,6 @@ int main(int argc, char** argv)
   if(argc == 2)
     serveur = 1;
 
-    pthread_t monThreadCompteur;
-    pthread_t monThreadAlarme;
-
-    pthread_create (&monThreadCompteur, NULL, threadCompteur, (void*)NULL);
-    pthread_create (&monThreadAlarme, NULL, threadAlarme, (void*)NULL); /* Création des threads */
-
-    pthread_join (monThreadCompteur, NULL);
-    pthread_join (monThreadAlarme, NULL); /* Attente de la fin des threads */
-
-
-while(1);
 
 
   int ma_socket;
