@@ -533,35 +533,50 @@ int typeCoupEnnemi(int indice) {
 */
 
 
-int ennemiAutoAttaque(int indice) {
+int ennemiAutoAttaque(int indice, int degats, int type) {
 
-    int difference = ennemis[indice].modif[ATTMAX] - ennemis[indice].modif[ATTMIN];
-    int random;
-    if(difference != 0) {
-        random = rand()%difference;     //l'attaque inflige des d�gats compris entre les variables modifATTMIN et modifATTMAX
-    } else {
-        random = 0;
-    }
+  int envoi = 0;
 
-    eCoup type = typeCoupEnnemi(indice);
+    if(degats == -1) {
 
-    int degats = ennemis[indice].modif[ATTMIN] + random;
+      envoi = 1;
 
-    if(type == critiqueC) {
+      int difference = ennemis[indice].modif[ATTMAX] - ennemis[indice].modif[ATTMIN];
+      int random;
+      if(difference != 0) {
+          random = rand()%difference;     //l'attaque inflige des d�gats compris entre les variables modifATTMIN et modifATTMAX
+      } else {
+          random = 0;
+      }
 
-        degats *= 1.5;
+      degats = ennemis[indice].modif[ATTMIN] + random;
 
-    } else if(type == esquiveC) {
+      degats = degats*(100-equipe[ennemis[indice].cible]->modif[DEFPHY])/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
-        degats = 0;
-
-    } else if(type == gardeC) {
-
-        degats *= 0.5;
 
     }
 
-    degats = degats*(100-equipe[ennemis[indice].cible]->modif[DEFPHY])/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
+    if(type == -1) {
+
+      type = typeCoupEnnemi(indice);
+
+      if(type == critiqueC) {
+
+          degats *= 1.5;
+
+      } else if(type == esquiveC) {
+
+          degats = 0;
+
+      } else if(type == gardeC) {
+
+          degats *= 0.5;
+
+      }
+
+    }
+
+
 
     equipe[ennemis[indice].cible]->PV -= degats;
     if(equipe[ennemis[indice].cible]->PV <= 0) ennemis[indice].hostilite[ennemis[indice].cible] = 0;
@@ -575,6 +590,26 @@ int ennemiAutoAttaque(int indice) {
     ennemis[indice].delaiAuto=ennemis[indice].modif[VITATT];
 
     addDegatTxt(degats, equipe[ennemis[indice].cible]->posX, equipe[ennemis[indice].cible]->posY-equipe[ennemis[indice].cible]->image->h, type);
+
+    if(envoi) {
+
+      char data[100];
+
+      sprintf(data, "e;%d;%d;%d", indice, degats, type);
+
+      fprintf(stderr, "Principale : %s\n", data);
+
+      if(serveur) {
+
+        send(client_socket1, data, sizeof(data), 0);
+
+      } else {
+
+        send(to_server_socket, data, sizeof(data), 0);
+
+      }
+
+    }
 
     return degats;
 
@@ -591,7 +626,7 @@ int ennemiAutoAttaque(int indice) {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueAllie(Personnage* equipe[]) {
+int attaqueAllie() {
 
   for(int i = 0; i < nbEnnemi; i++) {
 
@@ -601,7 +636,7 @@ int attaqueAllie(Personnage* equipe[]) {
 
       if(distance(equipe[ennemis[i].cible]->posX, equipe[ennemis[i].cible]->posY, ennemis[i].posX, ennemis[i].posY) - equipe[ennemis[i].cible]->image->w/2 < ennemis[i].PRTAUTO && ennemis[i].delaiAuto < 0) {
 
-          ennemiAutoAttaque(i);
+          ennemiAutoAttaque(i, -1, -1);
 
       }
 
@@ -609,7 +644,7 @@ int attaqueAllie(Personnage* equipe[]) {
 
   }
 
-  return -1;
+  return 0;
 
 }
 
@@ -628,47 +663,75 @@ int attaqueAllie(Personnage* equipe[]) {
 */
 
 
-int persoAutoAttaque(int indice) {
+int persoAutoAttaque(int indice, int degats, int type) {
 
-    int difference = equipe[indice]->modif[ATTMAX] - equipe[indice]->modif[ATTMIN];
+  int envoi = 0;
 
-    int min;
+    if(degats == -1) {
 
-    if(difference < 0) min = equipe[indice]->modif[ATTMAX];
-    else min = equipe[indice]->modif[ATTMIN];
+      envoi = 1;
 
-    int random;
-    if(difference > 0) {
-        random = rand()%difference;     //l'attaque inflige des d�gats compris entre les variables modifATTMIN et modifATTMAX
-    } else {
-        random = 0;
+      int difference = equipe[indice]->modif[ATTMAX] - equipe[indice]->modif[ATTMIN];
+
+      int min;
+
+      if(difference < 0) min = equipe[indice]->modif[ATTMAX];
+      else min = equipe[indice]->modif[ATTMIN];
+
+      int random;
+      if(difference > 0) {
+          random = rand()%difference;     //l'attaque inflige des d�gats compris entre les variables modifATTMIN et modifATTMAX
+      } else {
+          random = 0;
+      }
+
+      degats = min + random;
+
+      type = typeCoupPerso(indice);
+
+      if(type == critiqueC) {
+
+          degats *= 1.5;
+
+      } else if(type == esquiveC) {
+
+          degats = 0;
+
+      } else if(type == gardeC) {
+
+          degats *= 0.5;
+
+      }
+
+      degats = degats*(100-ennemis[equipe[indice]->cible].DEFPHY)/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
+
     }
-
-    eCoup type = typeCoupPerso(indice);
-
-    int degats = min + random;
-
-    if(type == critiqueC) {
-
-        degats *= 1.5;
-
-    } else if(type == esquiveC) {
-
-        degats = 0;
-
-    } else if(type == gardeC) {
-
-        degats *= 0.5;
-
-    }
-
-    degats = degats*(100-ennemis[equipe[indice]->cible].DEFPHY)/100;       //les d�gats sont r�duit par la d�fence de l'ennemi
 
     ennemis[equipe[indice]->cible].PV -= degats;
     ennemis[equipe[indice]->cible].hostilite[indice] += degats*2;
     equipe[indice]->delaiAuto=(int)equipe[indice]->modif[VITATT];
 
     addDegatTxt(degats, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY-ennemis[equipe[indice]->cible].image->h/4, type);
+
+    if(envoi) {
+
+      char data[100];
+
+      sprintf(data, "c;%d;%d;%d", indice, degats, type);
+
+      fprintf(stderr, "Principale : %s\n", data);
+
+      if(serveur) {
+
+        send(client_socket1, data, sizeof(data), 0);
+
+      } else {
+
+        send(to_server_socket, data, sizeof(data), 0);
+
+      }
+
+    }
 
     ennemis[equipe[indice]->cible].enCombat = 1;
 
@@ -682,13 +745,9 @@ int persoAutoAttaque(int indice) {
 /**
     \fn int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
     \brief cette fonction verifie si un personnage peut lancer un auto-attaque sur un ennemi (verification de la distance et du delai depuis la derniere frappe)
-    \param equipe equipe de personnage
-    \param ennemi ennemi qui recoit le coup
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueEnnemi(Personnage* equipe[]) {
+int attaqueEnnemi() {
 
   for(int i = 0; i < 3; i++) {
 
@@ -702,7 +761,7 @@ int attaqueEnnemi(Personnage* equipe[]) {
 
         if(distance(equipe[i]->posX, equipe[i]->posY, ennemis[equipe[i]->cible].posX, ennemis[equipe[i]->cible].posY) - ennemis[equipe[i]->cible].image->w/2/4 < equipe[i]->PRTAUTO && equipe[i]->delaiAuto < 0) {
 
-            persoAutoAttaque(i);
+            persoAutoAttaque(i, -1, -1);
 
         }
 

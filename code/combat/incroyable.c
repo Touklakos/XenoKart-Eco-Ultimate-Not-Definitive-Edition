@@ -33,6 +33,9 @@
 
 char buffer[512];
 
+int client_socket1, client_socket2, to_server_socket;
+int coop;
+int serveur;
 
 
 int etatCombat = 0;             //Si on se bat normalement ou si on est en train de choisir une cible pour un art de soutien
@@ -464,6 +467,8 @@ void quitter(int to_server_socket){
 
 void * recoit(void *sock) {
 
+  SDL_Delay(1000);
+
   char data[100];
 
   int *socket1 = sock;
@@ -479,6 +484,8 @@ void * recoit(void *sock) {
     int posX;
     int posY;
     int cible;
+    int degats;
+    int typeCoup;
     int positionCurseur;
     int indicePersonnage;
     char type;
@@ -489,7 +496,6 @@ void * recoit(void *sock) {
         sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &posX, &posY);
         equipe[indicePersonnage]->posX = posX;
         equipe[indicePersonnage]->posY = posY;
-
         break;
 
       case 'a':
@@ -500,6 +506,21 @@ void * recoit(void *sock) {
       case 'b':
         sscanf(data, "%c;%d;%d;%d", &type, &positionCurseur, &indicePersonnage, &cible);
         utiliseArtBuff(positionCurseur, indicePersonnage, cible);
+        break;
+
+      case 'c':
+        sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &degats, &typeCoup);
+        persoAutoAttaque(indicePersonnage, degats, typeCoup);
+        break;
+
+      case 'e':
+        sscanf(data, "%c;%d;%d", &type, &indicePersonnage, &degats, &typeCoup);
+        ennemiAutoAttaque(indicePersonnage, degats, typeCoup);
+        break;
+
+      case 'y':
+        sscanf(data, "%c;%d;%d", &type, &indicePersonnage, &cible);
+        equipe[indicePersonnage]->cible = cible;
         break;
 
     }
@@ -513,28 +534,23 @@ void * recoit(void *sock) {
 
 
 
-
-
 int main(int argc, char** argv)
 {
 
-  int coop = 1;
-  int serveur = 0;
+  coop = 1;
+  serveur = 0;
   if(argc == 2)
     serveur = 1;
 
 
 
   int ma_socket;
-  int client_socket1, client_socket2;
   struct sockaddr_in mon_address, client_address1, client_address2;
   unsigned int mon_address_longueur, lg1, lg2;
 
   struct sockaddr_in serveur_addr;
   struct hostent *serveur_info;
   long hostAddr;
-  char buffer[512];
-  int to_server_socket;
 
     if(coop) {
 
@@ -613,33 +629,19 @@ int main(int argc, char** argv)
 
 	pthread_t monThreadCompteur;
 
-  if(serveur) {
-
-    pthread_create (&monThreadCompteur, NULL, recoit, &client_socket1);
-
-  } else {
-
-    pthread_create (&monThreadCompteur, NULL, recoit, &to_server_socket);
-
-  }
-
-/*
-  while(1) {
+  if(coop) {
 
     if(serveur) {
 
-      send(client_socket1, "bonjour client", 100, 0);
+      pthread_create (&monThreadCompteur, NULL, recoit, &client_socket1);
 
     } else {
 
-      send(to_server_socket, "bonjour serveur", 100, 0);
+      pthread_create (&monThreadCompteur, NULL, recoit, &to_server_socket);
 
     }
 
-
   }
-
-*/
 
 
     srand(time(NULL));
@@ -822,9 +824,9 @@ int main(int argc, char** argv)
 
     int quit = 0;               //quitte le programme si on appui sur la croix rouge
 
-    int indicePersonnage = 2;       //variable qui indique quel personnage on est entrain de controller
+    int indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
 
-    if(serveur) indicePersonnage = 0;
+    if(serveur) indicePersonnage = 1;
 
     int recupCibleEnn = 0;           //variable affect� a DELAI_CIBLE_ENN
 
@@ -858,10 +860,7 @@ int main(int argc, char** argv)
       SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 255, 255)); //on nettoye l'�cran en affichant un grand rectangle blanc
 
 
-
-
       //////////////////////////////////////FONCTIONS ++&+ SUR CANAL+////////////////////////////////////////////
-
 
 
       SDL_PollEvent(&event);
@@ -884,28 +883,7 @@ int main(int argc, char** argv)
       }
 
 
-      //////////////////////////////////////FONCTIONS RECEPTION ET EMISSIONS DES INPUTS////////////////////////////////////////////
-
-
-      if(coop) {
-
-        if(serveur) {
-
-
-
-      /*    lg2 = recv(client_socket2, clavierJ3, sizeof(clavierJ3),0);
-
-          send(client_socket2, clavier, sizeof(clavier), 0);*/
-
-
-        } else {
-
-
-
-
-        }
-
-      }
+      fprintf(stderr, "Bite : %d|%d\n", equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
 
 
 
@@ -916,16 +894,39 @@ int main(int argc, char** argv)
 
 
 
+      if(coop) {
 
+        if(serveur) {
 
-      attaqueAllie(equipe);
+          attaqueAllie();
 
-      /////    send(client_socket1, clavier, sizeof(clavier)/3, 0);
+        }
 
+        if(equipe[indicePersonnage]->PV > 0) {
 
-      attaqueEnnemi(equipe);  //les personnages attaques l'ennemi qu'ils ciblent
+          if(equipe[indicePersonnage]->delaiArt < 0) {
 
-      /////    send(client_socket1, clavier, sizeof(clavier)/3, 0);
+            equipe[indicePersonnage]->delaiAuto--;
+
+            orientationPersoCombatRelative(indicePersonnage);
+
+            if(distance(equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY) - ennemis[equipe[indicePersonnage]->cible].image->w/2/4 < equipe[indicePersonnage]->PRTAUTO && equipe[indicePersonnage]->delaiAuto < 0) {
+
+                persoAutoAttaque(indicePersonnage, -1, -1);
+
+            }
+
+          }
+
+        }
+
+      } else {
+
+        attaqueAllie();
+
+        attaqueEnnemi();  //les personnages attaques l'ennemi qu'ils ciblent
+
+      }
 
 
 
@@ -1037,7 +1038,6 @@ int main(int argc, char** argv)
 
                         }
 
-
                       }
 
                     }
@@ -1124,6 +1124,22 @@ int main(int argc, char** argv)
 
                     recupCibleEnn = DELAI_CIBLE_ENN;
 
+                    char data[100];
+
+                    sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
+
+                    fprintf(stderr, "Principale : %s\n", data);
+
+                    if(serveur) {
+
+                      send(client_socket1, data, sizeof(data), 0);
+
+                    } else {
+
+                      send(to_server_socket, data, sizeof(data), 0);
+
+                    }
+
                   }
 
 
@@ -1136,6 +1152,22 @@ int main(int argc, char** argv)
                     equipe[indicePersonnage]->enChoixCible = 1;
 
                     recupCibleEnn = DELAI_CIBLE_ENN;
+
+                    char data[100];
+
+                    sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
+
+                    fprintf(stderr, "Principale : %s\n", data);
+
+                    if(serveur) {
+
+                      send(client_socket1, data, sizeof(data), 0);
+
+                    } else {
+
+                      send(to_server_socket, data, sizeof(data), 0);
+
+                    }
 
                   }
 

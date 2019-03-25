@@ -14,5 +14,5 @@ typedef struct {SDL_Rect rec; SDL_Surface* txt;} affichage;
 
 void fonctionQuitter();
 void fonctionFin();
-void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police);
-void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police);
+void afficher(affichage tab[], int, SDL_Surface*, SDL_Window*, TTF_Font *);
+void fonctionJeu(SDL_Surface*, SDL_Window*, TTF_Font *);
