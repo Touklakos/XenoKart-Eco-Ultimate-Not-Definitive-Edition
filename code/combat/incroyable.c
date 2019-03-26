@@ -514,7 +514,7 @@ void * recoit(void *sock) {
         break;
 
       case 'e':
-        sscanf(data, "%c;%d;%d", &type, &indicePersonnage, &degats, &typeCoup);
+        sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &degats, &typeCoup);
         ennemiAutoAttaque(indicePersonnage, degats, typeCoup);
         break;
 
