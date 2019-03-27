@@ -1,0 +1,15 @@
+valgrind --leak-check=full ./incroyable.c
+
+==20181== 35,392 (1,152 direct, 34,240 indirect) bytes in 12 blocks are definitely lost in loss record 169 of 184
+==20181==    at 0x4C31B25: calloc (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==20181==    by 0x4EBF110: SDL_calloc_REAL (SDL_malloc.c:5344)
+==20181==    by 0x4F0F40E: SDL_CreateRGBSurfaceWithFormat_REAL (SDL_surface.c:75)
+==20181==    by 0x4F0F40E: SDL_CreateRGBSurface_REAL (SDL_surface.c:166)
+==20181==    by 0x53EE671: TTF_RenderUTF8_Solid (SDL_ttf.c:1309)
+==20181==    by 0x53EE9C9: TTF_RenderText_Solid (SDL_ttf.c:1275)
+==20181==    by 0x111C5C: hudEnnemi (ennemi.c:376)
+==20181==    by 0x10C592: main (incroyable.c:1342)
+
+
+
+Une SDL_Surface n'était pas libreré après son utilisation

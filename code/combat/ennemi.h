@@ -86,7 +86,7 @@ int ennemiAutoAttaque(int indice, int degats, int type);
 int attaqueAllie();
 int persoAutoAttaque(int indice, int degats, int type);
 int attaqueEnnemi();
-int lanceArt(int indiceArt, int indicePersonnage);
+int lanceArt(int indiceArt, int indicePersonnage, int degats);
 int utiliseArt(int indiceArt, int indicePersonnage);
 int etatEnnemi();
 void delaiEtatEnnemis();

@@ -473,7 +473,7 @@ void * recoit(void *sock) {
 
   int *socket1 = sock;
 
-  while(1) {
+  while(0) {
 
 
     recv(*socket1, data, sizeof(data), 0);
@@ -501,6 +501,11 @@ void * recoit(void *sock) {
       case 'a':
         sscanf(data, "%c;%d;%d", &type, &positionCurseur, &indicePersonnage);
         utiliseArt(positionCurseur, indicePersonnage);
+        break;
+
+      case 'z':
+        sscanf(data, "%c;%d;%d;%d", &type, &positionCurseur, &indicePersonnage, &degats);
+        lanceArt(positionCurseur, indicePersonnage, degats);
         break;
 
       case 'b':
@@ -537,7 +542,7 @@ void * recoit(void *sock) {
 int main(int argc, char** argv)
 {
 
-  coop = 1;
+  coop = 0;
   serveur = 0;
   if(argc == 2)
     serveur = 1;
@@ -826,7 +831,7 @@ int main(int argc, char** argv)
 
     int indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
 
-    if(serveur) indicePersonnage = 1;
+    if(serveur) indicePersonnage = 2;
 
     int recupCibleEnn = 0;           //variable affect� a DELAI_CIBLE_ENN
 
@@ -883,13 +888,6 @@ int main(int argc, char** argv)
       }
 
 
-      fprintf(stderr, "Bite : %d|%d\n", equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
-
-
-
-
-
-
       //////////////////////////////////////FONCTIONS AUTOMATIQUE DURANT LE COMBAT////////////////////////////////////////////
 
 
@@ -900,23 +898,7 @@ int main(int argc, char** argv)
 
           attaqueAllie();
 
-        }
-
-        if(equipe[indicePersonnage]->PV > 0) {
-
-          if(equipe[indicePersonnage]->delaiArt < 0) {
-
-            equipe[indicePersonnage]->delaiAuto--;
-
-            orientationPersoCombatRelative(indicePersonnage);
-
-            if(distance(equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY) - ennemis[equipe[indicePersonnage]->cible].image->w/2/4 < equipe[indicePersonnage]->PRTAUTO && equipe[indicePersonnage]->delaiAuto < 0) {
-
-                persoAutoAttaque(indicePersonnage, -1, -1);
-
-            }
-
-          }
+          attaqueEnnemi();  //les personnages attaques l'ennemi qu'ils ciblent
 
         }
 
@@ -928,6 +910,11 @@ int main(int argc, char** argv)
 
       }
 
+      for(int i = 0; i < 3; i++) {
+
+        fprintf(stderr, "cible perso : %d\n", equipe[i]->cible);
+
+      }
 
 
       //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
@@ -993,21 +980,27 @@ int main(int argc, char** argv)
 
                     if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
 
-                      utiliseArt(positionCurseur, indicePersonnage);
+                      if(coop) {
 
-                      char data[100];
+                        if(serveur) {
 
-                      sprintf(data, "a;%d;%d", positionCurseur, indicePersonnage);
+                          utiliseArt(positionCurseur, indicePersonnage);
 
-                      fprintf(stderr, "Principale : %s\n", data);
+                        } else {
 
-                      if(serveur) {
+                          char data[100];
 
-                        send(client_socket1, data, sizeof(data), 0);
+                          sprintf(data, "a;%d;%d", positionCurseur, indicePersonnage);
+
+                          fprintf(stderr, "Principale : %s\n", data);
+
+                          send(to_server_socket, data, sizeof(data), 0);
+
+                        }
 
                       } else {
 
-                        send(to_server_socket, data, sizeof(data), 0);
+                        utiliseArt(positionCurseur, indicePersonnage);
 
                       }
 
@@ -1020,21 +1013,27 @@ int main(int argc, char** argv)
 
                       } else {
 
-                        utiliseArtBuff(positionCurseur, indicePersonnage, 0);
+                        if(coop) {
 
-                        char data[100];
+                          if(serveur) {
 
-                        sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, 0);
+                            utiliseArtBuff(positionCurseur, indicePersonnage, 0);
 
-                        fprintf(stderr, "Principale : %s\n", data);
+                          } else {
 
-                        if(serveur) {
+                            char data[100];
 
-                          send(client_socket1, data, sizeof(data), 0);
+                            sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, 0);
+
+                            fprintf(stderr, "Principale : %s\n", data);
+
+                            send(to_server_socket, data, sizeof(data), 0);
+
+                          }
 
                         } else {
 
-                          send(to_server_socket, data, sizeof(data), 0);
+                          utiliseArtBuff(positionCurseur, indicePersonnage, 0);
 
                         }
 
@@ -1073,24 +1072,29 @@ int main(int argc, char** argv)
 
                     if(testTouche(clavier[SDL_SCANCODE_E])) {
 
-                      utiliseArtBuff(positionCurseur, indicePersonnage, cible);
+                      if(coop) {
 
-                      char data[100];
+                        if(serveur) {
 
-                      sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, cible);
+                          utiliseArtBuff(positionCurseur, indicePersonnage, cible);
 
-                      fprintf(stderr, "Principale : %s\n", data);
+                        } else {
 
-                      if(serveur) {
+                          char data[100];
 
-                        send(client_socket1, data, sizeof(data), 0);
+                          sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, cible);
+
+                          fprintf(stderr, "Principale : %s\n", data);
+
+                          send(to_server_socket, data, sizeof(data), 0);
+
+                        }
 
                       } else {
 
-                        send(to_server_socket, data, sizeof(data), 0);
+                        utiliseArtBuff(positionCurseur, indicePersonnage, cible);
 
                       }
-
 
                       etatCombat = 0;
 
@@ -1098,19 +1102,10 @@ int main(int argc, char** argv)
 
                   }
 
-
-
-
                 break;
 
                 }
 
-                for(int i = 0; i < nbEnnemi; i++) {
-
-                  for(int j = 0; j < 3; j++)
-                    fprintf(stderr, "hostilite de %s : %d\n", ennemis[i].nom, ennemis[i].hostilite[j]);
-
-                }
 
                 if(recupCibleEnn-- < 0) {
 
@@ -1124,19 +1119,23 @@ int main(int argc, char** argv)
 
                     recupCibleEnn = DELAI_CIBLE_ENN;
 
-                    char data[100];
+                    if(coop) {
 
-                    sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
+                      char data[100];
 
-                    fprintf(stderr, "Principale : %s\n", data);
+                      sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
 
-                    if(serveur) {
+                      fprintf(stderr, "Principale : %s\n", data);
 
-                      send(client_socket1, data, sizeof(data), 0);
+                      if(serveur) {
 
-                    } else {
+                        send(client_socket1, data, sizeof(data), 0);
 
-                      send(to_server_socket, data, sizeof(data), 0);
+                      } else {
+
+                        send(to_server_socket, data, sizeof(data), 0);
+
+                      }
 
                     }
 
@@ -1153,19 +1152,23 @@ int main(int argc, char** argv)
 
                     recupCibleEnn = DELAI_CIBLE_ENN;
 
-                    char data[100];
+                    if(coop) {
 
-                    sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
+                      char data[100];
 
-                    fprintf(stderr, "Principale : %s\n", data);
+                      sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
 
-                    if(serveur) {
+                      fprintf(stderr, "Principale : %s\n", data);
 
-                      send(client_socket1, data, sizeof(data), 0);
+                      if(serveur) {
 
-                    } else {
+                        send(client_socket1, data, sizeof(data), 0);
 
-                      send(to_server_socket, data, sizeof(data), 0);
+                      } else {
+
+                        send(to_server_socket, data, sizeof(data), 0);
+
+                      }
 
                     }
 
@@ -1266,19 +1269,23 @@ int main(int argc, char** argv)
 
               if(equipe[indicePersonnage]->vitX != 0 || equipe[indicePersonnage]->vitY != 0) {
 
-                char data[100];
+                if(coop) {
 
-                sprintf(data, "p;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
+                  char data[100];
 
-                fprintf(stderr, "Principale : %s\n", data);
+                  sprintf(data, "p;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
 
-                if(serveur) {
+                  fprintf(stderr, "Principale : %s\n", data);
 
-                  send(client_socket1, data, sizeof(data), 0);
+                  if(serveur) {
 
-                } else {
+                    send(client_socket1, data, sizeof(data), 0);
 
-                  send(to_server_socket, data, sizeof(data), 0);
+                  } else {
+
+                    send(to_server_socket, data, sizeof(data), 0);
+
+                  }
 
                 }
 
@@ -1362,7 +1369,12 @@ int main(int argc, char** argv)
                   quit = 1;
                   break;
 
-                }
+              }
+
+              if(clavier[SDL_SCANCODE_P].enfonce) quit = 1;
+
+                system("clear");
+
 
                 fin = SDL_GetTicks();
 
@@ -1388,6 +1400,22 @@ int main(int argc, char** argv)
       SDL_JoystickClose(joy);
 
     }
+
+    for(int i = 0; i < 3; i++) {
+
+      SDL_FreeSurface(equipe[i]->image);
+
+      for(int j = 0; j < 9; j++) {
+
+        SDL_FreeSurface(ArtJeu[i][j]->image);
+
+      }
+
+    }
+
+    SDL_FreeSurface(background);
+
+    SDL_FreeSurface(cooldownArt);
 
 
     TTF_CloseFont(police);

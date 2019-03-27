@@ -379,9 +379,14 @@ void hudEnnemi(SDL_Surface *pSurface, SDL_Rect camera) {
 
     SDL_BlitSurface(nom, NULL, pSurface, &rect2);
 
+    SDL_FreeSurface(nom);
+
+
   }
 
   TTF_CloseFont(police);
+
+  SDL_FreeSurface(HUD);
 
 
 
@@ -591,7 +596,7 @@ int ennemiAutoAttaque(int indice, int degats, int type) {
 
     addDegatTxt(degats, equipe[ennemis[indice].cible]->posX, equipe[ennemis[indice].cible]->posY-equipe[ennemis[indice].cible]->image->h, type);
 
-    if(envoi) {
+    if(coop && serveur) {
 
       char data[100];
 
@@ -599,15 +604,7 @@ int ennemiAutoAttaque(int indice, int degats, int type) {
 
       fprintf(stderr, "Principale : %s\n", data);
 
-      if(serveur) {
-
-        send(client_socket1, data, sizeof(data), 0);
-
-      } else {
-
-        send(to_server_socket, data, sizeof(data), 0);
-
-      }
+      send(client_socket1, data, sizeof(data), 0);
 
     }
 
@@ -713,7 +710,7 @@ int persoAutoAttaque(int indice, int degats, int type) {
 
     addDegatTxt(degats, ennemis[equipe[indice]->cible].posX, ennemis[equipe[indice]->cible].posY-ennemis[equipe[indice]->cible].image->h/4, type);
 
-    if(envoi) {
+    if(coop && serveur) {
 
       char data[100];
 
@@ -721,15 +718,8 @@ int persoAutoAttaque(int indice, int degats, int type) {
 
       fprintf(stderr, "Principale : %s\n", data);
 
-      if(serveur) {
+      send(client_socket1, data, sizeof(data), 0);
 
-        send(client_socket1, data, sizeof(data), 0);
-
-      } else {
-
-        send(to_server_socket, data, sizeof(data), 0);
-
-      }
 
     }
 
@@ -789,23 +779,27 @@ int attaqueEnnemi() {
     \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int lanceArt(int indiceArt, int indicePersonnage) {
+int lanceArt(int indiceArt, int indicePersonnage, int degats) {
 
     orientationPersoCombatRelative(indicePersonnage);
 
-    int difference = ArtJeu[indicePersonnage][indiceArt]->DMGMAX[equipe[indicePersonnage]->orientationRelative] - ArtJeu[indicePersonnage][indiceArt]->DMGMIN[equipe[indicePersonnage]->orientationRelative];
-    int random;
-    if(difference != 0) {
-        random = rand()%difference;
-    } else {
-        random = 0;
+    if(degats == -1) {
+
+      int difference = ArtJeu[indicePersonnage][indiceArt]->DMGMAX[equipe[indicePersonnage]->orientationRelative] - ArtJeu[indicePersonnage][indiceArt]->DMGMIN[equipe[indicePersonnage]->orientationRelative];
+      int random;
+      if(difference != 0) {
+          random = rand()%difference;
+      } else {
+          random = 0;
+      }
+
+      degats = ArtJeu[indicePersonnage][indiceArt]->DMGMIN[equipe[indicePersonnage]->orientationRelative] + random;
+
+      if(ArtJeu[indicePersonnage][indiceArt]->TYPE == physique) degats = degats*(100-ennemis[equipe[indicePersonnage]->cible].DEFPHY)/100;
+
+      else if(ArtJeu[indicePersonnage][indiceArt]->TYPE == ether) degats = degats*(100-ennemis[equipe[indicePersonnage]->cible].DEFMGE)/100;
+
     }
-
-    int degats = ArtJeu[indicePersonnage][indiceArt]->DMGMIN[equipe[indicePersonnage]->orientationRelative] + random;
-
-    if(ArtJeu[indicePersonnage][indiceArt]->TYPE == physique) degats = degats*(100-ennemis[equipe[indicePersonnage]->cible].DEFPHY)/100;
-
-    else if(ArtJeu[indicePersonnage][indiceArt]->TYPE == ether) degats = degats*(100-ennemis[equipe[indicePersonnage]->cible].DEFMGE)/100;
 
     for(int i = 0; i < 15; i++) {
 
@@ -846,6 +840,18 @@ int lanceArt(int indiceArt, int indicePersonnage) {
 
     addDegatTxt(degats, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY-ennemis[equipe[indicePersonnage]->cible].image->h/4, normalC);
 
+    if(coop && serveur) {
+
+      char data[100];
+
+      sprintf(data, "z;%d;%d;%d", indiceArt, indicePersonnage, degats);
+
+      fprintf(stderr, "Principale : %s\n", data);
+
+      send(client_socket1, data, sizeof(data), 0);
+
+    }
+
     ennemis[equipe[indicePersonnage]->cible].enCombat = 1;
 
     return degats;
@@ -876,7 +882,7 @@ int utiliseArt(int indiceArt, int indicePersonnage) {
 
     if(distance(equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY, ennemis[equipe[indicePersonnage]->cible].posX, ennemis[equipe[indicePersonnage]->cible].posY) - ennemis[equipe[indicePersonnage]->cible].image->w/2/4 < ArtJeu[indicePersonnage][indiceArt]->PRTART[equipe[indicePersonnage]->orientationRelative] && ArtJeu[indicePersonnage][indiceArt]->recup < 0) {
 
-        return lanceArt(indiceArt, indicePersonnage);
+        return lanceArt(indiceArt, indicePersonnage, -1);
 
     }
 
@@ -1103,6 +1109,18 @@ void deplacementPersonnage() {
 */
 
 void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
+
+  if(coop && serveur) {
+
+    char data[100];
+
+    sprintf(data, "b;%d;%d;%d", indiceArt, indicePersonnage, cible);
+
+    fprintf(stderr, "Principale : %s\n", data);
+
+    send(client_socket1, data, sizeof(data), 0);
+
+  }
 
     int j = 0, k = 3, l = -1;
 
