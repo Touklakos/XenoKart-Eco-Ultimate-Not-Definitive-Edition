@@ -6,6 +6,21 @@
 #include "deplacement.h"
 
 
+
+
+doublet clavier[1000];
+
+
+
+
+/**
+  \file incroyable.c
+  \brief XenoKart Eco Plus
+  \author Mano Brabant
+  \version 0.01
+  \date 13 fevrier 2019
+*/
+
 /**
     \fn void deplacementManette(SDL_GameController* controller, int indiceJoueur, Personnage* equipe[]) {
     \brief permet de modifier les valeurs de vitesse du personnage que l'on controle avec une manette
@@ -47,7 +62,7 @@ void deplacementManette(SDL_GameController* controller, int indiceJoueur, Person
 /**
     \fn void deplacementClavier(int indiceJoueur, Personnage* equipe[], doublet clavier[])
     \brief permet de modifier les valeurs de vitesse du personnage que l'on controle avec un le clavier
-    \param clavier tableau des touches du clavier 
+    \param clavier tableau des touches du clavier
     \param indicePersonnage indique le personnage que l'on controle actuellement
     \param equipe pointeurs des personnages del'equipe (equipe[indicePersonnage]) est le personnage que l'on controle
 */

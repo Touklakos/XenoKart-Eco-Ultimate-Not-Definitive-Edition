@@ -38,6 +38,12 @@ int coop;
 int serveur;
 
 
+int recupCurseur;           //variable affect� a DELAI_CURSEUR
+int positionCurseur;
+int recupCible;
+int cible;
+int recupCibleEnn;
+
 int etatCombat = 0;             //Si on se bat normalement ou si on est en train de choisir une cible pour un art de soutien
 
 
@@ -473,7 +479,7 @@ void * recoit(void *sock) {
 
   int *socket1 = sock;
 
-  while(0) {
+  while(1) {
 
 
     recv(*socket1, data, sizeof(data), 0);
@@ -496,6 +502,20 @@ void * recoit(void *sock) {
         sscanf(data, "%c;%d;%d;%d", &type, &indicePersonnage, &posX, &posY);
         equipe[indicePersonnage]->posX = posX;
         equipe[indicePersonnage]->posY = posY;
+        if(serveur) {
+
+          char data[100];
+
+          sprintf(data, "p;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
+
+          fprintf(stderr, "Principale : %s\n", data);
+
+          send(client_socket1, data, sizeof(data), 0);
+
+          send(client_socket2, data, sizeof(data), 0);
+
+        }
+
         break;
 
       case 'a':
@@ -526,6 +546,20 @@ void * recoit(void *sock) {
       case 'y':
         sscanf(data, "%c;%d;%d", &type, &indicePersonnage, &cible);
         equipe[indicePersonnage]->cible = cible;
+
+        if(serveur) {
+
+          char data[100];
+
+          sprintf(data, "y;%d;%d", indicePersonnage, cible);
+
+          fprintf(stderr, "Principale : %s\n", data);
+
+          send(client_socket1, data, sizeof(data), 0);
+
+          send(client_socket2, data, sizeof(data), 0);
+
+        }
         break;
 
     }
@@ -538,13 +572,450 @@ void * recoit(void *sock) {
 
 
 
+void autoAttaque() {
+
+  if(coop) {
+
+    if(serveur) {
+
+      attaqueAllie();
+
+      attaqueEnnemi();  //les personnages attaques l'ennemi qu'ils ciblent
+
+    }
+
+  } else {
+
+    attaqueAllie();
+
+    attaqueEnnemi();  //les personnages attaques l'ennemi qu'ils ciblent
+
+  }
+
+}
+
+
+void ordreNouvCible() {
+
+
+
+  if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
+
+    if(testTouche(clavier[SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'attaquer une cible
+
+      equipe[(indicePersonnage+1)%3]->cible = equipe[indicePersonnage]->cible;
+
+    }
+
+  }
+
+  if(clavier[SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
+
+    if(testTouche(clavier[SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'aataquer une cible
+
+      equipe[(indicePersonnage+2)%3]->cible = equipe[indicePersonnage]->cible;
+
+    }
+
+  }
+
+}
+
+void choixArt() {
+
+  if(recupCurseur-- < 0) {
+
+    if(clavier[SDL_SCANCODE_RIGHT].enfonce) {     //deplacement du curseur dans un sens
+
+      positionCurseur = (positionCurseur+1)%8;
+
+      recupCurseur = DELAI_CURSEUR;
+
+    } else if(clavier[SDL_SCANCODE_LEFT].enfonce) { //et dans l'autre
+
+      positionCurseur--;
+
+      if(positionCurseur < 0) positionCurseur = 7;
+
+      recupCurseur = DELAI_CURSEUR;
+
+    }
+
+  }
+
+}
+
+void utilisationArt() {
+
+  if(testTouche(clavier[SDL_SCANCODE_E]) && !clavier[SDL_SCANCODE_1].enfonce && !clavier[SDL_SCANCODE_3].enfonce) { //si on appuie sur A sans appuiyer sur les gachette on utilise l'art sur lequel est positionn� notre curseur
+
+    if(equipe[indicePersonnage]->delaiArt < 0) {
+
+      if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
+
+        if(coop) {
+
+          if(serveur) {
+
+            utiliseArt(positionCurseur, indicePersonnage);
+
+          } else {
+
+            char data[100];
+
+            sprintf(data, "a;%d;%d", positionCurseur, indicePersonnage);
+
+            fprintf(stderr, "Principale : %s\n", data);
+
+            send(to_server_socket, data, sizeof(data), 0);
+
+          }
+
+        } else {
+
+          utiliseArt(positionCurseur, indicePersonnage);
+
+        }
+
+
+      } else if(ArtJeu[indicePersonnage][positionCurseur]->BUT == soutien) {
+
+        if(ArtJeu[indicePersonnage][positionCurseur]->CIBLE_ALLIE == membreGroupe && ArtJeu[indicePersonnage][positionCurseur]->recup < 0) {
+
+          etatCombat = 1;
+
+        } else {
+
+          if(coop) {
+
+            if(serveur) {
+
+              utiliseArtBuff(positionCurseur, indicePersonnage, 0);
+
+            } else {
+
+              char data[100];
+
+              sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, 0);
+
+              fprintf(stderr, "Principale : %s\n", data);
+
+              send(to_server_socket, data, sizeof(data), 0);
+
+            }
+
+          } else {
+
+            utiliseArtBuff(positionCurseur, indicePersonnage, 0);
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+void choixCibleArt() {
+
+  if(recupCible-- < 0) {
+
+    if(clavier[SDL_SCANCODE_DOWN].enfonce) {
+
+      cible += 1;
+      cible %= 3;
+
+      recupCible = DELAI_CIBLE;
+
+    } else if(clavier[SDL_SCANCODE_UP].enfonce) {
+
+      cible -= 1;
+      if(cible < 0) cible = 2;
+
+      recupCible = DELAI_CIBLE;
+
+    }
+
+    if(testTouche(clavier[SDL_SCANCODE_E])) {
+
+      if(coop) {
+
+        if(serveur) {
+
+          utiliseArtBuff(positionCurseur, indicePersonnage, cible);
+
+        } else {
+
+          char data[100];
+
+          sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, cible);
+
+          fprintf(stderr, "Principale : %s\n", data);
+
+          send(to_server_socket, data, sizeof(data), 0);
+
+        }
+
+      } else {
+
+        utiliseArtBuff(positionCurseur, indicePersonnage, cible);
+
+      }
+
+      etatCombat = 0;
+
+    }
+
+  }
+
+}
+
+
+void choixCibleEnnemi() {
+
+  if(recupCibleEnn-- < 0) {
+
+    if(clavier[SDL_SCANCODE_I].enfonce) {
+
+      equipe[indicePersonnage]->cible++;
+
+      equipe[indicePersonnage]->cible %= nbEnnemi;
+
+      equipe[indicePersonnage]->enChoixCible = 1;
+
+      recupCibleEnn = DELAI_CIBLE_ENN;
+
+      if(coop) {
+
+        char data[100];
+
+        sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
+
+        fprintf(stderr, "Principale : %s\n", data);
+
+        if(serveur) {
+
+          send(client_socket1, data, sizeof(data), 0);
+
+          send(client_socket2, data, sizeof(data), 0);
+
+        } else {
+
+          send(to_server_socket, data, sizeof(data), 0);
+
+        }
+
+      }
+
+    }
+
+
+    if(clavier[SDL_SCANCODE_P].enfonce) {
+
+      equipe[indicePersonnage]->cible--;
+
+      if(equipe[indicePersonnage]->cible < 0) equipe[indicePersonnage]->cible = nbEnnemi-1;
+
+      equipe[indicePersonnage]->enChoixCible = 1;
+
+      recupCibleEnn = DELAI_CIBLE_ENN;
+
+      if(coop) {
+
+        char data[100];
+
+        sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
+
+        fprintf(stderr, "Principale : %s\n", data);
+
+        if(serveur) {
+
+          send(client_socket1, data, sizeof(data), 0);
+
+          send(client_socket2, data, sizeof(data), 0);
+
+        } else {
+
+          send(to_server_socket, data, sizeof(data), 0);
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+
+void echangePerso() {
+
+  if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
+
+    if(testTouche(clavier[SDL_SCANCODE_E])) {  //si on appuie sur E on controle le personnage
+
+      controlePerso(equipe, &indicePersonnage, droite);
+
+    }
+
+  }
+
+  if(clavier[SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
+
+    if(testTouche(clavier[SDL_SCANCODE_E])) {
+
+      controlePerso(equipe, &indicePersonnage, gauche);
+
+    }
+
+  }
+
+}
+
+
+void ordreAttaque() {
+
+  if(testTouche(clavier[SDL_SCANCODE_SPACE])) {
+
+    for(int j = 0; j < 3; j++) {
+
+      equipe[j]->cible = equipe[indicePersonnage]->cible;
+
+      equipe[j]->enCombat = 1;
+
+      equipe[j]->enChoixCible = 0;
+
+    }
+
+  }
+
+}
+
+
+
+void mortalKombat() {
+
+
+  autoAttaque();
+
+  //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
+
+
+  switch(etatCombat) {
+
+    case 0:       //deplacement, choix et activations des arts, controle des personnages
+
+      if(!coop) ordreNouvCible();
+      choixArt();
+      utilisationArt();
+      break;
+
+    case 1:         //choix de la cible d'un art de soutien
+
+      choixCibleArt();
+      break;
+
+  }
+
+
+  choixCibleEnnemi();
+
+
+  if(!coop) {
+
+    ordreAttaque();
+    echangePerso();
+
+  }
+
+
+  //////////////////////////////////////FONCTIONS D'INPUTS DE DEPLACEMENT////////////////////////////////////////////
+
+
+
+  deplacementClavier(indicePersonnage, equipe, clavier);
+
+
+
+  //////////////////////////////////////FONCTIONS DE DECREMENTATION DES ETATS////////////////////////////////////////////
+
+
+
+  etatEnnemi();
+
+
+
+  recuperationArt();      //d�cr�mentations des arts des personnages
+
+  delaiModificationPerso();           //d�crementations des modifications des personnages
+
+
+
+  delaiModificationEnnemi();
+
+
+    //////////////////////////////////////FONCTIONS DE DEPLACEMENT////////////////////////////////////////////
+
+
+  if(!coop) {
+
+    persoPoursuit(indicePersonnage);
+
+  }
+
+
+
+
+  deplacementPersonnage(equipe);
+
+  if(equipe[indicePersonnage]->vitX != 0 || equipe[indicePersonnage]->vitY != 0) {
+
+    if(coop) {
+
+      char data[100];
+
+      sprintf(data, "p;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
+
+      fprintf(stderr, "Principale : %s\n", data);
+
+      if(serveur) {
+
+        send(client_socket1, data, sizeof(data), 0);
+
+        send(client_socket2, data, sizeof(data), 0);
+
+      } else {
+
+        send(to_server_socket, data, sizeof(data), 0);
+
+      }
+
+    }
+
+  }
+
+
+  deplacementEnnemi(equipe);
+
+
+
+}
+
+
+
 
 int main(int argc, char** argv)
 {
 
   coop = 0;
   serveur = 0;
-  if(argc == 2)
+  if(argc == 3)
     serveur = 1;
 
 
@@ -589,13 +1060,19 @@ int main(int argc, char** argv)
           /* on attend que le client se connecte */
         client_socket1 = accept(ma_socket,(struct sockaddr *)&client_address1, &mon_address_longueur);
 
+        client_socket2 = accept(ma_socket,(struct sockaddr *)&client_address2, &mon_address_longueur);
+        char data[100];
 
-      //  client_socket2 = accept(ma_socket,(struct sockaddr *)&client_address2, &mon_address_longueur);
+        sprintf(data, "/");
+
+        fprintf(stderr, "Principale : %s\n", data);
+
+        send(client_socket1, data, sizeof(data), 0);
+
+        send(client_socket2, data, sizeof(data), 0);
+
 
       } else {
-
-
-
 
 
       	bzero(&serveur_addr,sizeof(serveur_addr));
@@ -623,26 +1100,26 @@ int main(int argc, char** argv)
       	  	exit(0);
       	}
 
-
-
-
+        recv(to_server_socket, NULL, 1, 0);
 
       }
 
   }
 
 
-	pthread_t monThreadCompteur;
+	pthread_t monThreadCompteur1, monThreadCompteur2;
 
   if(coop) {
 
     if(serveur) {
 
-      pthread_create (&monThreadCompteur, NULL, recoit, &client_socket1);
+      pthread_create (&monThreadCompteur1, NULL, recoit, &client_socket1);
+
+      pthread_create (&monThreadCompteur2, NULL, recoit, &client_socket2);
 
     } else {
 
-      pthread_create (&monThreadCompteur, NULL, recoit, &to_server_socket);
+      pthread_create (&monThreadCompteur1, NULL, recoit, &to_server_socket);
 
     }
 
@@ -668,14 +1145,6 @@ int main(int argc, char** argv)
     //////Création de la fenetre où s'affichera le jeu//////
 
     SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-
-    //////Initailisation de la police d'écriture//////
-
-    TTF_Font *police = NULL;
-
-    police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
-
-
 
 
 
@@ -805,16 +1274,9 @@ int main(int argc, char** argv)
     ArtJeu[2][6] = &Jojo.ArtPool[6];
     ArtJeu[2][7] = &Jojo.ArtPool[7];
 
-    /*Ennemi Zanza;
-
-    Ennemi Dickson;*/
-
     initEnnemi(&ennPool[nbEnnemiPool++], "./data/Zanza.txt");
 
     initEnnemi(&ennPool[nbEnnemiPool++], "./data/Dickson.txt");
-
-
-
 
 
     ennemis[nbEnnemi] = ennPool[nbEnnemi];
@@ -827,26 +1289,23 @@ int main(int argc, char** argv)
 
     SDL_Event event;
 
-    int quit = 0;               //quitte le programme si on appui sur la croix rouge
+    int quit = 0;               //quitte le programme si on appuie sur la croix rouge
 
-    int indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
+    indicePersonnage = atoi(argv[1]);       //variable qui indique quel personnage on est entrain de controller
 
-    if(serveur) indicePersonnage = 2;
+    recupCibleEnn = 0;           //variable affect� a DELAI_CIBLE_ENN
 
-    int recupCibleEnn = 0;           //variable affect� a DELAI_CIBLE_ENN
+    positionCurseur = 0;
 
-    int positionCurseur = 0;
+    recupCurseur = 0;           //variable affect� a DELAI_CURSEUR
 
-    int recupCurseur = 0;           //variable affect� a DELAI_CURSEUR
+    cible = 0;                  //indique quel personnage on cible avec un art de soutien
 
-    int cible = 0;                  //indique quel personnage on cible avec un art de soutien
-
-    int recupCible = 0;             //variable qui permet de naviguer entre les cibles
+    recupCible = 0;             //variable qui permet de naviguer entre les cibles
 
 
     long long unsigned debut, fin, fpsCount = 0;
 
-    doublet clavier[1000];
 
     for(int i = 0; i< 1000; i++) {
 
@@ -868,7 +1327,6 @@ int main(int argc, char** argv)
       //////////////////////////////////////FONCTIONS ++&+ SUR CANAL+////////////////////////////////////////////
 
 
-      SDL_PollEvent(&event);
 
       SDL_PumpEvents();
       const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
@@ -890,507 +1348,108 @@ int main(int argc, char** argv)
 
       //////////////////////////////////////FONCTIONS AUTOMATIQUE DURANT LE COMBAT////////////////////////////////////////////
 
+      mortalKombat();
 
 
-      if(coop) {
 
-        if(serveur) {
+      //////////////////////////////////////FONCTIONS DE CAMERA////////////////////////////////////////////
 
-          attaqueAllie();
+      if(equipe[indicePersonnage]->enChoixCible)  {
 
-          attaqueEnnemi();  //les personnages attaques l'ennemi qu'ils ciblent
+        SuiviCameraCombat(&camera, equipe[indicePersonnage], &ennemis[equipe[indicePersonnage]->cible]);
 
-        }
+      } else if (equipe[indicePersonnage]->enCombat) {
+
+        SuiviCameraCombat(&camera, equipe[indicePersonnage], &ennemis[equipe[indicePersonnage]->cible]);
 
       } else {
 
-        attaqueAllie();
-
-        attaqueEnnemi();  //les personnages attaques l'ennemi qu'ils ciblent
-
-      }
-
-      for(int i = 0; i < 3; i++) {
-
-        fprintf(stderr, "cible perso : %d\n", equipe[i]->cible);
+        SuiviCameraExploration(&camera, equipe[indicePersonnage]);
 
       }
 
 
-      //////////////////////////////////////FONCTIONS D'INPUTS POUR LE COMBAT////////////////////////////////////////////
+      //////////////////////////////////////FONCTIONS D'AFFICHAGE////////////////////////////////////////////
 
+      background(sol, pSurface, camera);
 
-            switch(etatCombat) {
+      for(int n = 0; n < nbEnnemi; n++) {
 
-              case 0:       //deplacement, choix et activations des arts, controle des personnages
+        if(ennemis[n].enCombat) {
 
-                if(!coop) {
+          afficherHostilite(pSurface, &ennemis[n], equipe, camera);
 
-                  if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
+        }
 
-                    if(testTouche(clavier[SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'attaquer une cible
+      }
 
-                      equipe[(indicePersonnage+1)%3]->cible = equipe[indicePersonnage]->cible;
 
-                    }
+      afficherPersonnages(screen, camera);
 
-                  }
+      afficherEnnemis(pSurface, camera);
 
-                    if(clavier[SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
+      afficherArt(indicePersonnage, pSurface, cooldownArt);
 
-                      if(testTouche(clavier[SDL_SCANCODE_R])) {  //si on appuie sur R on dit au personnage d'aataquer une cible
+      afficherCurseur(positionCurseur, pSurface);
 
-                        equipe[(indicePersonnage+2)%3]->cible = equipe[indicePersonnage]->cible;
+      afficherHUD(equipe, pSurface);
 
-                      }
 
-                    }
+      hudEnnemi(pSurface, camera);
 
-                }
 
+      if(etatCombat == 1) afficherCible(cible, pSurface);
 
+      gererTexte(pSurface, camera);
 
+      gererEnnemis(ennemis, &nbEnnemi, equipe);
 
-                if(recupCurseur-- < 0) {
+      while(nbEnnemi == 0) {
 
-                  if(clavier[SDL_SCANCODE_RIGHT].enfonce) {     //deplacement du curseur dans un sens
+        victoire(screen, ennemis, &nbEnnemi);
 
-                    positionCurseur = (positionCurseur+1)%8;
+      }
 
-                    recupCurseur = DELAI_CURSEUR;
 
-                  } else if(clavier[SDL_SCANCODE_LEFT].enfonce) { //et dans l'autre
 
-                    positionCurseur--;
+      SDL_UpdateWindowSurface(screen);
 
-                    if(positionCurseur < 0) positionCurseur = 7;
+      for(int i = 0; i < 1000; i++) {
 
-                    recupCurseur = DELAI_CURSEUR;
+        if(state[i]) clavier[i].relache = 0;
+        else clavier[i].relache = 1;
 
-                  }
+      }
 
+      if(clavier[SDL_SCANCODE_N].enfonce) quit = 1;
 
-                }
+      SDL_PollEvent(&event);
 
+      switch(event.type) {
 
+        case SDL_QUIT:
+          quit = 1;
+          break;
 
-                if(testTouche(clavier[SDL_SCANCODE_E]) && !clavier[SDL_SCANCODE_1].enfonce && !clavier[SDL_SCANCODE_3].enfonce) { //si on appuie sur A sans appuiyer sur les gachette on utilise l'art sur lequel est positionn� notre curseur
+      }
 
-                  if(equipe[indicePersonnage]->delaiArt < 0) {
+      system("clear");
 
-                    if(ArtJeu[indicePersonnage][positionCurseur]->BUT == attaque) {
+      fin = SDL_GetTicks();
 
-                      if(coop) {
+      printf("\nfps = %lld\n", (fpsCount++)*1000/SDL_GetTicks());
 
-                        if(serveur) {
+      printf("fpsCount = %lld\n", fpsCount);
 
-                          utiliseArt(positionCurseur, indicePersonnage);
+      printf("fin = %lld\n", fin);
 
-                        } else {
+      int delai = ((1000/FPS)-(fin-debut));
 
-                          char data[100];
+      if(delai > 0) {
 
-                          sprintf(data, "a;%d;%d", positionCurseur, indicePersonnage);
+        SDL_Delay(delai);
 
-                          fprintf(stderr, "Principale : %s\n", data);
-
-                          send(to_server_socket, data, sizeof(data), 0);
-
-                        }
-
-                      } else {
-
-                        utiliseArt(positionCurseur, indicePersonnage);
-
-                      }
-
-
-                    } else if(ArtJeu[indicePersonnage][positionCurseur]->BUT == soutien) {
-
-                      if(ArtJeu[indicePersonnage][positionCurseur]->CIBLE_ALLIE == membreGroupe && ArtJeu[indicePersonnage][positionCurseur]->recup < 0) {
-
-                        etatCombat = 1;
-
-                      } else {
-
-                        if(coop) {
-
-                          if(serveur) {
-
-                            utiliseArtBuff(positionCurseur, indicePersonnage, 0);
-
-                          } else {
-
-                            char data[100];
-
-                            sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, 0);
-
-                            fprintf(stderr, "Principale : %s\n", data);
-
-                            send(to_server_socket, data, sizeof(data), 0);
-
-                          }
-
-                        } else {
-
-                          utiliseArtBuff(positionCurseur, indicePersonnage, 0);
-
-                        }
-
-                      }
-
-                    }
-
-                  }
-
-                }
-
-
-              break;
-
-                case 1:         //choix de la cible d'un art de soutien
-
-
-
-                  if(recupCible-- < 0) {
-
-                    if(clavier[SDL_SCANCODE_DOWN].enfonce) {
-
-                      cible += 1;
-                      cible %= 3;
-
-                      recupCible = DELAI_CIBLE;
-
-                    } else if(clavier[SDL_SCANCODE_UP].enfonce) {
-
-                      cible -= 1;
-                      if(cible < 0) cible = 2;
-
-                      recupCible = DELAI_CIBLE;
-
-                    }
-
-                    if(testTouche(clavier[SDL_SCANCODE_E])) {
-
-                      if(coop) {
-
-                        if(serveur) {
-
-                          utiliseArtBuff(positionCurseur, indicePersonnage, cible);
-
-                        } else {
-
-                          char data[100];
-
-                          sprintf(data, "b;%d;%d;%d", positionCurseur, indicePersonnage, cible);
-
-                          fprintf(stderr, "Principale : %s\n", data);
-
-                          send(to_server_socket, data, sizeof(data), 0);
-
-                        }
-
-                      } else {
-
-                        utiliseArtBuff(positionCurseur, indicePersonnage, cible);
-
-                      }
-
-                      etatCombat = 0;
-
-                    }
-
-                  }
-
-                break;
-
-                }
-
-
-                if(recupCibleEnn-- < 0) {
-
-                  if(clavier[SDL_SCANCODE_I].enfonce) {
-
-                    equipe[indicePersonnage]->cible++;
-
-                    equipe[indicePersonnage]->cible %= nbEnnemi;
-
-                    equipe[indicePersonnage]->enChoixCible = 1;
-
-                    recupCibleEnn = DELAI_CIBLE_ENN;
-
-                    if(coop) {
-
-                      char data[100];
-
-                      sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
-
-                      fprintf(stderr, "Principale : %s\n", data);
-
-                      if(serveur) {
-
-                        send(client_socket1, data, sizeof(data), 0);
-
-                      } else {
-
-                        send(to_server_socket, data, sizeof(data), 0);
-
-                      }
-
-                    }
-
-                  }
-
-
-                  if(clavier[SDL_SCANCODE_P].enfonce) {
-
-                    equipe[indicePersonnage]->cible--;
-
-                    if(equipe[indicePersonnage]->cible < 0) equipe[indicePersonnage]->cible = nbEnnemi-1;
-
-                    equipe[indicePersonnage]->enChoixCible = 1;
-
-                    recupCibleEnn = DELAI_CIBLE_ENN;
-
-                    if(coop) {
-
-                      char data[100];
-
-                      sprintf(data, "y;%d;%d", indicePersonnage, equipe[indicePersonnage]->cible);
-
-                      fprintf(stderr, "Principale : %s\n", data);
-
-                      if(serveur) {
-
-                        send(client_socket1, data, sizeof(data), 0);
-
-                      } else {
-
-                        send(to_server_socket, data, sizeof(data), 0);
-
-                      }
-
-                    }
-
-                  }
-
-                }
-
-
-                if(testTouche(clavier[SDL_SCANCODE_SPACE])) {
-
-                  for(int j = 0; j < 3; j++) {
-
-                    equipe[j]->cible = equipe[indicePersonnage]->cible;
-
-                    equipe[j]->enCombat = 1;
-
-                    equipe[j]->enChoixCible = 0;
-
-                  }
-
-
-                }
-
-
-
-            if(!coop) {
-
-              if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
-
-                if(testTouche(clavier[SDL_SCANCODE_E])) {  //si on appuie sur E on controle le personnage
-
-                  controlePerso(equipe, &indicePersonnage, droite);
-
-                }
-
-              }
-
-              if(clavier[SDL_SCANCODE_1].enfonce) {  //m�me chose pour la gachette gauche
-
-                if(testTouche(clavier[SDL_SCANCODE_E])) {
-
-                  controlePerso(equipe, &indicePersonnage, gauche);
-
-                }
-
-              }
-
-            }
-
-
-            //////////////////////////////////////FONCTIONS D'INPUTS DE DEPLACEMENT////////////////////////////////////////////
-
-
-            if(joy) {
-
-              deplacementManette(controller, indicePersonnage, equipe);
-
-            } else {
-
-              deplacementClavier(indicePersonnage, equipe, clavier);
-
-            }
-
-
-
-            //////////////////////////////////////FONCTIONS DE DECREMENTATION DES ETATS////////////////////////////////////////////
-
-
-
-            etatEnnemi();
-
-            delaiEtatEnnemis();
-
-
-
-            recuperationArt();      //d�cr�mentations des arts des personnages
-
-            delaiModificationPerso();           //d�crementations des modifications des personnages
-
-
-
-            delaiModificationEnnemi();
-
-
-              //////////////////////////////////////FONCTIONS DE DEPLACEMENT////////////////////////////////////////////
-
-
-              if(!coop) {
-
-                persoPoursuit(indicePersonnage);
-
-              }
-
-
-
-
-              deplacementPersonnage(equipe);
-
-              if(equipe[indicePersonnage]->vitX != 0 || equipe[indicePersonnage]->vitY != 0) {
-
-                if(coop) {
-
-                  char data[100];
-
-                  sprintf(data, "p;%d;%d;%d", indicePersonnage, equipe[indicePersonnage]->posX, equipe[indicePersonnage]->posY);
-
-                  fprintf(stderr, "Principale : %s\n", data);
-
-                  if(serveur) {
-
-                    send(client_socket1, data, sizeof(data), 0);
-
-                  } else {
-
-                    send(to_server_socket, data, sizeof(data), 0);
-
-                  }
-
-                }
-
-              }
-
-
-              deplacementEnnemi(equipe);
-
-
-
-              //////////////////////////////////////FONCTIONS DE CAMERA////////////////////////////////////////////
-
-              if(equipe[indicePersonnage]->enChoixCible)  {
-
-                SuiviCameraCombat(&camera, equipe[indicePersonnage], &ennemis[equipe[indicePersonnage]->cible]);
-
-              } else if (equipe[indicePersonnage]->enCombat) {
-
-                SuiviCameraCombat(&camera, equipe[indicePersonnage], &ennemis[equipe[indicePersonnage]->cible]);
-
-              } else {
-
-                SuiviCameraExploration(&camera, equipe[indicePersonnage]);
-
-              }
-
-
-              //////////////////////////////////////FONCTIONS D'AFFICHAGE////////////////////////////////////////////
-
-              background(sol, pSurface, camera);
-
-              for(int n = 0; n < nbEnnemi; n++) {
-
-                if(ennemis[n].enCombat) {
-
-                  afficherHostilite(pSurface, &ennemis[n], equipe, camera);
-
-                }
-
-              }
-
-
-              afficherPersonnages(screen, camera);
-
-              afficherEnnemis(pSurface, camera);
-
-              afficherArt(indicePersonnage, pSurface, cooldownArt);
-
-              afficherCurseur(positionCurseur, pSurface);
-
-              afficherHUD(equipe, pSurface);
-
-
-              hudEnnemi(pSurface, camera);
-
-
-              if(etatCombat == 1) afficherCible(cible, pSurface);
-
-              gererTexte(pSurface, camera);
-
-              gererEnnemis(ennemis, &nbEnnemi, equipe);
-
-              while(nbEnnemi == 0) {
-
-                victoire(screen, ennemis, &nbEnnemi);
-
-              }
-
-              SDL_UpdateWindowSurface(screen);
-
-              for(int i = 0; i < 1000; i++) {
-
-                if(state[i]) clavier[i].relache = 0;
-                else clavier[i].relache = 1;
-
-              }
-
-              switch(event.type) {
-
-                case SDL_QUIT:
-                  quit = 1;
-                  break;
-
-              }
-
-              if(clavier[SDL_SCANCODE_P].enfonce) quit = 1;
-
-                system("clear");
-
-
-                fin = SDL_GetTicks();
-
-                printf("\nfps = %lld\n", (fpsCount++)*1000/SDL_GetTicks());
-
-                printf("fpsCount = %lld\n", fpsCount);
-
-                printf("fin = %lld\n", fin);
-
-                int delai = ((1000/FPS)-(fin-debut));
-
-                if(delai > 0) {
-
-                  SDL_Delay(delai);
-
-                }
+      }
 
     }
 
@@ -1413,12 +1472,17 @@ int main(int argc, char** argv)
 
     }
 
-    SDL_FreeSurface(background);
+    for(int i = 0; i < nbEnnemiPool; i++) {
+
+      SDL_FreeSurface(ennPool[i].image);
+
+    }
+
+    SDL_FreeSurface(sol);
 
     SDL_FreeSurface(cooldownArt);
 
-
-    TTF_CloseFont(police);
+    SDL_DestroyWindow(screen);
 
     IMG_Quit();
 

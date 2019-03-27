@@ -16,6 +16,8 @@
 
 Personnage* equipe[3];      //durant un combat l'équipe est composé de trois personnage
 
+int indicePersonnage;
+
 /**
     \fn void initPersonnage(Personnage* perso, char fichier[50])
     \brief initialise le personnage passé en parametre avec un ficher

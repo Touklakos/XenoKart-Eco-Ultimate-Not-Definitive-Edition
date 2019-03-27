@@ -67,6 +67,8 @@ typedef struct {
 
 extern Personnage* equipe[3];      //durant un combat l'équipe est composé de trois personnage
 
+extern int indicePersonnage;
+
 
 void initPersonnage(Personnage* perso, char fichier[50]);
 void afficherPersonnages(SDL_Window* screen, SDL_Rect camera);

@@ -606,6 +606,8 @@ int ennemiAutoAttaque(int indice, int degats, int type) {
 
       send(client_socket1, data, sizeof(data), 0);
 
+      send(client_socket2, data, sizeof(data), 0);
+
     }
 
     return degats;
@@ -720,6 +722,7 @@ int persoAutoAttaque(int indice, int degats, int type) {
 
       send(client_socket1, data, sizeof(data), 0);
 
+      send(client_socket2, data, sizeof(data), 0);
 
     }
 
@@ -850,6 +853,8 @@ int lanceArt(int indiceArt, int indicePersonnage, int degats) {
 
       send(client_socket1, data, sizeof(data), 0);
 
+      send(client_socket2, data, sizeof(data), 0);
+
     }
 
     ennemis[equipe[indicePersonnage]->cible].enCombat = 1;
@@ -903,6 +908,7 @@ int utiliseArt(int indiceArt, int indicePersonnage) {
 
 int etatEnnemi() {
 
+  delaiEtatEnnemis();
 
   for(int i = 0; i < nbEnnemi; i++) {
 
@@ -1119,6 +1125,8 @@ void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
     fprintf(stderr, "Principale : %s\n", data);
 
     send(client_socket1, data, sizeof(data), 0);
+
+    send(client_socket2, data, sizeof(data), 0);
 
   }
 
