@@ -2,6 +2,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
+#include <pthread.h>
+
 
 #include "ennemi.h"
 
@@ -540,11 +542,8 @@ int typeCoupEnnemi(int indice) {
 
 int ennemiAutoAttaque(int indice, int degats, int type) {
 
-  int envoi = 0;
 
     if(degats == -1) {
-
-      envoi = 1;
 
       int difference = ennemis[indice].modif[ATTMAX] - ennemis[indice].modif[ATTMIN];
       int random;
@@ -664,11 +663,7 @@ int attaqueAllie() {
 
 int persoAutoAttaque(int indice, int degats, int type) {
 
-  int envoi = 0;
-
     if(degats == -1) {
-
-      envoi = 1;
 
       int difference = equipe[indice]->modif[ATTMAX] - equipe[indice]->modif[ATTMIN];
 

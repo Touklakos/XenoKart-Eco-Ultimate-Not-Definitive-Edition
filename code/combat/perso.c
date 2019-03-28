@@ -184,7 +184,7 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
     \param camera coordonnées de la camera(qui represent le centre de l'écran)
 */
 
-void afficherPersonnages(SDL_Window* screen, SDL_Rect camera) {
+void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera) {
 
   for(int i = 0; i < 3; i++) {
 
@@ -194,7 +194,7 @@ void afficherPersonnages(SDL_Window* screen, SDL_Rect camera) {
     SDL_Rect img = { equipe[i]->image->w/4*(equipe[i]->numFrame/15), equipe[i]->image->h/4*equipe[i]->orientationAbsolue, equipe[i]->image->w/4, equipe[i]->image->h/4};
 
 
-    SDL_BlitSurface(equipe[i]->image, &img, SDL_GetWindowSurface(screen), &dest);
+    SDL_BlitSurface(equipe[i]->image, &img, pSurface, &dest);
 
   }
 

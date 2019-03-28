@@ -71,5 +71,5 @@ extern int indicePersonnage;
 
 
 void initPersonnage(Personnage* perso, char fichier[50]);
-void afficherPersonnages(SDL_Window* screen, SDL_Rect camera);
+void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera);
 void delaiModificationPerso();
