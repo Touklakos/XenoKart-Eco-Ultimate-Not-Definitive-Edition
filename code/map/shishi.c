@@ -10,6 +10,11 @@
 
 int main(int argc, char** argv){
 
+  case_t * dep;
+  dep = malloc(sizeof(case_t));
+  case_t * arr;
+  arr = malloc(sizeof(case_t));
+
   SDL_Init(SDL_INIT_EVERYTHING);
   TTF_Init();
   IMG_Init(IMG_INIT_PNG);
@@ -19,9 +24,18 @@ int main(int argc, char** argv){
   SDL_Surface* pSurface = NULL;
   pSurface = SDL_GetWindowSurface(screen);
 
-  map_t * map = creerMap(8);
+  map_t * map;
 
-  afficher_matrice(map->v);
+/*  do{
+    caseCount = 0;
+    map = creerMap(8,dep,arr);
+  }
+  while(pathfinding(map, dep, arr) < 1);*/
+
+  map = creerMap(8,dep,arr);
+
+  //afficher_matrice(map->v);
+  afficher_path(map->v);
 
   afficherMap(map, pSurface, screen);
 
@@ -39,4 +53,6 @@ int main(int argc, char** argv){
     case 2 : printf("Programme fermé par le bouton\n"); break;
 
   }
+  free(dep);
+  free(arr);
 }

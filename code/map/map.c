@@ -1,7 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
- 
+
 #include <time.h>
 
 #include "map.h"
@@ -17,6 +17,8 @@ SDL_Event event;
 const int NB_CASE=N*M;
 
 int caseCount = 1;
+
+
 
 /**
   \file map.c
@@ -48,6 +50,7 @@ void fonctionQuitter(){
 */
 
 void fonctionFin(){
+
   fin = SDL_GetTicks();
 
   printf("\nfps = %i\n", (fpsCount++)*1000/SDL_GetTicks());
@@ -66,7 +69,7 @@ void fonctionFin(){
 */
 
 void init_mat(case_t mat[N][M]){
-  printf("inimat\n");
+
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
       mat[i][j].val = 0;
@@ -114,11 +117,6 @@ int choixType(case_t hexcase, map_t * map){
   if(coord_valide(hexcase.coord.x-1, hexcase.coord.y-1)&& map->v[hexcase.coord.x-1][hexcase.coord.y-1].val != 0) choix[map->v[hexcase.coord.x-1][hexcase.coord.y-1].type] += 5;
   else choix[map->type] += 5;
 
-  for(int i = 0; i < 12; i++){
-    printf("%i |", choix[i]);
-  }
-  printf("\n");
-
   valrand = rand()%100+1;
 
   for(int i = 0; i < 12; i++){
@@ -145,10 +143,13 @@ case_t creerCase(int x, int y, map_t * map){
 
   hexcase.val = caseCount;
 
+  hexcase.path = 0;
+
   hexcase.coord.x = x;
   hexcase.coord.y = y;
 
   hexcase.type = choixType(hexcase, map);
+  hexcase.typeCase = 0;
 
   caseCount++;
 
@@ -163,10 +164,7 @@ case_t creerCase(int x, int y, map_t * map){
 
 void creerCases(map_t * map){
 
-  printf("creercases\n");
-
   int i=0,j=0;
-
 
   srand(time(NULL));
 
@@ -185,8 +183,8 @@ void creerCases(map_t * map){
     \param type Le type de carte
 */
 
-map_t * creerMap(enum typemap type){
-  printf("creermap\n");
+map_t * creerMap(enum typemap type, case_t * dep, case_t * arr){
+
   map_t * map = NULL ;
   map = malloc(sizeof(*map));
 
@@ -195,6 +193,8 @@ map_t * creerMap(enum typemap type){
   map->type = type;
 
   creerCases(map);
+
+  genererDepArr(map,dep,arr);
 
   return map;
 }
@@ -242,7 +242,6 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 */
 
 void afficher_matrice(case_t c[N][M]){
-    printf("affichermat\n");
 
   printf("---------------------------------------------- \n");
 
@@ -253,6 +252,98 @@ void afficher_matrice(case_t c[N][M]){
     printf("\n");
   }
 }
+
+void afficher_path(case_t c[N][M]){
+    printf("afficherpath\n");
+
+  printf("---------------------------------------------- \n");
+
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      printf("%3i|",c[i][j].path);
+    }
+    printf("\n");
+  }
+}
+
+void genererDepArr(map_t * map, case_t * dep, case_t * arr){
+  int spawn, end;
+
+  spawn = rand()%NB_CASE/2;
+  end = rand()%NB_CASE/2;
+
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      if(map->v[i][j].val == spawn){
+        map->v[i][j].typeCase = 1;
+        dep = &map->v[i][j];
+      }
+      else if(map->v[i][j].val == end){
+        map->v[i][j].typeCase = 2;
+        arr = &map->v[i][j];
+      }
+    }
+  }
+}
+
+
+int pathfinding(map_t * map, case_t * depart, case_t * arrive) {
+
+	ajouter(depart->coord.x);
+	ajouter(depart->coord.y);
+
+	int x = depart->coord.x, y = depart->coord.y;
+
+	while((x != arrive->coord.x && y != arrive->coord.y) && !fileVide()) {
+
+		retirer(&x);
+		retirer(&y);
+
+		if(coord_valide(x-2,y) && map->v[x-2][y].val != 10 && map->v[x-2][y].path == 0){
+			ajouter(x-2);
+			ajouter(y);
+
+			map->v[x-2][y].path = map->v[x][y].path+1;
+		}
+
+    if(coord_valide(x-1,y+1) && map->v[x-1][y+1].val != 10 && map->v[x-1][y+1].path == 0){
+			ajouter(x-1);
+			ajouter(y+1);
+
+			map->v[x-1][y+1].path = map->v[x][y].path+1;
+		}
+
+    if(coord_valide(x+1,y+1) && map->v[x+1][y+1].val != 10 && map->v[x+1][y+1].path == 0){
+			ajouter(x+1);
+			ajouter(y+1);
+
+			map->v[x+1][y+1].path = map->v[x][y].path+1;
+		}
+
+    if(coord_valide(x+2,y) && map->v[x+2][y].val != 10 && map->v[x+2][y].path == 0){
+			ajouter(x+2);
+			ajouter(y);
+
+			map->v[x+2][y].path = map->v[x][y].path+1;
+		}
+
+    if(coord_valide(x+1,y-1) && map->v[x+1][y-1].val != 10 && map->v[x+1][y-1].path == 0){
+			ajouter(x+1);
+			ajouter(y-1);
+
+			map->v[x+1][y-1].path = map->v[x][y].path+1;
+		}
+
+    if(coord_valide(x-1,y-1) && map->v[x-1][y-1].val != 10 && map->v[x-1][y-1].path == 0){
+			ajouter(x-1);
+			ajouter(y-1);
+
+			map->v[x-1][y-1].path = map->v[x][y].path+1;
+		}
+	}
+  return map->v[arrive->coord.x][arrive->coord.x].path;
+}
+
 
 /*case_t recherchecase(int i, case_t map[N][M]){
 
@@ -269,19 +360,19 @@ void afficher_matrice(case_t c[N][M]){
   SDL_Surface * img = NULL;
   img = IMG_Load("code/map/hexagone.png");
 
-  if(hexcase.voisin[0]->val != 0) test.y -= 672;
+  if(hexcase.voisin[0].val != 0) test.y -= 672;
   SDL_BlitSurface(img, NULL, pSurface, &test);
   SDL_UpdateWindowSurface(screen);
 
-  if(hexcase.voisin[1]->val != 0) test.x += 0.75*422; test.y -= (sqrt(3)/2) * 422;
+  if(hexcase.voisin[1].val != 0) test.x += 0.75*422; test.y -= (sqrt(3)/2) * 422;
   SDL_BlitSurface(img, NULL, pSurface, &test);
   SDL_UpdateWindowSurface(screen);
 
-  if(hexcase.voisin[2]->val != 0) test.x += 0.75*422; test.y += (sqrt(3)/2) * 422;
+  if(hexcase.voisin[2].val != 0) test.x += 0.75*422; test.y += (sqrt(3)/2) * 422;
   SDL_BlitSurface(img, NULL, pSurface, &test);
   SDL_UpdateWindowSurface(screen);
 
-  if(hexcase.voisin[3]->val != 0) test.y += 672;
+  if(hexcase.voisin[3].val != 0) test.y += 672;
   SDL_BlitSurface(img, NULL, pSurface, &test);
   SDL_UpdateWindowSurface(screen);
 
