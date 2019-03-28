@@ -8,6 +8,17 @@
 #define M 50
 #define tmax 10
 
+extern int fpsCount;
+extern int deb;
+extern int fin;
+extern int quit;
+
+extern SDL_Event event;
+
+extern const int NB_CASE;
+
+extern int caseCount;
+
 enum typemap{ VOLCAN, MONTAGNE, PIC, DESERT, PLATEAU, PLAINE, DONJON, MARAIS, TUNDRA, FORET, OCEAN, ARCHIPEL};
 
 typedef struct coord_s{
