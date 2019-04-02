@@ -18,6 +18,8 @@ const int NB_CASE=N*M;
 
 int caseCount = 1;
 
+tElement *tete;
+tElement *queue;
 
 
 /**
@@ -27,6 +29,38 @@ int caseCount = 1;
   \version 0.01
   \date 25 mars 2019
 */
+
+void initFile() {
+	tete = NULL;
+	queue = NULL;
+}
+
+int fileVide() {
+	return tete == NULL;
+}
+
+void ajouter(case_t c) {
+	tElement *nouv;
+	nouv = malloc(sizeof(tElement));
+	nouv->hexcase = c;
+	nouv->suiv = NULL;
+	if(fileVide()) {
+		tete = nouv;
+	} else {
+		queue->suiv = nouv;
+	}
+	queue = nouv;
+}
+
+void retirer(case_t *c) {
+	tElement *premier;
+	if(!fileVide()) {
+		premier = tete;
+		*c = premier->hexcase;
+		tete = premier->suiv;
+		free(premier);
+	}
+}
 
 /**
     \fn void fonctionQuitter()
@@ -143,13 +177,13 @@ case_t creerCase(int x, int y, map_t * map){
 
   hexcase.val = caseCount;
 
-  hexcase.path = 0;
+  hexcase.path = 1;
 
   hexcase.coord.x = x;
   hexcase.coord.y = y;
 
   hexcase.type = choixType(hexcase, map);
-  hexcase.typeCase = 0;
+  hexcase.typeCase = BASE;
 
   caseCount++;
 
@@ -183,7 +217,7 @@ void creerCases(map_t * map){
     \param type Le type de carte
 */
 
-map_t * creerMap(enum typemap type, case_t * dep, case_t * arr){
+map_t * creerMap(enum typemap type){
 
   map_t * map = NULL ;
   map = malloc(sizeof(*map));
@@ -193,9 +227,7 @@ map_t * creerMap(enum typemap type, case_t * dep, case_t * arr){
   map->type = type;
 
   creerCases(map);
-
-  genererDepArr(map,dep,arr);
-
+  genererDepArr(map);
   return map;
 }
 
@@ -242,106 +274,118 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 */
 
 void afficher_matrice(case_t c[N][M]){
-
   printf("---------------------------------------------- \n");
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
-      printf("%3i|",c[i][j].val);
+      if(c[i][j].val){
+        printf("%3i|",c[i][j].val);
+      }
+      else printf("  X|");
     }
     printf("\n");
   }
 }
 
 void afficher_path(case_t c[N][M]){
-    printf("afficherpath\n");
-
   printf("---------------------------------------------- \n");
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
-      printf("%3i|",c[i][j].path);
+      if(c[i][j].val){
+        printf("%3i|",c[i][j].path);
+      }
+      else printf("  X|");
     }
     printf("\n");
   }
 }
 
-void genererDepArr(map_t * map, case_t * dep, case_t * arr){
-  int spawn, end;
-
-  spawn = rand()%NB_CASE/2;
-  end = rand()%NB_CASE/2;
+void afficher_typecase(case_t c[N][M]){
+  printf("---------------------------------------------- \n");
 
   for(int i = 0; i < N; i++){
     for(int j = 0; j < M; j++){
-      if(map->v[i][j].val == spawn){
-        map->v[i][j].typeCase = 1;
-        dep = &map->v[i][j];
+      if(c[i][j].val){
+        printf("%3i|",c[i][j].typeCase);
       }
-      else if(map->v[i][j].val == end){
-        map->v[i][j].typeCase = 2;
-        arr = &map->v[i][j];
-      }
+      else printf("  X|");
     }
+    printf("\n");
   }
 }
 
+void genererDepArr(map_t * map){
+  map->v[0][0].typeCase = 1;
+  map->v[6][2].typeCase = 2;
+}
 
-int pathfinding(map_t * map, case_t * depart, case_t * arrive) {
+case_t debut(case_t c[N][M]){
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      if(c[i][j].typeCase==SPAWN) return c[i][j];
+    }
+  }
+  return c[0][0];
+}
 
-	ajouter(depart->coord.x);
-	ajouter(depart->coord.y);
+case_t arrive(case_t c[N][M]){
+  for(int i = 0; i < N; i++){
+    for(int j = 0; j < M; j++){
+      if(c[i][j].typeCase==FIN) return c[i][j];
+    }
+  }
+  return c[N][M];
+}
 
-	int x = depart->coord.x, y = depart->coord.y;
 
-	while((x != arrive->coord.x && y != arrive->coord.y) && !fileVide()) {
+int pathfinding(map_t * map){
 
-		retirer(&x);
-		retirer(&y);
+  case_t case_depart = debut(map->v);
+  case_t case_arrive = arrive(map->v);
 
-		if(coord_valide(x-2,y) && map->v[x-2][y].val != 10 && map->v[x-2][y].path == 0){
-			ajouter(x-2);
-			ajouter(y);
+  case_t hexcase;
 
-			map->v[x-2][y].path = map->v[x][y].path+1;
+	ajouter(case_depart);
+
+	int x = case_depart.coord.x, y = case_depart.coord.y;
+
+	while((x != case_arrive.coord.x && y != case_arrive.coord.y) && !fileVide()) {
+
+		retirer(&hexcase);
+
+		if(coord_valide(hexcase.coord.x-2,hexcase.coord.y) && map->v[hexcase.coord.x-2][hexcase.coord.y].val != 10 && map->v[hexcase.coord.x-2][hexcase.coord.y].path != 1){
+			ajouter(hexcase);
+
+			map->v[hexcase.coord.x-2][hexcase.coord.y].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
+    if(coord_valide(hexcase.coord.x-1,hexcase.coord.y+1) && map->v[hexcase.coord.x-1][hexcase.coord.y+1].val != 10 && map->v[hexcase.coord.x-1][hexcase.coord.y+1].path != 1){
+			ajouter(hexcase);
 
-    if(coord_valide(x-1,y+1) && map->v[x-1][y+1].val != 10 && map->v[x-1][y+1].path == 0){
-			ajouter(x-1);
-			ajouter(y+1);
-
-			map->v[x-1][y+1].path = map->v[x][y].path+1;
+			map->v[hexcase.coord.x-1][hexcase.coord.y+1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
+    if(coord_valide(hexcase.coord.x+1,hexcase.coord.y+1) && map->v[hexcase.coord.x+1][hexcase.coord.y+1].val != 10 && map->v[hexcase.coord.x+1][hexcase.coord.y+1].path != 1){
+			ajouter(hexcase);
 
-    if(coord_valide(x+1,y+1) && map->v[x+1][y+1].val != 10 && map->v[x+1][y+1].path == 0){
-			ajouter(x+1);
-			ajouter(y+1);
-
-			map->v[x+1][y+1].path = map->v[x][y].path+1;
+			map->v[hexcase.coord.x+1][hexcase.coord.y+1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
+    if(coord_valide(hexcase.coord.x+2,hexcase.coord.y) && map->v[hexcase.coord.x+2][hexcase.coord.y].val != 10 && map->v[hexcase.coord.x+2][hexcase.coord.y].path != 1){
+			ajouter(hexcase);
 
-    if(coord_valide(x+2,y) && map->v[x+2][y].val != 10 && map->v[x+2][y].path == 0){
-			ajouter(x+2);
-			ajouter(y);
-
-			map->v[x+2][y].path = map->v[x][y].path+1;
+			map->v[hexcase.coord.x+2][hexcase.coord.y].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
+    if(coord_valide(hexcase.coord.x+1,hexcase.coord.y-1) && map->v[hexcase.coord.x+1][hexcase.coord.y-1].val != 10 && map->v[hexcase.coord.x+1][hexcase.coord.y-1].path != 1){
+      ajouter(hexcase);
 
-    if(coord_valide(x+1,y-1) && map->v[x+1][y-1].val != 10 && map->v[x+1][y-1].path == 0){
-			ajouter(x+1);
-			ajouter(y-1);
+      map->v[hexcase.coord.x+1][hexcase.coord.y-1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
+    }
+    if(coord_valide(hexcase.coord.x-1,hexcase.coord.y-1) && map->v[hexcase.coord.x-1][hexcase.coord.y-1].val != 10 && map->v[hexcase.coord.x-1][hexcase.coord.y-1].path != 1){
+      ajouter(hexcase);
 
-			map->v[x+1][y-1].path = map->v[x][y].path+1;
-		}
-
-    if(coord_valide(x-1,y-1) && map->v[x-1][y-1].val != 10 && map->v[x-1][y-1].path == 0){
-			ajouter(x-1);
-			ajouter(y-1);
-
-			map->v[x-1][y-1].path = map->v[x][y].path+1;
-		}
+      map->v[hexcase.coord.x-1][hexcase.coord.y-1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
+    }
 	}
-  return map->v[arrive->coord.x][arrive->coord.x].path;
+  return map->v[case_arrive.coord.x][case_arrive.coord.x].path;
 }
 
 
