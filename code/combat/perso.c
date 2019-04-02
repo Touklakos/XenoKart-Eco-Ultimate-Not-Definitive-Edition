@@ -177,9 +177,8 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
 
 
 /**
-    \fn void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera)
+    \fn void afficherPersonnage(SDL_Window* screen, SDL_Rect camera)
     \brief afficher le personnage à l'écran
-    \param perso personnage à afficher(coordonnées, image)
     \param screen fenetre sur laquelle on affiche le personnage
     \param camera coordonnées de la camera(qui represent le centre de l'écran)
 */
@@ -203,9 +202,8 @@ void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera) {
 
 
 /**
-    \fn void afficherPersonnage(Personnage *perso, SDL_Window* screen, SDL_Rect camera)
+    \fn void afficherPersonnage()
     \brief décrémente les valeurs de "delaiModif" d'un personnage et inverse leurs effets quand elles sont terminées
-    \param perso personnage à modifier
 */
 
 void delaiModificationPerso() {
