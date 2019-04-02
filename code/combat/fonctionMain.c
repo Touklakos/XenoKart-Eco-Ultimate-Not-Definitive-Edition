@@ -205,10 +205,8 @@ void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe
 }
 
 /**
-    \fn void gererTexte(degatsTxt *tab, int *nbMembre, SDL_Surface *pSurface, SDL_Rect camera)
+    \fn void gererTexte(SDL_Surface *pSurface, SDL_Rect camera)
     \brief Affiche les valeur de degats et de soin au dessus des personnages et des ennemi concerné, puis fait disparaitre les texte au bout de quelque instants
-    \param tab le tableau de texte
-    \param nbMembre le nombre de texte afficher à l'ecran
     \param pSurface fenetre dans laquelle on va afficher les textes
     \param camera nous permet d'afficher les textes de facon fixe
 */
@@ -284,7 +282,6 @@ int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
     \param ennemis liste de tout les ennemis
     \param nbEnnemi nombre d'ennemis encore vivants
     \param equipe tableau des personnages jouable
-    \param etat etat en cours (en exploration, en combat)
 */
 
 
@@ -353,6 +350,15 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[]) {
 
 }
 
+
+/**
+    \fn void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi)
+    \brief quand il n'y a plus d'ennemis on affiche un texte "Victoire !!!" à l'écran, puis on rajoute de nouveau ennemis
+    \param screen fenetre sur laquelle on affiche le message
+    \param ennemis tableau des ennemis que l'on va ajouter
+    \param nbEnnemi nombre d'ennemis (egal à 0) au debut de la fonction, (egal au nombre d'ennemis ajouter à la fin)
+*/
+
 void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi) {
 
   SDL_Rect dest = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2,0,0};
@@ -397,6 +403,13 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi) {
 
 
 
+
+/**
+    \fn int testTouche(doublet clavier)
+    \brief cette fonction permet de verifier qu'un touche vient d'etre enfoncé
+    \param clavier touche que l'on verifie
+    \return TRUE ou FALSE
+*/
 
 
 
@@ -458,6 +471,12 @@ void quitter(int to_server_socket){
 
 
 
+
+/**
+    \fn void * recoit(void *sock)
+    \brief cette fonction permet de recevoir les messages des clients ou du serveur et de les gerer
+    \param sock socket du client ou du serveur
+*/
 
 
 void * recoit(void *sock) {
@@ -569,6 +588,11 @@ void * recoit(void *sock) {
 }
 
 
+/**
+    \fn void autoAttaque()
+    \brief cette fonction appelle d'autre fonction pour permettre aux personnages et aux ennemis d'utiliser des auto-attaque
+*/
+
 
 void autoAttaque() {
 
@@ -593,8 +617,12 @@ void autoAttaque() {
 }
 
 
-void ordreNouvCible() {
+/**
+    \fn void ordreNouvCible()
+    \brief cette fonction appelle d'autre fonction pour permettre d'ordoner aux autre personnages d'attaquer un ennemis ciblé 
+*/
 
+void ordreNouvCible() {
 
 
   if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
@@ -619,6 +647,12 @@ void ordreNouvCible() {
 
 }
 
+
+/**
+    \fn void choixArt()
+    \brief cette fonction permet de changer la position du curseur de choix des "arts" 
+*/
+
 void choixArt() {
 
   if(recupCurseur-- < 0) {
@@ -642,6 +676,12 @@ void choixArt() {
   }
 
 }
+
+
+/**
+    \fn void utilisationArt()
+    \brief cette fonction permet d'utiliser "l'art" sur lequel est positionne notre curseur
+*/
 
 void utilisationArt() {
 
@@ -719,6 +759,13 @@ void utilisationArt() {
 }
 
 
+
+/**
+    \fn void choixCibleArt()
+    \brief cette fonction permet de choisir une cible (parmis nos allies) quand "l'art" que l'on utilise en requiere une
+*/
+
+
 void choixCibleArt() {
 
   if(recupCible-- < 0) {
@@ -772,6 +819,12 @@ void choixCibleArt() {
   }
 
 }
+
+
+/**
+    \fn void choixCibleEnnemi()
+    \brief cette fonction permet changer de cible parmis tout les ennemis presents
+*/
 
 
 void choixCibleEnnemi() {
@@ -852,6 +905,13 @@ void choixCibleEnnemi() {
 }
 
 
+
+/**
+    \fn void echangePerso()
+    \brief cette fonction appelle d'autres fonction pour permettre de changer de personnage
+*/
+
+
 void echangePerso() {
 
   if(clavier[SDL_SCANCODE_3].enfonce) { //Si on appuie sur la gachette droite on donner des ordres au personnage le plus � droite ou bien le controller
@@ -877,6 +937,11 @@ void echangePerso() {
 }
 
 
+/**
+    \fn void ordreAttaque()
+    \brief cette fonction donne l'ordre à tout les personnage d'attaquer une cible
+*/
+
 void ordreAttaque() {
 
   if(testTouche(clavier[SDL_SCANCODE_SPACE])) {
@@ -895,6 +960,11 @@ void ordreAttaque() {
 
 }
 
+
+/**
+    \fn void mortalKombat()
+    \brief cette fonction appelle toutes les fonctions necessaire pour que le systeme de combat fonctionne
+*/
 
 
 void mortalKombat() {
@@ -1003,6 +1073,11 @@ void mortalKombat() {
 }
 
 
+
+/**
+    \fn void connexion()
+    \brief cette fonction permet au client de se connecter au serveur et au serveur d'attendre la connexion des ses clients
+*/
 
 
 void connexion() {
@@ -1118,6 +1193,11 @@ void connexion() {
 
 }
 
+/**
+    \fn void afficherCombat(SDL_Surface *pSurface)
+    \brief cette fonction permet d'afficher touts les sprites necessaire au combat
+    \param pSurface fenetre sur laquelle on affiche les sprites
+*/
 
 void afficherCombat(SDL_Surface *pSurface) {
 
@@ -1174,6 +1254,11 @@ void afficherCombat(SDL_Surface *pSurface) {
 }
 
 
+/**
+    \fn void freeAll()
+    \brief cette fonction permet de liberer la memoire que l'on a alloue au cours du programme quand on quitte celui-ci
+*/
+
 void freeAll() {
 
   for(int i = 0; i < 3; i++) {
@@ -1214,6 +1299,11 @@ void freeAll() {
 
 
 
+
+/**
+    \fn void initJeu()
+    \brief cette fonction permet d'allouer la memoire d'ont on a besoin au debut du programme
+*/
 
 void initJeu() {
 
