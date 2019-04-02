@@ -119,11 +119,11 @@ void init_mat(case_t mat[N][M]){
 
 
 int case_valide(case_t hexcase){
-  return((hexcase.coord.x < 0 && hexcase.coord.x > M) && (hexcase.coord.y < 0 && hexcase.coord.y > N));
+  return((hexcase.coord.x >= 0 && hexcase.coord.x < M) && (hexcase.coord.y >= 0 && hexcase.coord.y < N));
 }
 
 int coord_valide(int x, int y){
-  return((x < 0 && x > M) && (y < 0 && y > N));
+  return((x >= 0 && x < M) && (y >= 0 && y < N));
 }
 
 int choixType(case_t hexcase, map_t * map){
@@ -177,7 +177,7 @@ case_t creerCase(int x, int y, map_t * map){
 
   hexcase.val = caseCount;
 
-  hexcase.path = 1;
+  hexcase.path = 0;
 
   hexcase.coord.x = x;
   hexcase.coord.y = y;
@@ -335,7 +335,7 @@ case_t arrive(case_t c[N][M]){
       if(c[i][j].typeCase==FIN) return c[i][j];
     }
   }
-  return c[N][M];
+  return c[N-1][M-1];
 }
 
 
@@ -354,33 +354,33 @@ int pathfinding(map_t * map){
 
 		retirer(&hexcase);
 
-		if(coord_valide(hexcase.coord.x-2,hexcase.coord.y) && map->v[hexcase.coord.x-2][hexcase.coord.y].val != 10 && map->v[hexcase.coord.x-2][hexcase.coord.y].path != 1){
-			ajouter(hexcase);
+		if(coord_valide(hexcase.coord.x-2,hexcase.coord.y) && map->v[hexcase.coord.x-2][hexcase.coord.y].type != OCEAN && !map->v[hexcase.coord.x-2][hexcase.coord.y].path){
+			ajouter(map->v[hexcase.coord.x-2][hexcase.coord.y]);
 
 			map->v[hexcase.coord.x-2][hexcase.coord.y].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
-    if(coord_valide(hexcase.coord.x-1,hexcase.coord.y+1) && map->v[hexcase.coord.x-1][hexcase.coord.y+1].val != 10 && map->v[hexcase.coord.x-1][hexcase.coord.y+1].path != 1){
-			ajouter(hexcase);
+    if(coord_valide(hexcase.coord.x-1,hexcase.coord.y+1) && map->v[hexcase.coord.x-1][hexcase.coord.y+1].type != OCEAN && !map->v[hexcase.coord.x-1][hexcase.coord.y+1].path){
+			ajouter(map->v[hexcase.coord.x-1][hexcase.coord.y+1]);
 
 			map->v[hexcase.coord.x-1][hexcase.coord.y+1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
-    if(coord_valide(hexcase.coord.x+1,hexcase.coord.y+1) && map->v[hexcase.coord.x+1][hexcase.coord.y+1].val != 10 && map->v[hexcase.coord.x+1][hexcase.coord.y+1].path != 1){
-			ajouter(hexcase);
+    if(coord_valide(hexcase.coord.x+1,hexcase.coord.y+1) && map->v[hexcase.coord.x+1][hexcase.coord.y+1].type != OCEAN && !map->v[hexcase.coord.x+1][hexcase.coord.y+1].path){
+			ajouter(map->v[hexcase.coord.x+1][hexcase.coord.y+1]);
 
 			map->v[hexcase.coord.x+1][hexcase.coord.y+1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
-    if(coord_valide(hexcase.coord.x+2,hexcase.coord.y) && map->v[hexcase.coord.x+2][hexcase.coord.y].val != 10 && map->v[hexcase.coord.x+2][hexcase.coord.y].path != 1){
-			ajouter(hexcase);
+    if(coord_valide(hexcase.coord.x+2,hexcase.coord.y) && map->v[hexcase.coord.x+2][hexcase.coord.y].type != OCEAN && !map->v[hexcase.coord.x+2][hexcase.coord.y].path){
+			ajouter(map->v[hexcase.coord.x+2][hexcase.coord.y]);
 
 			map->v[hexcase.coord.x+2][hexcase.coord.y].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
 		}
-    if(coord_valide(hexcase.coord.x+1,hexcase.coord.y-1) && map->v[hexcase.coord.x+1][hexcase.coord.y-1].val != 10 && map->v[hexcase.coord.x+1][hexcase.coord.y-1].path != 1){
-      ajouter(hexcase);
+    if(coord_valide(hexcase.coord.x+1,hexcase.coord.y-1) && map->v[hexcase.coord.x+1][hexcase.coord.y-1].type != OCEAN && !map->v[hexcase.coord.x+1][hexcase.coord.y-1].path){
+      ajouter(map->v[hexcase.coord.x+1][hexcase.coord.y-1]);
 
       map->v[hexcase.coord.x+1][hexcase.coord.y-1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
     }
-    if(coord_valide(hexcase.coord.x-1,hexcase.coord.y-1) && map->v[hexcase.coord.x-1][hexcase.coord.y-1].val != 10 && map->v[hexcase.coord.x-1][hexcase.coord.y-1].path != 1){
-      ajouter(hexcase);
+    if(coord_valide(hexcase.coord.x-1,hexcase.coord.y-1) && map->v[hexcase.coord.x-1][hexcase.coord.y-1].type != OCEAN && !map->v[hexcase.coord.x-1][hexcase.coord.y-1].path){
+      ajouter(map->v[hexcase.coord.x-1][hexcase.coord.y-1]);
 
       map->v[hexcase.coord.x-1][hexcase.coord.y-1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
     }
