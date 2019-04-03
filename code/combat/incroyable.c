@@ -4,16 +4,6 @@
 #include <time.h>
 #include <string.h>
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <signal.h>
-#include <unistd.h>
-#include <errno.h>
-#include <arpa/inet.h>
-#include <pthread.h>
 
 
 #include <SDL2/SDL.h>
@@ -75,45 +65,7 @@ int main(int argc, char** argv)
   SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 255, 255));
 
 
-  ///Initialisation d'un controller (si on en possède un)
-
-  SDL_Joystick *joy;
-
-  // Initialize the joystick subsystem
-  SDL_InitSubSystem(SDL_INIT_JOYSTICK);
-
-  SDL_GameController* controller;
-
-  // Check for joystick
-  if (SDL_NumJoysticks() > 0) {
-
-      // Open joystick
-      joy = SDL_JoystickOpen(0);
-
-      if (joy) {
-
-        printf("Opened Joystick 0\n");
-        printf("Name: %s\n", SDL_JoystickNameForIndex(0));
-        printf("Number of Axes: %d\n", SDL_JoystickNumAxes(joy));
-        printf("Number of Buttons: %d\n", SDL_JoystickNumButtons(joy));
-        printf("Number of Balls: %d\n", SDL_JoystickNumBalls(joy));
-        controller = SDL_GameControllerOpen(0);
-
-      } else {
-
-        printf("Couldn't open Joystick 0\n");
-
-      }
-
-      printf("%d\n", SDL_NumJoysticks());
-      printf("%s\n", SDL_JoystickName(joy));
-
-  }
-
   initJeu();
-
-
-
 
   SDL_Event event;
 
@@ -164,11 +116,12 @@ int main(int argc, char** argv)
 
 
       //////////////////////////////////////FONCTIONS AUTOMATIQUE DURANT LE COMBAT////////////////////////////////////////////
-
       mortalKombat();
 
 
       afficherCombat(pSurface);
+
+
 
 
       gererTexte(pSurface, camera);
@@ -215,11 +168,15 @@ int main(int argc, char** argv)
 
       int delai = ((1000/FPS)-(fin-debut));
 
-      pthread_mutex_lock (&mutex); /* On verrouille le mutex */
+      if(coop) {
 
-      pthread_cond_signal (&condition); /* On délivre le signal : condition remplie */
+        pthread_mutex_lock (&mutex); /* On verrouille le mutex */
 
-      pthread_mutex_unlock (&mutex); /* On déverrouille le mutex */
+        pthread_cond_signal (&condition); /* On délivre le signal : condition remplie */
+
+        pthread_mutex_unlock (&mutex); /* On déverrouille le mutex */
+
+      }
 
       if(delai > 0) {
 
@@ -232,14 +189,6 @@ int main(int argc, char** argv)
 
     }
 
-
-
-    // Close if opened
-    if (SDL_JoystickGetAttached(joy)) {
-
-      SDL_JoystickClose(joy);
-
-    }
 
 
     freeAll();

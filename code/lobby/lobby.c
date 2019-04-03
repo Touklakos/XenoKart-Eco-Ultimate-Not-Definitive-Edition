@@ -11,7 +11,7 @@
 #include "../combat/perso.h"
 #include "fonctions.h"
 
-
+/****
 
 int main(){
 
@@ -40,12 +40,12 @@ int main(){
 
     police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);*/
 //fenetre
-
+/****
   SDL_Event event;
   int quit = 0;
 
   long long unsigned debut;/*, fin , fpsCount = 0;*/
-
+/****
   SDL_Surface* pSurface = NULL;
 
   pSurface = SDL_GetWindowSurface(screen);
@@ -73,7 +73,7 @@ int main(){
 
   SDL_Surface * test = TTF_RenderText_Solid(police, "test", c);*/
 
-
+/****
 Personnage Picksou;
 
 initPersonnage(&Picksou, "./data/Picksou.txt");
@@ -150,8 +150,8 @@ printf("test2\n");
     if(quitter == 'y'){
       return 0;
     }*/
-    if(etat == 3){
+/****    if(etat == 3){
       return 0;
     }
   }
-}
+}****/

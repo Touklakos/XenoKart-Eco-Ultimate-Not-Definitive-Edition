@@ -10,6 +10,24 @@
   \date 12 mars 2019
 */
 
+#define N 4
+
+typedef enum {menu, lobby, map, combat} eEtatProg;
+
+
+
+extern int fpsCount;
+extern int fin;
+extern int deb;
+extern int quit;
+
+extern eEtatProg etatProg;
+
+
+extern SDL_Event event;
+extern SDL_Color blanc;
+extern SDL_Color noir;
+
 typedef struct {SDL_Rect rec; SDL_Surface* txt;} affichage;
 
 void fonctionQuitter();

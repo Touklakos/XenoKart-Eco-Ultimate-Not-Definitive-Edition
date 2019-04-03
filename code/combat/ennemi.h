@@ -1,3 +1,15 @@
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+#include <signal.h>
+#include <unistd.h>
+#include <errno.h>
+#include <arpa/inet.h>
+#include <pthread.h>
+
 #include "deplacement.h"
 
 
@@ -93,4 +105,5 @@ void delaiEtatEnnemis();
 void delaiModificationEnnemi();
 void persoPoursuit(int indicePersonnage);
 void deplacementPersonnage();
+void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera);
 void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible);

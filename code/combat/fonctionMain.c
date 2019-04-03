@@ -386,9 +386,9 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi) {
   SDL_UpdateWindowSurface(screen);
 
 
+/*
   int nbNouvEnn = 1;
 
-  //scanf("%d", &nbNouvEnn);
 
   for(int i = 0; i < nbNouvEnn; i++) {
 
@@ -398,7 +398,7 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi) {
 
   }
 
-
+*/
 }
 
 
@@ -420,11 +420,11 @@ int testTouche(doublet clavier) {
 }
 
 
-
+/*
 void fin(int sig){
 	printf("fin du serveur");
 }
-
+*/
 int hostname_to_ip(char * hostname , char* ip)
 {
     struct hostent *he;
@@ -619,7 +619,7 @@ void autoAttaque() {
 
 /**
     \fn void ordreNouvCible()
-    \brief cette fonction appelle d'autre fonction pour permettre d'ordoner aux autre personnages d'attaquer un ennemis ciblé 
+    \brief cette fonction appelle d'autre fonction pour permettre d'ordoner aux autre personnages d'attaquer un ennemis ciblé
 */
 
 void ordreNouvCible() {
@@ -650,7 +650,7 @@ void ordreNouvCible() {
 
 /**
     \fn void choixArt()
-    \brief cette fonction permet de changer la position du curseur de choix des "arts" 
+    \brief cette fonction permet de changer la position du curseur de choix des "arts"
 */
 
 void choixArt() {
@@ -1002,7 +1002,6 @@ void mortalKombat() {
 
   }
 
-
   //////////////////////////////////////FONCTIONS D'INPUTS DE DEPLACEMENT////////////////////////////////////////////
 
 
@@ -1021,8 +1020,8 @@ void mortalKombat() {
 
   recuperationArt();      //d�cr�mentations des arts des personnages
 
-  delaiModificationPerso();           //d�crementations des modifications des personnages
 
+  delaiModificationPerso();           //d�crementations des modifications des personnages
 
 
   delaiModificationEnnemi();
@@ -1036,7 +1035,6 @@ void mortalKombat() {
     persoPoursuit(indicePersonnage);
 
   }
-
 
 
 
@@ -1307,9 +1305,6 @@ void freeAll() {
 
 void initJeu() {
 
-  Personnage Guts;
-  Personnage Dio;
-  Personnage Jojo;
 
   equipe[0] = malloc(sizeof(Personnage));
   equipe[1] = malloc(sizeof(Personnage));

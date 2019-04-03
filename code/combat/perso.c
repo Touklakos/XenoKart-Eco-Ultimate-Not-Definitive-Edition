@@ -27,177 +27,154 @@ int indicePersonnage;
 
 void initPersonnage(Personnage* perso, char fichier[50]) {
 
-    perso->posX = rand()%1280;
-    perso->posY = rand()%720;
-    perso->vitX = 0;
-    perso->vitY = 0;
-    perso->numFrame = 0;
+  perso->posX = rand()%1280;
+  perso->posY = rand()%720;
+  perso->vitX = 0;
+  perso->vitY = 0;
+  perso->numFrame = 0;
 
-    FILE* f;
-
-
-    f = fopen(fichier, "r");  //fichier dans le quel sont stockées les stats du personnages
+  FILE* f;
 
 
-    perso->NV = 0;
-    perso->EXP = 0;
-    perso->MAXPV = 0;
-    perso->PV = 0;
-    perso->FRC = 0;
-    perso->MGE = 0;
-    perso->VITATT = 0;
-    perso->CRIT = 0;
-    perso->CNTR = 0;
-    perso->GARDE = 0;
-    perso->DEFPHY = 0;
-    perso->DEFMGE = 0;
-    perso->AGI = 0;
-    perso->DEXT = 0;
-    perso->PRTAUTO = 0;
-    perso->CHANCE = 0;
-
-    perso->cible = 0;
-    perso->enChoixCible = 0;
+  f = fopen(fichier, "r");  //fichier dans le quel sont stockées les stats du personnages
 
 
+  perso->NV = 0;
+  perso->EXP = 0;
+  perso->MAXPV = 0;
+  perso->PV = 0;
+  perso->FRC = 0;
+  perso->MGE = 0;
+  perso->VITATT = 0;
+  perso->CRIT = 0;
+  perso->CNTR = 0;
+  perso->GARDE = 0;
+  perso->DEFPHY = 0;
+  perso->DEFMGE = 0;
+  perso->AGI = 0;
+  perso->DEXT = 0;
+  perso->PRTAUTO = 0;
+  perso->CHANCE = 0;
 
-    char temp[20];
-
-        char cheminImage[50];
-
-        fscanf(f, "%s", cheminImage);           //on charge son image
-        perso->image = IMG_Load(cheminImage);
-
-        while(!feof(f)) {                       //on charge les stats �crites dans un fichier
-
-            fscanf(f, "%s : ", temp);
-
-            if(!strcmp(temp,"NV")) {
-
-                    fscanf(f, "%d;", &perso->NV);
-
-            } else if(!strcmp(temp,"MAXPV")) {
-
-                    fscanf(f, "%d;", &perso->MAXPV);
-
-            } else if(!strcmp(temp,"EXP")) {
-
-                    fscanf(f, "%d;", &perso->EXP);
-
-            } else if(!strcmp(temp,"PV")) {
-
-                    fscanf(f, "%d;", &perso->PV);
-
-            } else if(!strcmp(temp,"FRC")) {
-
-                    fscanf(f, "%d;", &perso->FRC);
-
-            } else if(!strcmp(temp,"MGE")) {
-
-                    fscanf(f, "%d;", &perso->MGE);
-
-            } else if(!strcmp(temp,"VITATT")) {
-
-                    fscanf(f, "%d;", &perso->VITATT);
-
-            } else if(!strcmp(temp,"CRIT")) {
-
-                    fscanf(f, "%d;", &perso->CRIT);
-
-            } else if(!strcmp(temp,"CNTR")) {
-
-                    fscanf(f, "%d;", &perso->CNTR);
-
-            } else if(!strcmp(temp,"GARDE")) {
-
-                    fscanf(f, "%d;", &perso->GARDE);
-
-            } else if(!strcmp(temp,"DEFPHY")) {
-
-                    fscanf(f, "%d;", &perso->DEFPHY);
-
-            } else if(!strcmp(temp,"DEFMGE")) {
-
-                    fscanf(f, "%d;", &perso->DEFMGE);
-
-            } else if(!strcmp(temp,"AGI")) {
-
-                    fscanf(f, "%d;", &perso->AGI);
-
-            } else if(!strcmp(temp,"DEXT")) {
-
-                    fscanf(f, "%d;", &perso->DEXT);
-
-            } else if(!strcmp(temp,"PRTAUTO")) {
-
-                    fscanf(f, "%d;", &perso->PRTAUTO);
-
-            } else if(!strcmp(temp,"CHANCE")) {
-
-                    fscanf(f, "%d;", &perso->CHANCE);
-
-            }
+  perso->cible = 0;
+  perso->enChoixCible = 0;
 
 
-        }
 
-    perso->ATTMIN=perso->FRC;
-    perso->ATTMAX=perso->FRC+10;
-    perso->delaiAuto=perso->VITATT;
-    perso->delaiArt = 0;
+  char temp[20];
 
-    perso->modif[MAXPV] = (float)perso->MAXPV;
-    perso->modif[FRC] = (float)perso->FRC;
-    perso->modif[MGE] = (float)perso->MGE;
-    perso->modif[ATTMIN] = (float)perso->ATTMIN;
-    perso->modif[ATTMAX] = (float)perso->ATTMAX;
-    perso->modif[VITATT] = (float)perso->VITATT;
-    perso->modif[CRIT] = (float)perso->CRIT;
-    perso->modif[CNTR] = (float)perso->CNTR;
-    perso->modif[DBLATT] = (float)perso->DBLATT;
-    perso->modif[GARDE] = (float)perso->GARDE;
-    perso->modif[DEFPHY] = (float)perso->DEFPHY;
-    perso->modif[DEFMGE] = (float)perso->DEFMGE;
-    perso->modif[AGI] = (float)perso->AGI;
-    perso->modif[DEXT] = (float)perso->DEXT;
-    perso->modif[PRTAUTO] = (float)perso->PRTAUTO;
+  char cheminImage[50];
 
-    for(int i = MAXPV; i < PRTAUTO; i++) {
+  fscanf(f, "%s", cheminImage);           //on charge son image
+  perso->image = IMG_Load(cheminImage);
 
-      perso->nbDelai[i] = 0;
+  while(!feof(f)) {                       //on charge les stats �crites dans un fichier
+
+    fscanf(f, "%s : ", temp);
+
+    if(!strcmp(temp,"NV")) {
+
+      fscanf(f, "%d;", &perso->NV);
+
+    } else if(!strcmp(temp,"MAXPV")) {
+
+      fscanf(f, "%d;", &perso->MAXPV);
+
+    } else if(!strcmp(temp,"EXP")) {
+
+      fscanf(f, "%d;", &perso->EXP);
+
+    } else if(!strcmp(temp,"PV")) {
+
+      fscanf(f, "%d;", &perso->PV);
+
+    } else if(!strcmp(temp,"FRC")) {
+
+      fscanf(f, "%d;", &perso->FRC);
+
+    } else if(!strcmp(temp,"MGE")) {
+
+      fscanf(f, "%d;", &perso->MGE);
+
+    } else if(!strcmp(temp,"VITATT")) {
+
+      fscanf(f, "%d;", &perso->VITATT);
+
+    } else if(!strcmp(temp,"CRIT")) {
+
+      fscanf(f, "%d;", &perso->CRIT);
+
+    } else if(!strcmp(temp,"CNTR")) {
+
+      fscanf(f, "%d;", &perso->CNTR);
+
+    } else if(!strcmp(temp,"GARDE")) {
+
+      fscanf(f, "%d;", &perso->GARDE);
+
+    } else if(!strcmp(temp,"DEFPHY")) {
+
+      fscanf(f, "%d;", &perso->DEFPHY);
+
+    } else if(!strcmp(temp,"DEFMGE")) {
+
+      fscanf(f, "%d;", &perso->DEFMGE);
+
+    } else if(!strcmp(temp,"AGI")) {
+
+      fscanf(f, "%d;", &perso->AGI);
+
+    } else if(!strcmp(temp,"DEXT")) {
+
+      fscanf(f, "%d;", &perso->DEXT);
+
+    } else if(!strcmp(temp,"PRTAUTO")) {
+
+      fscanf(f, "%d;", &perso->PRTAUTO);
+
+    } else if(!strcmp(temp,"CHANCE")) {
+
+      fscanf(f, "%d;", &perso->CHANCE);
 
     }
 
-    perso->enCombat = 0;
+  }
 
-    fclose(f);
+  perso->ATTMIN=perso->FRC;
+  perso->ATTMAX=perso->FRC+10;
+  perso->delaiAuto=perso->VITATT;
+  perso->delaiArt = 0;
 
-}
+  perso->modif[MAXPV] = (float)perso->MAXPV;
+  perso->modif[FRC] = (float)perso->FRC;
+  perso->modif[MGE] = (float)perso->MGE;
+  perso->modif[ATTMIN] = (float)perso->ATTMIN;
+  perso->modif[ATTMAX] = (float)perso->ATTMAX;
+  perso->modif[VITATT] = (float)perso->VITATT;
+  perso->modif[CRIT] = (float)perso->CRIT;
+  perso->modif[CNTR] = (float)perso->CNTR;
+  perso->modif[DBLATT] = (float)perso->DBLATT;
+  perso->modif[GARDE] = (float)perso->GARDE;
+  perso->modif[DEFPHY] = (float)perso->DEFPHY;
+  perso->modif[DEFMGE] = (float)perso->DEFMGE;
+  perso->modif[AGI] = (float)perso->AGI;
+  perso->modif[DEXT] = (float)perso->DEXT;
+  perso->modif[PRTAUTO] = (float)perso->PRTAUTO;
 
+  for(int i = MAXPV; i <= PRTAUTO; i++) {
 
-
-/**
-    \fn void afficherPersonnage(SDL_Window* screen, SDL_Rect camera)
-    \brief afficher le personnage à l'écran
-    \param screen fenetre sur laquelle on affiche le personnage
-    \param camera coordonnées de la camera(qui represent le centre de l'écran)
-*/
-
-void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera) {
-
-  for(int i = 0; i < 3; i++) {
-
-    if(equipe[i]->vitX != 0 || equipe[i]->vitY != 0) equipe[i]->numFrame = (equipe[i]->numFrame+1)%60;
-
-    SDL_Rect dest = { equipe[i]->posX - equipe[i]->image->w/2/4-camera.x+camera.w, equipe[i]->posY - equipe[i]->image->h/2/4-camera.y+camera.h, 0, 0};
-    SDL_Rect img = { equipe[i]->image->w/4*(equipe[i]->numFrame/15), equipe[i]->image->h/4*equipe[i]->orientationAbsolue, equipe[i]->image->w/4, equipe[i]->image->h/4};
-
-
-    SDL_BlitSurface(equipe[i]->image, &img, pSurface, &dest);
+    perso->nbDelai[i] = 0;
 
   }
 
+  perso->enCombat = 0;
+
+  fclose(f);
+
 }
+
+
+
 
 
 
@@ -209,7 +186,6 @@ void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera) {
 void delaiModificationPerso() {
 
   for(int n = 0; n < 3; n++) {
-
 
     equipe[n]->delaiArt--;
 

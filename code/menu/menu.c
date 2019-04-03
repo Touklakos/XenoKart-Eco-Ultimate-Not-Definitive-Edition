@@ -5,12 +5,14 @@
 #include "menu.h"
 #include "../combat/const.h"
 
-#define N 4
 
 int fpsCount = 0;
 int fin = 0;
 int deb = 0;
 int quit = 0;
+
+eEtatProg etatProg;
+
 
 SDL_Event event;
 SDL_Color blanc = {255,255,255};
@@ -119,6 +121,9 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   while(!quit){
 
+    fprintf(stderr, "etatProg : %d\n", etatProg);
+
+
     deb = SDL_GetTicks();
 
     afficher(tab, tailletab, pSurface, screen, police);
@@ -144,7 +149,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
       if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
         switch(nbChoix){
-          case 0 : printf("LOAD\n");break;
+          case 0 : etatProg++; return;break;
           case 1 : printf("NEW\n");break;
         }
       }
@@ -156,92 +161,5 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
     }
     fonctionFin();
     fonctionQuitter();
-  }
-}
-
-int main(int argc, char** argv){
-
-  SDL_Init(SDL_INIT_EVERYTHING);
-  TTF_Init();
-  IMG_Init(IMG_INIT_PNG);
-
-  TTF_Font *police = NULL;
-  police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
-
-  SDL_Window* screen = SDL_CreateWindow("Menu - XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-
-  SDL_Surface* pSurface = NULL;
-  pSurface = SDL_GetWindowSurface(screen);
-
-  int recupCurs = 0;
-
-  int nbChoix = 0;
-  int decallageBouton = BUTTON_HEIGHT+DEC;
-
-  int tailletab = 4;
-
-  SDL_Rect jeu = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
-  SDL_Rect option = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect quitter = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,2*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-
-
-  affichage tab[4];
-  tab[0].rec = choix;
-  tab[1].rec = jeu;
-  tab[2].rec = option;
-  tab[3].rec = quitter;
-
-  tab[1].txt = TTF_RenderText_Solid(police, "GAME", noir);
-  tab[2].txt = TTF_RenderText_Solid(police, "OPTIONS", noir);
-  tab[3].txt = TTF_RenderText_Solid(police, "QUIT", noir);
-
-  while(!quit){
-
-    afficher(tab, tailletab, pSurface, screen, police);
-
-    deb = SDL_GetTicks();
-
-    SDL_PumpEvents();
-    const Uint8 *state = SDL_GetKeyboardState(NULL);
-
-
-    if(recupCurs-- < 0){ //permet la gestion de l'appuie des touches
-
-      if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
-        nbChoix++;
-        if(nbChoix == 3) nbChoix = 0;
-
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
-
-        afficher(tab, tailletab, pSurface, screen, police);
-
-        recupCurs = DELAI_CURSEUR;
-      }
-      if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
-        nbChoix--;
-        if(nbChoix == -1) nbChoix = 2;
-
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
-
-        afficher(tab, tailletab, pSurface, screen, police);
-
-        recupCurs = DELAI_CURSEUR;
-      }
-
-      if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
-        switch(nbChoix){
-          case 0 : fonctionJeu(pSurface, screen, police); break;
-          case 1 : break;
-          case 2 : quit = 2; break;
-        }
-      }
-    }
-    fonctionFin();
-    fonctionQuitter();
-  }
-  switch(quit){
-    case 1 : printf("Programme fermé par la croix\n"); break;
-    case 2 : printf("Programme fermé par le bouton\n"); break;
   }
 }

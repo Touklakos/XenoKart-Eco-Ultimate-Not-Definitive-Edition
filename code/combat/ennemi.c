@@ -1097,6 +1097,30 @@ void deplacementPersonnage() {
 /*Cette fonction v�rifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa derni�re utilisation)*/
 
 
+/**
+    \fn void afficherPersonnage(SDL_Window* screen, SDL_Rect camera)
+    \brief afficher le personnage à l'écran
+    \param screen fenetre sur laquelle on affiche le personnage
+    \param camera coordonnées de la camera(qui represent le centre de l'écran)
+*/
+
+void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera) {
+
+  for(int i = 0; i < 3; i++) {
+
+    orientationPersoCombatAbsolue(i);
+
+    if(equipe[i]->vitX != 0 || equipe[i]->vitY != 0) equipe[i]->numFrame = (equipe[i]->numFrame+1)%60;
+
+    SDL_Rect dest = { equipe[i]->posX - equipe[i]->image->w/2/4-camera.x+camera.w, equipe[i]->posY - equipe[i]->image->h/2/4-camera.y+camera.h, 0, 0};
+    SDL_Rect img = { equipe[i]->image->w/4*(equipe[i]->numFrame/15), equipe[i]->image->h/4*equipe[i]->orientationAbsolue, equipe[i]->image->w/4, equipe[i]->image->h/4};
+
+
+    SDL_BlitSurface(equipe[i]->image, &img, pSurface, &dest);
+
+  }
+
+}
 
 /**
     \fn void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt)
