@@ -14,8 +14,6 @@ int quit = 0;
 
 SDL_Event event;
 
-const int NB_CASE=N*M;
-
 int caseCount = 1;
 
 tElement *tete;
@@ -39,10 +37,10 @@ int fileVide() {
 	return tete == NULL;
 }
 
-void ajouter(case_t c) {
+void ajouter(case_t hexcase) {
 	tElement *nouv;
 	nouv = malloc(sizeof(tElement));
-	nouv->hexcase = c;
+	nouv->hexcase = hexcase;
 	nouv->suiv = NULL;
 	if(fileVide()) {
 		tete = nouv;
@@ -52,11 +50,11 @@ void ajouter(case_t c) {
 	queue = nouv;
 }
 
-void retirer(case_t *c) {
+void retirer(case_t *mat) {
 	tElement *premier;
 	if(!fileVide()) {
 		premier = tete;
-		*c = premier->hexcase;
+		*mat = premier->hexcase;
 		tete = premier->suiv;
 		free(premier);
 	}
@@ -99,31 +97,31 @@ void fonctionFin(){
 /**
     \fn void init_mat(case_t)
     \brief Cette fonction initialise les cases de la matrice à 0
-    \param mat[N][M] Matrice de la carte
+    \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
 */
 
-void init_mat(case_t mat[N][M]){
+void init_mat(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
 
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
       mat[i][j].val = 0;
     }
   }
 }
 
 /**
-    \fn case_valide(case_t mat[N][M])
+    \fn case_valide(case_t mat[MAP_HEIGHT][MAP_WIDTH])
     \brief Cette fonction permet de vérifier que les coordonnées de la case sont valides
     \param hexcase une case t_case
 */
 
 
 int case_valide(case_t hexcase){
-  return((hexcase.coord.x >= 0 && hexcase.coord.x < M) && (hexcase.coord.y >= 0 && hexcase.coord.y < N));
+  return((hexcase.coord.x >= 0 && hexcase.coord.x < MAP_WIDTH) && (hexcase.coord.y >= 0 && hexcase.coord.y < MAP_HEIGHT));
 }
 
 int coord_valide(int x, int y){
-  return((x >= 0 && x < M) && (y >= 0 && y < N));
+  return((x >= 0 && x < MAP_WIDTH) && (y >= 0 && y < MAP_HEIGHT));
 }
 
 int choixType(case_t hexcase, map_t * map){
@@ -163,17 +161,16 @@ int choixType(case_t hexcase, map_t * map){
 
 /**
     \fn case_t creerCase(int x, int y)
-    \brief Cette fonction permet de générer une case
+    \brief Cette fonction permet de géMAP_HEIGHTérer une case
     \param x Coordonnée X de la case
     \param y Coordonnée Y de la case
 */
 
 case_t creerCase(int x, int y, map_t * map){
 
-  printf("creercase\n");
   case_t hexcase;
 
-  printf("caseCount : %i \n", caseCount);
+  printf("caseCount : %i\n", caseCount);
 
   hexcase.val = caseCount;
 
@@ -183,7 +180,7 @@ case_t creerCase(int x, int y, map_t * map){
   hexcase.coord.y = y;
 
   hexcase.type = choixType(hexcase, map);
-  hexcase.typeCase = BASE;
+  hexcase.subtype = BASE;
 
   caseCount++;
 
@@ -192,7 +189,7 @@ case_t creerCase(int x, int y, map_t * map){
 
 /**
     \fn void creerCases(map_t * map)
-    \brief Cette fonction permet de générer toutes les cases de la matrice
+    \brief Cette fonction permet de géMAP_HEIGHTérer toutes les cases de la matrice
     \param map La carte
 */
 
@@ -202,8 +199,8 @@ void creerCases(map_t * map){
 
   srand(time(NULL));
 
-  for(i=0; i<N; i++){
-    for(;j<M; j+=2){
+  for(i=0; i<MAP_HEIGHT; i++){
+    for(;j<MAP_WIDTH; j+=2){
       map->v[i][j] = creerCase(i,j,map);
     }
   if((i+1)%2) j=1;
@@ -228,6 +225,9 @@ map_t * creerMap(enum typemap type){
 
   creerCases(map);
   genererDepArr(map);
+
+	map->v[0][0].type = OCEAN;
+
   return map;
 }
 
@@ -237,9 +237,10 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
   SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
   SDL_Surface * img = NULL;
+	SDL_Surface * imgsubtype = NULL;
 
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
       if(map->v[i][j].val){
         test.x = map->v[i][j].coord.y * (HEX_WIDTH - HEX_HEIGHT/4);
         test.y = map->v[i][j].coord.x * (HEX_HEIGHT - HEX_HEIGHT/2);
@@ -259,8 +260,15 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
           case 11 : img = IMG_Load("code/map/hex/hex_archipel.png"); break;
           default : img = IMG_Load("code/map/hex/hex.png"); break;
         }
+				switch(map->v[i][j].subtype){
+					case 0 : imgsubtype = NULL;break;
+					case 1 : imgsubtype = IMG_Load("code/map/hex/spawn.png"); break;
+					case 2 : imgsubtype = IMG_Load("code/map/hex/end.png"); break;
+					default : img = IMG_Load("code/map/hex/hex.png"); break;
+				}
 
         SDL_BlitSurface(img, NULL, pSurface, &test);
+				SDL_BlitSurface(imgsubtype, NULL, pSurface, &test);
       }
     }
   }
@@ -270,16 +278,14 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 /**
     \fn afficher_matrice(case_t [][])
     \brief Cette fonction permet de vérifier que les coordonnées de la case sont valides
-    \param mat[N][M] Matrice de la carte
+    \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
 */
 
-void afficher_matrice(case_t c[N][M]){
-  printf("---------------------------------------------- \n");
-
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(c[i][j].val){
-        printf("%3i|",c[i][j].val);
+void afficher_matrice(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].val){
+        printf("%3i|",mat[i][j].val);
       }
       else printf("  X|");
     }
@@ -287,13 +293,11 @@ void afficher_matrice(case_t c[N][M]){
   }
 }
 
-void afficher_path(case_t c[N][M]){
-  printf("---------------------------------------------- \n");
-
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(c[i][j].val){
-        printf("%3i|",c[i][j].path);
+void afficher_path(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].val){
+        printf("%3i|",mat[i][j].path);
       }
       else printf("  X|");
     }
@@ -301,13 +305,11 @@ void afficher_path(case_t c[N][M]){
   }
 }
 
-void afficher_typecase(case_t c[N][M]){
-  printf("---------------------------------------------- \n");
-
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(c[i][j].val){
-        printf("%3i|",c[i][j].typeCase);
+void afficher_subtype(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].val){
+        printf("%3i|",mat[i][j].subtype);
       }
       else printf("  X|");
     }
@@ -316,30 +318,30 @@ void afficher_typecase(case_t c[N][M]){
 }
 
 void genererDepArr(map_t * map){
-  map->v[0][0].typeCase = 1;
-  map->v[6][2].typeCase = 2;
+  map->v[0][0].subtype = 1;
+  map->v[6][2].subtype = 2;
 }
 
-case_t debut(case_t c[N][M]){
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(c[i][j].typeCase==SPAWN) return c[i][j];
+case_t debut(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].subtype==SPAWN) return mat[i][j];
     }
   }
-  return c[0][0];
+  return mat[0][0];
 }
 
-case_t arrive(case_t c[N][M]){
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(c[i][j].typeCase==FIN) return c[i][j];
+case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].subtype==FIN) return mat[i][j];
     }
   }
-  return c[N-1][M-1];
+  return mat[MAP_HEIGHT-1][MAP_WIDTH-1];
 }
 
 
-int pathfinding(map_t * map){
+void pathfinding(map_t * map){
 
   case_t case_depart = debut(map->v);
   case_t case_arrive = arrive(map->v);
@@ -385,47 +387,8 @@ int pathfinding(map_t * map){
       map->v[hexcase.coord.x-1][hexcase.coord.y-1].path = map->v[hexcase.coord.x][hexcase.coord.y].path+1;
     }
 	}
-  return map->v[case_arrive.coord.x][case_arrive.coord.x].path;
 }
 
-
-/*case_t recherchecase(int i, case_t map[N][M]){
-
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
-      if(map[i][j].val = i) return map[i][j];
-    }
-  }
-}*/
-
-/*void afficher_voisin(case_t hexcase, SDL_Surface* pSurface, SDL_Window* screen){
-
-  SDL_Rect test = {hexcase.x,hexcase.y,50,50};
-  SDL_Surface * img = NULL;
-  img = IMG_Load("code/map/hexagone.png");
-
-  if(hexcase.voisin[0].val != 0) test.y -= 672;
-  SDL_BlitSurface(img, NULL, pSurface, &test);
-  SDL_UpdateWindowSurface(screen);
-
-  if(hexcase.voisin[1].val != 0) test.x += 0.75*422; test.y -= (sqrt(3)/2) * 422;
-  SDL_BlitSurface(img, NULL, pSurface, &test);
-  SDL_UpdateWindowSurface(screen);
-
-  if(hexcase.voisin[2].val != 0) test.x += 0.75*422; test.y += (sqrt(3)/2) * 422;
-  SDL_BlitSurface(img, NULL, pSurface, &test);
-  SDL_UpdateWindowSurface(screen);
-
-  if(hexcase.voisin[3].val != 0) test.y += 672;
-  SDL_BlitSurface(img, NULL, pSurface, &test);
-  SDL_UpdateWindowSurface(screen);
-
-}*/
-
-/**
-    \fn afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen)
-    \brief Cette fonction permet d'afficher la carte avec la SDL
-    \param map La carte
-    \param pSurface Surface sur laquel on affiche
-    \param screen Ecran sur lequel on afficheMARAIS, TU
-*/
+int valeurPath(map_t * map){
+	return arrive(map->v).path;
+}

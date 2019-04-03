@@ -21,18 +21,18 @@ int main(int argc, char** argv){
 
   map_t * map;
   initFile();
-/*  do{
-    caseCount = 0;
-    map = creerMap(8,dep,arr);
-  }
-  while(pathfinding(map, dep, arr) < 1);*/
 
-  map = creerMap(8);
-  int i = pathfinding(map);
+  do{
+    caseCount = 1;
+    map = creerMap(8);
+    pathfinding(map);
+  }
+  while(!valeurPath(map) || valeurPath(map) < 2);
+
   //afficher_matrice(map->v);
   afficher_path(map->v);
   //afficher_typecase(map->v);
-  printf("pathfinding = %i\n", i);
+  printf("pathfinding = %i\n", valeurPath(map));
   afficherMap(map, pSurface, screen);
 
   while(!quit){
