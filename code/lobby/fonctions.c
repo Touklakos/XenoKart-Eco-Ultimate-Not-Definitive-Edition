@@ -117,39 +117,46 @@ void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *point
       dest.x = SCREEN_WIDTH/2 - texte->w/2;
       dest.y = SCREEN_HEIGHT/2 - texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       sprintf(string, "nombre : %i", inv[i].nombre - objets_gardes);
       texte = TTF_RenderText_Solid(police, string, c);
       dest.x = SCREEN_WIDTH/2 - texte->w/2;
       dest.y = SCREEN_HEIGHT/2 + texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       texte = TTF_RenderText_Solid(police, "upload (1)", c);
       dest.x = SCREEN_WIDTH/3 - texte->w/2;
       dest.y = SCREEN_HEIGHT/3*2 - texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       texte = TTF_RenderText_Solid(police, "garder (2)", c);
       dest.x = SCREEN_WIDTH/2 - texte->w/2;
       dest.y = SCREEN_HEIGHT/3*2 - texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       texte = TTF_RenderText_Solid(police, "vendre (3)", c);
       dest.x = SCREEN_WIDTH/3*2 - texte->w/2;
       dest.y = SCREEN_HEIGHT/3*2 - texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       sprintf(string, "score : %i", *points);
       texte = TTF_RenderText_Solid(police, string, c);
       dest.x = SCREEN_WIDTH/3 - texte->w/2;
       dest.y = SCREEN_HEIGHT/3 - texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       sprintf(string, "argents : %i", *argent);
       texte = TTF_RenderText_Solid(police, string, c);
       dest.x = SCREEN_WIDTH/3*2 - texte->w/2;
       dest.y = SCREEN_HEIGHT/3 - texte->h/2;
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
 
       //test des touches
       if(state[SDL_SCANCODE_1]){
@@ -177,7 +184,6 @@ void echange(SDL_Window * screen, t_objet inv[nbObjets], int *argent, int *point
       objets_gardes = 0;
     }
   }while(i < nbObjets);
-  SDL_FreeSurface(texte);
 
   TTF_CloseFont(police);
 
@@ -261,6 +267,7 @@ int expedition(SDL_Window * screen){
     SDL_UpdateWindowSurface(screen);
   }while(!test_touche);
   SDL_FreeSurface(map);
+  SDL_FreeSurface(flag);
   SDL_FreeSurface(texte[0]);
   SDL_FreeSurface(texte[1]);
   SDL_FreeSurface(texte[2]);
@@ -304,9 +311,12 @@ void afficher_inv(SDL_Window * screen, int x, int y, int w, int h, t_objet inv[n
         texte = TTF_RenderText_Solid(police, inv[k].nom, c);
         SDL_BlitSurface(texte, NULL, pSurface, &emplacement);
         sprintf(nb, "x%i", inv[k].nombre);
+        SDL_FreeSurface(texte);
         texte = TTF_RenderText_Solid(police, nb, c);
         emplacement.y+=50;
         SDL_BlitSurface(texte, NULL, pSurface, &emplacement);
+        SDL_FreeSurface(texte);
+
       }
       else{
         j--;
@@ -353,14 +363,20 @@ void commerce(SDL_Window * screen, t_objet inv[nbObjets], int *argent){
     dest.x = SCREEN_WIDTH/2 - texte->w/2;
     dest.y = SCREEN_HEIGHT/2;
     sprintf(string, "ARGENT : %i", *argent);
+    SDL_FreeSurface(texte);
+
     texte = TTF_RenderText_Solid(police, string, blanc);
     SDL_BlitSurface(texte, NULL, pSurface, &dest);
     if(vendeur[i_inv].nombre != 0 && i_inv<nbObjets && !inv_vide(vendeur)){
       dest.x = SCREEN_WIDTH/4 - texte->w/2;
       dest.y = SCREEN_HEIGHT/2;
       sprintf(string, "PRIX : %i", vendeur[i_inv].valeurArgent);
+      SDL_FreeSurface(texte);
+
       texte = TTF_RenderText_Solid(police, string, blanc);
       SDL_BlitSurface(texte, NULL, pSurface, &dest);
+      SDL_FreeSurface(texte);
+
     }
 
     if(state[SDL_SCANCODE_RIGHT]){
@@ -440,5 +456,6 @@ void commerce(SDL_Window * screen, t_objet inv[nbObjets], int *argent){
     SDL_UpdateWindowSurface(screen);
   }while(!test_touche);
   printf("test\n");
+  SDL_FreeSurface(select);
   TTF_CloseFont(police);
 }

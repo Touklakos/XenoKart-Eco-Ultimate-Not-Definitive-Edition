@@ -149,7 +149,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
       if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
         switch(nbChoix){
-          case 0 : etatProg++; return;break;
+          case 0 : etatProg++; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return;break;
           case 1 : printf("NEW\n");break;
         }
       }
@@ -159,7 +159,11 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       }
 
     }
+
+
+
     fonctionFin();
     fonctionQuitter();
   }
+
 }

@@ -279,26 +279,23 @@ int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
 /**
     \fn int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *etat)
     \brief Permet de vérifier si les ennemis en combat sont toujours vivants
-    \param ennemis liste de tout les ennemis
-    \param nbEnnemi nombre d'ennemis encore vivants
-    \param equipe tableau des personnages jouable
 */
 
 
 
-int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[]) {
+int gererEnnemis() {
 
-  for(int i = 0; i < *nbEnnemi; i++) {
+  for(int i = 0; i < nbEnnemi; i++) {
 
     if(ennemis[i].PV <= 0) {
 
-      for(int j = i; j < *nbEnnemi-1; j++) {
+      for(int j = i; j < nbEnnemi-1; j++) {
 
         ennemis[j] = ennemis[j+1];
 
       }
 
-      (*nbEnnemi)--;
+      (nbEnnemi)--;
 
 
 
@@ -309,7 +306,7 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[]) {
 
       int indice = 0;
 
-      for(int i = 0; i < *nbEnnemi && !combat; i++) {
+      for(int i = 0; i < nbEnnemi && !combat; i++) {
 
         if(ennemis[i].enCombat) {
 
@@ -346,7 +343,7 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[]) {
 
   }
 
-  return *nbEnnemi;
+  return nbEnnemi;
 
 }
 
@@ -359,7 +356,7 @@ int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[]) {
     \param nbEnnemi nombre d'ennemis (egal à 0) au debut de la fonction, (egal au nombre d'ennemis ajouter à la fin)
 */
 
-void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi) {
+void victoire() {
 
   SDL_Rect dest = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2,0,0};
 
@@ -382,8 +379,6 @@ void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi) {
   TTF_CloseFont(police);
 
   SDL_FreeSurface(txt);
-
-  SDL_UpdateWindowSurface(screen);
 
 
 /*
@@ -1265,7 +1260,7 @@ void freeAll() {
 
     for(int j = 0; j < 9; j++) {
 
-      SDL_FreeSurface(ArtJeu[i][j]->image);
+      SDL_FreeSurface(equipe[i]->ArtPool[j].image);
 
     }
 
