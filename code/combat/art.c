@@ -6,6 +6,9 @@
 #include "art.h"
 
 Art *ArtJeu[3][8];
+SDL_Surface* pSurface;
+SDL_Window* screen;
+SDL_Surface *cooldownArt;
 
 
 int initArt(Art *art, char fichier[50]) {
@@ -961,7 +964,7 @@ int initArt(Art *art, char fichier[50]) {
 
 /*Cette fonction sert � afficher les icones des arts du personnage que l'on controle en bas de l'�cran*/
 
-void afficherArt(int indicePersonnage, SDL_Surface *pSurface, SDL_Surface *cooldownArt) {
+void afficherArt(int indicePersonnage) {
 
     for(int i = 0; i < 8; i++) {
 

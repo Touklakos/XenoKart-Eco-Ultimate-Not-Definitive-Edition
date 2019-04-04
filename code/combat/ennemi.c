@@ -303,16 +303,13 @@ void deplacementEnnemi() {
 
 
 /**
-    \fn void afficherEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera, Personnage *equipe[], int etat)
+    \fn void afficherEnnemi(SDL_Rect camera)
     \brief on affiche l'ennemi sur l'ecran
-    \param ennemi l'ennemi que l'on affiche
-    \param pSurface fenetre sur laquelle on affiche l'ennemi
     \param camera camera qui represente le centre de l'ecran
-    \param equipe equipe de personnage que poursuit l'ennemi si il est en combat
 */
 
 
-void afficherEnnemis(SDL_Surface *pSurface, SDL_Rect camera) {
+void afficherEnnemis(SDL_Rect camera) {
 
   for(int i = 0; i < nbEnnemi; i++) {
 
@@ -347,15 +344,13 @@ void afficherEnnemis(SDL_Surface *pSurface, SDL_Rect camera) {
 }
 
 /**
-    \fn void hudEnnemi(Ennemi *ennemi, SDL_Surface *pSurface, SDL_Rect camera)
+    \fn void hudEnnemi(SDL_Rect camera)
     \brief on affiche des information sur l'ennemi
-    \param ennemi l'ennemi d'ont on afficher les informations
-    \param pSurface fenetre sur laquelle on affiche les informations
     \param camera camera qui represente le centre de l'ecran
 */
 
 
-void hudEnnemi(SDL_Surface *pSurface, SDL_Rect camera) {
+void hudEnnemi(SDL_Rect camera) {
 
   SDL_Surface *HUD = IMG_Load("./data/hud.png");
 
@@ -1098,13 +1093,12 @@ void deplacementPersonnage() {
 
 
 /**
-    \fn void afficherPersonnage(SDL_Window* screen, SDL_Rect camera)
+    \fn void afficherPersonnage(SDL_Rect camera)
     \brief afficher le personnage à l'écran
-    \param screen fenetre sur laquelle on affiche le personnage
     \param camera coordonnées de la camera(qui represent le centre de l'écran)
 */
 
-void afficherPersonnages(SDL_Surface* pSurface, SDL_Rect camera) {
+void afficherPersonnages(SDL_Rect camera) {
 
   for(int i = 0; i < 3; i++) {
 

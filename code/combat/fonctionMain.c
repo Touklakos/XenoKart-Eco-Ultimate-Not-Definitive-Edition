@@ -26,10 +26,8 @@ int etatCombat = 0;             //Si on se bat normalement ou si on est en train
 
 SDL_Rect camera = {0, 0, SCREEN_WIDTH/2, SCREEN_HEIGHT/2};  //camera servira à afficher les sprites en fonction de la position du joueur
 
-SDL_Surface *cooldownArt;
 SDL_Surface * sol;
-SDL_Surface* pSurface;
-SDL_Window* screen;
+
 
 pthread_cond_t condition = PTHREAD_COND_INITIALIZER; /* Création de la condition */
 
@@ -37,13 +35,12 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; /* Création du mutex */
 
 
 /**
-    \fn void afficherCible(int cible, SDL_Surface* pSurface)
+    \fn void afficherCible(int cible)
     \brief Affiche dans une fenetre la cible que l'on est en train de choisir
     \param cible cible pour savoir ou se situe la cible
-    \param pSurface fenetre dans laquelle on va afficher la cible
 */
 
-void afficherCible(int cible, SDL_Surface* pSurface) {
+void afficherCible(int cible) {
 
     SDL_Rect rect ={10, (cible+1)*100, 150, 5};
 
@@ -65,13 +62,11 @@ void afficherCible(int cible, SDL_Surface* pSurface) {
 
 
 /**
-    \fn void afficherHUD(Personnage *equipe[], SDL_Surface* pSurface)
+    \fn void afficherHUD()
     \brief Affiche dans une fenetre les points de vie et les points de vie maximum de nos personnages
-    \param equipe l'equipe de personnage à afficher
-    \param pSurface fenetre dans laquelle on va afficher les points de vie de l'equipe
 */
 
-void afficherHUD(Personnage *equipe[], SDL_Surface* pSurface) {
+void afficherHUD() {
 
     SDL_Rect dest;
 
@@ -107,13 +102,12 @@ void afficherHUD(Personnage *equipe[], SDL_Surface* pSurface) {
 
 
 /**
-    \fn void afficherCible(int a, SDL_Surface* pSurface)
+    \fn void afficherCurseur(int a, SDL_Surface* pSurface)
     \brief Affiche dans une fenetre le curseur qui indique l'art que l'on est en train de choisir
     \param a indice pour savoir ou se situe l'art
-    \param pSurface fenetre dans laquelle on va afficher la cible
 */
 
-void afficherCurseur(int a, SDL_Surface* pSurface) {
+void afficherCurseur(int a) {
 
     SDL_Rect rect ={a*128+64, 720-100, 5, 50};
 
@@ -158,14 +152,12 @@ void SuiviCameraExploration(SDL_Rect *camera, Personnage *perso) {
 
 
 /**
-    \fn void background(SDL_Surface *sol, SDL_Window *screen, SDL_Rect camera)
+    \fn void background(SDL_Rect camera)
     \brief Affiche le sol du jeu
-    \param sol l'image qui recouvre le sol
-    \param pSurface fenetre dans laquelle on va afficher le sol
     \param camera nous permet d'afficher le sol de facon fixe
 */
 
-void background(SDL_Surface *sol, SDL_Surface *pSurface, SDL_Rect camera) {
+void background(SDL_Rect camera) {
 
   int i;
 
@@ -185,15 +177,13 @@ void background(SDL_Surface *sol, SDL_Surface *pSurface, SDL_Rect camera) {
 }
 
 /**
-    \fn void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe[], SDL_Rect camera)
+    \fn void afficherHostilite(Ennemi *ennemi, SDL_Rect camera)
     \brief Affiche quel personnage semble le plus menacant pour un ennemi
     \param ennemi qui nous permet de savoir qui il trouve le plus menacant
-    \param equipe equipe de personnage qui menace l'ennemi
-    \param pSurface fenetre dans laquelle on va afficher l'hostilite
     \param camera nous permet d'afficher l'hostilite de facon fixe
 */
 
-void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe[], SDL_Rect camera) {
+void afficherHostilite(Ennemi *ennemi, SDL_Rect camera) {
 
 
     SDL_Rect rect ={equipe[ennemi->cible]->posX-camera.x+camera.w-equipe[ennemi->cible]->image->w/2/4, equipe[ennemi->cible]->posY-camera.y+camera.h+equipe[ennemi->cible]->image->h/2/4, equipe[ennemi->cible]->image->w/4, 10};
@@ -205,13 +195,12 @@ void afficherHostilite(SDL_Surface *pSurface, Ennemi *ennemi, Personnage *equipe
 }
 
 /**
-    \fn void gererTexte(SDL_Surface *pSurface, SDL_Rect camera)
+    \fn void gererTexte(SDL_Rect camera)
     \brief Affiche les valeur de degats et de soin au dessus des personnages et des ennemi concerné, puis fait disparaitre les texte au bout de quelque instants
-    \param pSurface fenetre dans laquelle on va afficher les textes
     \param camera nous permet d'afficher les textes de facon fixe
 */
 
-void gererTexte(SDL_Surface *pSurface, SDL_Rect camera) {
+void gererTexte(SDL_Rect camera) {
 
 	int i;
 
@@ -242,14 +231,13 @@ void gererTexte(SDL_Surface *pSurface, SDL_Rect camera) {
 }
 
 /**
-    \fn int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote)
+    \fn int controlePerso(int *indicePersonnage, int cote)
     \brief permet de prendre le controle d'un personnage de l'equipe
-    \param equipe tableau des personnages dont-on peut prendre le controle
     \param indicePersonnage indique le personnage que l'on controle actuellement
     \param cote nous permet de decider de quel personnages on va prendre controle
 */
 
-int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
+int controlePerso(int *indicePersonnage, int cote) {
 
   equipe[*indicePersonnage]->vitX=0;
   equipe[*indicePersonnage]->vitY=0;
@@ -277,7 +265,7 @@ int controlePerso(Personnage *equipe[], int *indicePersonnage, int cote) {
 
 
 /**
-    \fn int gererEnnemis(Ennemi ennemis[], int *nbEnnemi, Personnage *equipe[], int *etat)
+    \fn int gererEnnemis()
     \brief Permet de vérifier si les ennemis en combat sont toujours vivants
 */
 
@@ -349,11 +337,8 @@ int gererEnnemis() {
 
 
 /**
-    \fn void victoire(SDL_Window *screen, Ennemi ennemis[], int *nbEnnemi)
+    \fn void victoire()
     \brief quand il n'y a plus d'ennemis on affiche un texte "Victoire !!!" à l'écran, puis on rajoute de nouveau ennemis
-    \param screen fenetre sur laquelle on affiche le message
-    \param ennemis tableau des ennemis que l'on va ajouter
-    \param nbEnnemi nombre d'ennemis (egal à 0) au debut de la fonction, (egal au nombre d'ennemis ajouter à la fin)
 */
 
 void victoire() {
@@ -913,7 +898,7 @@ void echangePerso() {
 
     if(testTouche(clavier[SDL_SCANCODE_E])) {  //si on appuie sur E on controle le personnage
 
-      controlePerso(equipe, &indicePersonnage, droite);
+      controlePerso(&indicePersonnage, droite);
 
     }
 
@@ -923,7 +908,7 @@ void echangePerso() {
 
     if(testTouche(clavier[SDL_SCANCODE_E])) {
 
-      controlePerso(equipe, &indicePersonnage, gauche);
+      controlePerso(&indicePersonnage, gauche);
 
     }
 
@@ -1168,18 +1153,18 @@ void connexion() {
   }
 
 
-  pthread_t monThreadCompteur1, monThreadCompteur2;
+  pthread_t monThread1, monThread2;
 
 
   if(serveur) {
 
-    pthread_create (&monThreadCompteur1, NULL, recoit, &client_socket1);
+    pthread_create (&monThread1, NULL, recoit, &client_socket1);
 
-    pthread_create (&monThreadCompteur2, NULL, recoit, &client_socket2);
+    pthread_create (&monThread2, NULL, recoit, &client_socket2);
 
   } else {
 
-    pthread_create (&monThreadCompteur1, NULL, recoit, &to_server_socket);
+    pthread_create (&monThread1, NULL, recoit, &to_server_socket);
 
   }
 
@@ -1187,12 +1172,11 @@ void connexion() {
 }
 
 /**
-    \fn void afficherCombat(SDL_Surface *pSurface)
+    \fn void afficherCombat()
     \brief cette fonction permet d'afficher touts les sprites necessaire au combat
-    \param pSurface fenetre sur laquelle on affiche les sprites
 */
 
-void afficherCombat(SDL_Surface *pSurface) {
+void afficherCombat() {
 
 
   //////////////////////////////////////FONCTIONS DE CAMERA////////////////////////////////////////////
@@ -1214,34 +1198,34 @@ void afficherCombat(SDL_Surface *pSurface) {
 
   //////////////////////////////////////FONCTIONS D'AFFICHAGE////////////////////////////////////////////
 
-  background(sol, pSurface, camera);
+  background(camera);
 
   for(int n = 0; n < nbEnnemi; n++) {
 
     if(ennemis[n].enCombat) {
 
-      afficherHostilite(pSurface, &ennemis[n], equipe, camera);
+      afficherHostilite(&ennemis[n], camera);
 
     }
 
   }
 
 
-  afficherPersonnages(pSurface, camera);
+  afficherPersonnages(camera);
 
-  afficherEnnemis(pSurface, camera);
+  afficherEnnemis(camera);
 
-  afficherArt(indicePersonnage, pSurface, cooldownArt);
+  afficherArt(indicePersonnage);
 
-  afficherCurseur(positionCurseur, pSurface);
+  afficherCurseur(positionCurseur);
 
-  afficherHUD(equipe, pSurface);
-
-
-  hudEnnemi(pSurface, camera);
+  afficherHUD(equipe);
 
 
-  if(etatCombat == 1) afficherCible(cible, pSurface);
+  hudEnnemi(camera);
+
+
+  if(etatCombat == 1) afficherCible(cible);
 
 
 }

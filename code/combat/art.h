@@ -35,8 +35,12 @@ typedef struct {
 } Art;
 
 extern Art* ArtJeu[3][8];
+extern SDL_Surface* pSurface;
+extern SDL_Window* screen;
+extern SDL_Surface *cooldownArt;
+
 
 
 int initArt(Art *art, char fichier[50]);
-void afficherArt(int indicePersonnage, SDL_Surface* screen, SDL_Surface *cooldownArt);
+void afficherArt(int indicePersonnage);
 void recuperationArt();

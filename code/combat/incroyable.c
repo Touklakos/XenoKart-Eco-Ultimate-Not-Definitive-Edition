@@ -119,7 +119,7 @@ int main(int argc, char** argv)
       mortalKombat();
 
 
-      afficherCombat(pSurface);
+      afficherCombat();
 
 
 
