@@ -18,6 +18,14 @@ extern int caseCount;
 enum typemap{ VOLCAN, MONTAGNE, PIC, DESERT, PLATEAU, PLAINE, DONJON, MARAIS, TUNDRA, FORET, OCEAN, ARCHIPEL};
 enum typecase{ BASE, SPAWN, FIN};
 
+/**
+  \file map.h
+  \brief XenoKart Eco Plus
+  \author Benjamin Riviere
+  \version 0.01
+  \date 04 avril 2019
+*/
+
 typedef struct coord_s{
   int x;
   int y;

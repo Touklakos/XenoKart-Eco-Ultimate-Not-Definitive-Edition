@@ -20,6 +20,7 @@ int main(int argc, char** argv){
   pSurface = SDL_GetWindowSurface(screen);
 
   map_t * map;
+  map = NULL;
   initFile();
 
   do{
@@ -28,7 +29,7 @@ int main(int argc, char** argv){
     map = creerMap(ARCHIPEL);
     pathfinding(map);
   }
-  while(!valeurPath(map) || valeurPath(map) < 20);
+  while(!valeurPath(map) || valeurPath(map) < 5);
 
   //afficher_matrice(map->v);
   afficher_path(map->v);
