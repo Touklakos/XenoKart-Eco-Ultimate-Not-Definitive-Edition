@@ -23,11 +23,12 @@ int main(int argc, char** argv){
   initFile();
 
   do{
+    if(map != NULL) free(map);
     caseCount = 1;
-    map = creerMap(8);
+    map = creerMap(ARCHIPEL);
     pathfinding(map);
   }
-  while(!valeurPath(map) || valeurPath(map) < 2);
+  while(!valeurPath(map) || valeurPath(map) < 20);
 
   //afficher_matrice(map->v);
   afficher_path(map->v);
@@ -49,4 +50,5 @@ int main(int argc, char** argv){
     case 2 : printf("Programme fermé par le bouton\n"); break;
 
   }
+  free(map);
 }

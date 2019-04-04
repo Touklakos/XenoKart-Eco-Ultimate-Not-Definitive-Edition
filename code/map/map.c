@@ -12,12 +12,15 @@ int deb = 0;
 int fin = 0;
 int quit = 0;
 
+const int NB_CASE = (MAP_WIDTH*MAP_HEIGHT)/2;
+
 SDL_Event event;
 
 int caseCount = 1;
 
 tElement *tete;
 tElement *queue;
+
 
 
 /**
@@ -232,6 +235,7 @@ map_t * creerMap(enum typemap type){
 }
 
 
+
 void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
 
@@ -269,6 +273,8 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
         SDL_BlitSurface(img, NULL, pSurface, &test);
 				SDL_BlitSurface(imgsubtype, NULL, pSurface, &test);
+				SDL_FreeSurface(img);
+				SDL_FreeSurface(imgsubtype);
       }
     }
   }
@@ -318,8 +324,21 @@ void afficher_subtype(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
 }
 
 void genererDepArr(map_t * map){
+
+	srand(time(NULL));
+	int varand;
+	case_t hexcase;
+
   map->v[0][0].subtype = 1;
-  map->v[6][2].subtype = 2;
+
+	do{
+		varand = rand()%NB_CASE;
+		printf("varand : %i \n",varand);
+		hexcase = chercherCase(map->v,varand);
+		printf("hexcase x : %i \n",hexcase.coord.x);
+		printf("hexcase y : %i \n",hexcase.coord.y);
+		map->v[hexcase.coord.x][hexcase.coord.y].subtype = 2;
+	}while(hexcase.type == OCEAN);
 }
 
 case_t debut(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
@@ -340,6 +359,14 @@ case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   return mat[MAP_HEIGHT-1][MAP_WIDTH-1];
 }
 
+case_t chercherCase(case_t mat[MAP_HEIGHT][MAP_WIDTH], int v){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].val==v) return mat[i][j];
+    }
+  }
+  return mat[0][0];
+}
 
 void pathfinding(map_t * map){
 
