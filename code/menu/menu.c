@@ -159,9 +159,6 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       }
 
     }
-
-
-
     fonctionFin();
     fonctionQuitter();
   }

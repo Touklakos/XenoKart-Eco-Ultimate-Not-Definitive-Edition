@@ -12,6 +12,8 @@ int deb = 0;
 int fin = 0;
 int quit = 0;
 
+const int NB_CASE = (MAP_WIDTH*MAP_HEIGHT)/2;
+
 SDL_Event event;
 
 int caseCount = 1;
@@ -19,13 +21,17 @@ int caseCount = 1;
 tElement *tete;
 tElement *queue;
 
-
 /**
   \file map.c
   \brief XenoKart Eco Plus
   \author Benjamin Riviere
   \version 0.01
-  \date 25 mars 2019
+  \date 04 avril 2019
+*/
+
+/**
+    \fn void initFile()
+    \brief Cette fonction initialise la file
 */
 
 void initFile() {
@@ -33,9 +39,20 @@ void initFile() {
 	queue = NULL;
 }
 
+/**
+    \fn int fileVide()
+    \brief Cette fonction renvoie si la file est vide
+*/
+
 int fileVide() {
 	return tete == NULL;
 }
+
+/**
+    \fn void ajouter(case_t hexcase)
+    \brief Cette fonction ajoute la valeur en parametre dans la file
+		\param hexcase Une case
+*/
 
 void ajouter(case_t hexcase) {
 	tElement *nouv;
@@ -50,11 +67,17 @@ void ajouter(case_t hexcase) {
 	queue = nouv;
 }
 
-void retirer(case_t *mat) {
+/**
+    \fn void retirer(case_t *mat)
+    \brief Cette fonction retire la valeur de la file dans le parametre
+		\param v Un pointeur sur une case
+*/
+
+void retirer(case_t *v) {
 	tElement *premier;
 	if(!fileVide()) {
 		premier = tete;
-		*mat = premier->hexcase;
+		*v = premier->hexcase;
 		tete = premier->suiv;
 		free(premier);
 	}
@@ -95,7 +118,7 @@ void fonctionFin(){
 }
 
 /**
-    \fn void init_mat(case_t)
+    \fn void init_mat(case_t mat[MAP_HEIGHT][MAP_WIDTH])
     \brief Cette fonction initialise les cases de la matrice à 0
     \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
 */
@@ -110,19 +133,32 @@ void init_mat(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
 }
 
 /**
-    \fn case_valide(case_t mat[MAP_HEIGHT][MAP_WIDTH])
+    \fn case_valide(case_t hexcase)
     \brief Cette fonction permet de vérifier que les coordonnées de la case sont valides
-    \param hexcase une case t_case
+    \param hexcase Une case
 */
-
 
 int case_valide(case_t hexcase){
   return((hexcase.coord.x >= 0 && hexcase.coord.x < MAP_WIDTH) && (hexcase.coord.y >= 0 && hexcase.coord.y < MAP_HEIGHT));
 }
 
+/**
+    \fn int coord_valide(int x, int y)
+    \brief Cette fonction permet de vérifier que les coordonnées sont valides
+    \param x L'entier qui représente la Coordonnée x
+	  \param y L'entier qui représente la Coordonnée y
+*/
+
 int coord_valide(int x, int y){
   return((x >= 0 && x < MAP_WIDTH) && (y >= 0 && y < MAP_HEIGHT));
 }
+
+/**
+    \fn int choixType(case_t hexcase, map_t * map)
+    \brief Cette fonction permet de choisir aléatoirement un type pour une case
+    \param hexcase Une case
+	  \param map La carte
+*/
 
 int choixType(case_t hexcase, map_t * map){
   int choix[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
@@ -160,10 +196,11 @@ int choixType(case_t hexcase, map_t * map){
 
 
 /**
-    \fn case_t creerCase(int x, int y)
-    \brief Cette fonction permet de géMAP_HEIGHTérer une case
+    \fn case_t creerCase(int x, int y, map_t * map)
+    \brief Cette fonction permet de générer une case
     \param x Coordonnée X de la case
     \param y Coordonnée Y de la case
+    \param map La carte
 */
 
 case_t creerCase(int x, int y, map_t * map){
@@ -189,7 +226,7 @@ case_t creerCase(int x, int y, map_t * map){
 
 /**
     \fn void creerCases(map_t * map)
-    \brief Cette fonction permet de géMAP_HEIGHTérer toutes les cases de la matrice
+    \brief Cette fonction permet de générer toutes les cases de la carte
     \param map La carte
 */
 
@@ -231,6 +268,13 @@ map_t * creerMap(enum typemap type){
   return map;
 }
 
+/**
+    \fn void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen)
+    \brief Cette fonction permet d'afficher la carte avec la SDL
+    \param map La carte
+    \param pSurface Surface sur laquel on affiche
+    \param screen Ecran sur lequel on affiche
+*/
 
 void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
@@ -269,6 +313,8 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 
         SDL_BlitSurface(img, NULL, pSurface, &test);
 				SDL_BlitSurface(imgsubtype, NULL, pSurface, &test);
+				SDL_FreeSurface(img);
+				SDL_FreeSurface(imgsubtype);
       }
     }
   }
@@ -276,8 +322,8 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
 }
 
 /**
-    \fn afficher_matrice(case_t [][])
-    \brief Cette fonction permet de vérifier que les coordonnées de la case sont valides
+    \fn void afficher_matrice(case_t mat[MAP_HEIGHT][MAP_WIDTH])
+    \brief Cette fonction permet d'afficher les valeurs des cases dans la matrice
     \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
 */
 
@@ -293,6 +339,12 @@ void afficher_matrice(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   }
 }
 
+/**
+    \fn void afficher_matrice(case_t mat[MAP_HEIGHT][MAP_WIDTH])
+    \brief Cette fonction permet d'afficher les valeurs de pathfinding des cases dans la matrice
+    \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
+*/
+
 void afficher_path(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   for(int i = 0; i < MAP_HEIGHT; i++){
     for(int j = 0; j < MAP_WIDTH; j++){
@@ -304,6 +356,12 @@ void afficher_path(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
     printf("\n");
   }
 }
+
+/**
+    \fn void afficher_matrice(case_t mat[MAP_HEIGHT][MAP_WIDTH])
+    \brief Cette fonction permet d'afficher les valeurs de sous_types des cases dans la matrice
+    \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
+*/
 
 void afficher_subtype(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   for(int i = 0; i < MAP_HEIGHT; i++){
@@ -317,10 +375,35 @@ void afficher_subtype(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   }
 }
 
+/**
+    \fn void genererDepArr(map_t * map)
+    \brief Cette fonction permet de generer une case de départ et une case d'arrivé sur la carte
+    \param map La carte
+*/
+
 void genererDepArr(map_t * map){
+
+	srand(time(NULL));
+	int varand;
+	case_t hexcase;
+
   map->v[0][0].subtype = 1;
-  map->v[6][2].subtype = 2;
+
+	do{
+		varand = rand()%NB_CASE;
+		printf("varand : %i \n",varand);
+		hexcase = chercherCase(map->v,varand);
+		printf("hexcase x : %i \n",hexcase.coord.x);
+		printf("hexcase y : %i \n",hexcase.coord.y);
+		map->v[hexcase.coord.x][hexcase.coord.y].subtype = 2;
+	}while(hexcase.type == OCEAN);
 }
+
+/**
+    \fn case_t debut(case_t mat[MAP_HEIGHT][MAP_WIDTH])
+    \brief Cette fonction renvoie la case de depart
+    \param map La carte
+*/
 
 case_t debut(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   for(int i = 0; i < MAP_HEIGHT; i++){
@@ -331,6 +414,12 @@ case_t debut(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   return mat[0][0];
 }
 
+/**
+    \fn case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH])
+    \brief Cette fonction renvoie la case de depart
+    \param map La carte
+*/
+
 case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   for(int i = 0; i < MAP_HEIGHT; i++){
     for(int j = 0; j < MAP_WIDTH; j++){
@@ -340,6 +429,27 @@ case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH]){
   return mat[MAP_HEIGHT-1][MAP_WIDTH-1];
 }
 
+/**
+    \fn case_t chercherCase(case_t mat[MAP_HEIGHT][MAP_WIDTH], int v)
+    \brief Cette fonction renvoie la case qui à la valeur v
+    \param mat[MAP_HEIGHT][MAP_WIDTH] Matrice de la carte
+		\param v Une valeur int
+*/
+
+case_t chercherCase(case_t mat[MAP_HEIGHT][MAP_WIDTH], int v){
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
+      if(mat[i][j].val==v) return mat[i][j];
+    }
+  }
+  return mat[0][0];
+}
+
+/**
+    \fn void pathfinding(map_t * map)
+    \brief Cette fonction permet de faire le pathfinding sur la carte
+    \param map La carte
+*/
 
 void pathfinding(map_t * map){
 
@@ -388,6 +498,12 @@ void pathfinding(map_t * map){
     }
 	}
 }
+
+/**
+    \fn int valeurPath(map_t * map)
+    \brief Cette fonction renvoie la distance entre la case de départ et d'arrivé
+    \param map La carte
+*/
 
 int valeurPath(map_t * map){
 	return arrive(map->v).path;

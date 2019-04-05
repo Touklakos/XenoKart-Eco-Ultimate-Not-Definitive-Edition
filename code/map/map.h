@@ -18,6 +18,14 @@ extern int caseCount;
 enum typemap{ VOLCAN, MONTAGNE, PIC, DESERT, PLATEAU, PLAINE, DONJON, MARAIS, TUNDRA, FORET, OCEAN, ARCHIPEL};
 enum typecase{ BASE, SPAWN, FIN};
 
+/**
+  \file map.h
+  \brief XenoKart Eco Plus
+  \author Benjamin Riviere
+  \version 0.01
+  \date 04 avril 2019
+*/
+
 typedef struct coord_s{
   int x;
   int y;
@@ -50,7 +58,6 @@ void retirer(case_t *v);
 void fonctionQuitter();
 void fonctionFin();
 void init_mat(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
-void init_mat(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
 int case_valide(case_t);
 int coord_valide(int, int);
 int choixType(case_t, map_t *);
@@ -64,5 +71,6 @@ void afficher_typecase(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
 void genererDepArr(map_t *);
 case_t debut(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
 case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
+case_t chercherCase(case_t mat[MAP_HEIGHT][MAP_WIDTH], int);
 void pathfinding(map_t *);
 int valeurPath(map_t *);
