@@ -338,7 +338,7 @@ int gererEnnemis() {
 
 /**
     \fn void victoire()
-    \brief quand il n'y a plus d'ennemis on affiche un texte "Victoire !!!" à l'écran, puis on rajoute de nouveau ennemis
+    \brief quand il n'y a plus d'ennemis on affiche un texte "Victoire !!!" à l'écran
 */
 
 void victoire() {
@@ -350,6 +350,53 @@ void victoire() {
   SDL_Surface* txt;
 
   sprintf(message, "Victoire !!!");
+
+  TTF_Font *police = NULL;
+
+  police = TTF_OpenFont("./data/DejaVuSans.ttf", 35);
+
+  SDL_Color couleur = {0,0,0};
+
+  txt = TTF_RenderText_Solid(police, message, couleur);
+
+  SDL_BlitSurface(txt, NULL, SDL_GetWindowSurface(screen), &dest);
+
+  TTF_CloseFont(police);
+
+  SDL_FreeSurface(txt);
+
+
+/*
+  int nbNouvEnn = 1;
+
+
+  for(int i = 0; i < nbNouvEnn; i++) {
+
+    int temp = rand()%nbEnnemiPool;
+
+    ennemis[(*nbEnnemi)++] = ennPool[temp];
+
+  }
+
+*/
+}
+
+
+
+/**
+    \fn void defaite()
+    \brief quand tout les personnages sont KO on affiche un texte "Defaite" à l'écran
+*/
+
+void defaite() {
+
+  SDL_Rect dest = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2,0,0};
+
+  char message[20];
+
+  SDL_Surface* txt;
+
+  sprintf(message, "Defaite");
 
   TTF_Font *police = NULL;
 

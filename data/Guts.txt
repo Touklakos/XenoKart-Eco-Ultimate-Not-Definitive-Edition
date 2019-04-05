@@ -1,8 +1,8 @@
 ./data/Guts.png
 NV : 10;
 EXP : 50;
-MAXPV : 40000;
-PV : 40000;
+MAXPV : 400;
+PV : 400;
 FRC : 80;
 MGE : 0;
 VITATT : 40;

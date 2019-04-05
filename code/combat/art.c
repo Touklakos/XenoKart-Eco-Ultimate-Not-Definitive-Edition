@@ -34,6 +34,12 @@ int initArt(Art *art, char fichier[50]) {
 
     art->soin = 0;
 
+    art->hostilite[0] = 0;
+    art->hostilite[1] = 0;
+    art->hostilite[2] = 0;
+    art->hostilite[3] = 0;
+
+
     art->delaiRecupAct = 0;
 
     art->delaiAnimation = 100;
@@ -218,6 +224,26 @@ int initArt(Art *art, char fichier[50]) {
                } else {
 
                 fscanf(f, "%d;", &art->etats[orientation][poison]);
+
+              }
+
+            } else if(!strcmp(temp,"hotilite")) {
+
+              if(orientation == -1) {
+
+                float tempp;
+
+                fscanf(f, "%f;", &tempp);
+
+                for(int i = 0; i < 4; i++) {
+
+                  art->hostilite[i] = tempp;
+
+                }
+
+               } else {
+
+                fscanf(f, "%f;", &art->hostilite[orientation]);
 
               }
 

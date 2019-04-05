@@ -1,6 +1,8 @@
 TYPE : 0;
 BUT : 0;
-DMGMIN : 300;
-DMGMAX : 600;
-delaiRecup : 700;
-PTRART : 180;
+DMGMIN : 100;
+DMGMAX : 100;
+delaiRecup : 600;
+PTRART : 700;
+frisson : 150;
+

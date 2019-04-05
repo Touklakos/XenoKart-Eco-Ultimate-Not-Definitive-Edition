@@ -29,6 +29,8 @@ typedef struct {
     Modif buff[15];    //valeurs des differents buff applicable � un personnage
     Modif debuff[4][15];    //valeurs des differents debuff applicable � un ennemi
 
+    float hostilite[4];
+
 
     int soin;
 

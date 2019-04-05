@@ -1,6 +1,12 @@
 TYPE : 0;
 BUT : 0;
-DMGMIN : 300;
-DMGMAX : 600;
-delaiRecup : 700;
+DMGMIN : 50;
+DMGMAX : 100;
+delaiRecup : 600;
 PTRART : 180;
+orientation : 1;
+debuffDEFPHY : 0.5;
+delaiDebuffDEFPHY : 600;
+orientation : 3;
+debuffDEFPHY : 0.5;
+delaiDebuffDEFPHY : 600;

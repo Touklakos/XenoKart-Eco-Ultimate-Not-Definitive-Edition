@@ -4,3 +4,4 @@ DMGMIN : 300;
 DMGMAX : 600;
 delaiRecup : 700;
 PTRART : 180;
+hostilite : 2.0;

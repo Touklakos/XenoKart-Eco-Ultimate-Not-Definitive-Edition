@@ -85,7 +85,7 @@ void addDegatTxt(int dmg, int posX, int posY, int type) {
         couleur.g = 255;
         couleur.b = 0;
 
-        taille = 30;
+        taille = 60;
         randTaille = 10;
 
       } else if(type == fournaiseC) {

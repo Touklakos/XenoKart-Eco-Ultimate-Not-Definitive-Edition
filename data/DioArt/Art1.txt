@@ -1,8 +1,8 @@
 TYPE : 0;
 BUT : 0;
-DMGMIN : 300;
-DMGMAX : 600;
-delaiRecup : 700;
-PTRART : 180;
-debuffDEXT : 0.1;
-delaiDebuffDEXT : 1000;
+DMGMIN : 100;
+DMGMAX : 100;
+delaiRecup : 3000;
+PTRART : 400;
+poison : 200;
+

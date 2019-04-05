@@ -1,11 +1,11 @@
 TYPE : 0;
 BUT : 0;
-DMGMIN : 3000;
-DMGMAX : 6000;
-delaiRecup : 100;
+DMGMIN : 300;
+DMGMAX : 600;
+delaiRecup : 1200;
 PTRART : 180;
 orientation : 2;
-DMGMIN : 60000;
-DMGMAX : 90000;
-delaiRecup : 20;
-PTRART : 1800;
+DMGMIN : 600;
+DMGMAX : 1200;
+
+

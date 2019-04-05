@@ -909,7 +909,7 @@ int etatEnnemi() {
 
         ennemis[i].etats[t].valeur -= ennemis[i].etats[t].valeur*ennemis[i].RES_ETATS[t]/100;
 
-        if(ennemis[i].etats[t].valeur < 100) {
+        if(ennemis[i].etats[t].valeur < 50) {
 
           ennemis[i].etats[t].valeur = 0;
 
@@ -1129,19 +1129,21 @@ void afficherPersonnages(SDL_Rect camera) {
 
 void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
 
-  if(coop && serveur) {
+    if(coop && serveur) {
 
-    char data[100];
+      char data[100];
 
-    sprintf(data, "b;%d;%d;%d", indiceArt, indicePersonnage, cible);
+      sprintf(data, "b;%d;%d;%d", indiceArt, indicePersonnage, cible);
 
-    fprintf(stderr, "Principale : %s\n", data);
+      fprintf(stderr, "Principale : %s\n", data);
 
-    send(client_socket1, data, sizeof(data), 0);
+      send(client_socket1, data, sizeof(data), 0);
 
-    send(client_socket2, data, sizeof(data), 0);
+      send(client_socket2, data, sizeof(data), 0);
 
-  }
+    }
+
+    if(equipe[indicePersonnage]->PV <= 0) return;
 
     int j = 0, k = 3, l = -1;
 
@@ -1195,6 +1197,26 @@ void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
               equipe[i]->PV += soin;
 
               addDegatTxt(soin, equipe[i]->posX, equipe[i]->posY-equipe[i]->image->h, soinC);
+
+              for(int n = 0; n < nbEnnemi; n++) {
+
+                if(ennemis[n].enCombat) {
+
+                  ennemis[n].hostilite[indicePersonnage] += soin*5;
+
+                }
+
+              }
+
+            }
+
+          }
+
+          if(ArtJeu[indicePersonnage][indiceArt]->hostilite > 0) {
+
+            for(int n = 0; n < nbEnnemi; n++) {
+
+              ennemis[n].hostilite[i] *= ArtJeu[indicePersonnage][indiceArt]->hostilite[equipe[indicePersonnage]->orientationRelative];
 
             }
 
