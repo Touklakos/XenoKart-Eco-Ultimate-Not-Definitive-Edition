@@ -34,10 +34,10 @@ int initArt(Art *art, char fichier[50]) {
 
     art->soin = 0;
 
-    art->hostilite[0] = 0;
-    art->hostilite[1] = 0;
-    art->hostilite[2] = 0;
-    art->hostilite[3] = 0;
+    art->hostilite[0] = -1;
+    art->hostilite[1] = -1;
+    art->hostilite[2] = -1;
+    art->hostilite[3] = -1;
 
 
     art->delaiRecupAct = 0;
@@ -227,7 +227,7 @@ int initArt(Art *art, char fichier[50]) {
 
               }
 
-            } else if(!strcmp(temp,"hotilite")) {
+            } else if(!strcmp(temp,"hostilite")) {
 
               if(orientation == -1) {
 

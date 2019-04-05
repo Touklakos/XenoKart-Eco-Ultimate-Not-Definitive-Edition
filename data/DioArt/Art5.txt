@@ -1,5 +1,6 @@
-TYPE : 0;
-BUT : 0;
+TYPE : 1;
+BUT : 1;
+cibleAllie : 0;
 DMGMIN : 300;
 DMGMAX : 600;
 delaiRecup : 700;

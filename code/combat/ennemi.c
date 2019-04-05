@@ -209,13 +209,12 @@ void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 
 
 /**
-    \fn int cibleEnnemi(Ennemi *ennemi)
+    \fn void cibleEnnemis()
     \brief modifie la valeur cible d'un ennemi passé en parametre avec les valeurs du tableau hostilite
-    \param ennemi l'ennemi que l'on modifie
 */
 
 
-int cibleEnnemis() {
+void cibleEnnemis() {
 
   int max = 0;
   int indice = -1;
@@ -238,15 +237,11 @@ int cibleEnnemis() {
 
   }
 
-  return 0;
-
 }
 
 /**
-    \fn void ennemiPoursuit(Ennemi *ennemi, Personnage *perso)
+    \fn void ennemiPoursuit()
     \brief si un ennemi n'est pas à portée du personnage qu'il cible il se rapproche de lui
-    \param ennemi l'ennemi que l'on modifie
-    \param perso personnage poursuivit pas l'ennemi
 */
 
 void ennemiPoursuit() {
@@ -279,10 +274,8 @@ void ennemiPoursuit() {
 }
 
 /**
-    \fn void deplacementEnnemi(Ennemi* ennemi, Personnage *equipe[])
+    \fn void deplacementEnnemi()
     \brief deplacement de l'ennemi si celui-ci veux bouger
-    \param ennemi l'ennemi que l'on deplace
-    \param equipe equipe de personnage que poursuit l'ennemi
 */
 
 void deplacementEnnemi() {
@@ -303,7 +296,7 @@ void deplacementEnnemi() {
 
 
 /**
-    \fn void afficherEnnemi(SDL_Rect camera)
+    \fn void afficherEnnemis(SDL_Rect camera)
     \brief on affiche l'ennemi sur l'ecran
     \param camera camera qui represente le centre de l'ecran
 */
@@ -390,10 +383,10 @@ void hudEnnemi(SDL_Rect camera) {
 }
 
 /**
-    \fn int orientationPersoCombatAbsolue(Personnage* perso, Ennemi* ennemi)
+    \fn int orientationPersoCombatAbsolue(int indice)
     \brief on modifie la valeur de orientaionAbsolue d'un personnage passé en parametre (orientation par rapport à l'ecran)
-    \param perso personnage que l'on modifie
-    \param ennemi l'ennemi que cible le personnage
+    \param indice indice du personnage
+    \return valeur de l'orientation absolue du personnage
 */
 
 
@@ -438,10 +431,10 @@ int orientationPersoCombatAbsolue(int indice) {
 
 
 /**
-    \fn int orientationPersoCombatRelative(Personnage *equipe[], int indicePersonnage, Ennemi* ennemi)
+    \fn int orientationPersoCombatRelative(int indice)
     \brief on modifie la valeur de orientaionRelative d'un personnage passé en parametre (orientation par rapport à l'ennemi)
-    \param perso personnage que l'on modifie
-    \param ennemi l'ennemi que cible le personnage
+    \param indice indice du personnage
+    \return valeur de l'orientation relative du personnage
 */
 
 int orientationPersoCombatRelative(int indice) {
@@ -455,10 +448,9 @@ int orientationPersoCombatRelative(int indice) {
 }
 
 /**
-    \fn int typeCoupPerso(Personnage *perso, Ennemi *ennemi)
+    \fn int typeCoupPerso(int indice)
     \brief quand un personnage assene un coup, ce coup est modifié, cela peut être un coup critique, le coup peut-être esquivé, gardé, etc...
-    \param perso personnage qui assene le coup
-    \param ennemi ennemi qui recoit le coup
+    \param indice indice du personnage qui assene le coup
 */
 
 
@@ -490,10 +482,9 @@ int typeCoupPerso(int indice) {
 
 
 /**
-    \fn int typeCoupEnnemi(Ennemi *ennemi, Personnage *perso)
+    \fn int typeCoupEnnemi(int indice)
     \brief quand un ennemi assene un coup, ce coup est modifié, cela peut être un coup critique, le coup peut-être esquivé, gardé, etc...
-    \param ennemi ennemi qui assene le coup
-    \param perso personnage qui recoit le coup
+    \param indice indice de l'ennemi qui assene le coup
 */
 
 int typeCoupEnnemi(int indice) {
@@ -525,13 +516,12 @@ int typeCoupEnnemi(int indice) {
 
 
 /**
-    \fn int ennemiAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn int ennemiAutoAttaque(int indice, int degats, int type)
     \brief l'ennemi assene une auto attaque à un personnage
-    \param equipe equipe de personnage
-    \param ennemi ennemi qui assene le coup
-    \param indice indice du personnage ciblé
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
+    \param indice indice de l'ennemi
+    \param degats si la fonction est appelle grace au serveur les degats ont deja ete calculé sinon degats egal -1
+    \param type  si la fonction est appelle grace au serveur le type a deja ete determine sinon type = -1
+    \return retourne les degats infligé
 */
 
 
@@ -610,16 +600,11 @@ int ennemiAutoAttaque(int indice, int degats, int type) {
 
 
 /**
-    \fn int attaqueAllie(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn void attaqueAllie()
     \brief cette fonction verifie si un ennemi peut lancer un auto-attaque sur un personnage (verification de la distance et du delai depuis la derniere frappe)
-    \param equipe equipe de personnage
-    \param ennemi ennemi qui assene le coup
-    \param indice indice du personnage ciblé
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int attaqueAllie() {
+void attaqueAllie() {
 
   for(int i = 0; i < nbEnnemi; i++) {
 
@@ -637,8 +622,6 @@ int attaqueAllie() {
 
   }
 
-  return 0;
-
 }
 
 
@@ -646,13 +629,11 @@ int attaqueAllie() {
 
 
 /**
-    \fn int persoAutoAttaque(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn int persoAutoAttaque(int indice, int degats, int type)
     \brief un personnage assene une auto attaque à un ennemi
-    \param equipe equipe de personnage
-    \param ennemi ennemi qui recoit le coup
-    \param indice indice du personnage qui attaque
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
+    \param indice indice du personnage
+    \param degats si la fonction est appelle grace au serveur les degats ont deja ete calculé sinon degats egal -1
+    \param type  si la fonction est appelle grace au serveur le type a deja ete determine sinon type = -1
 */
 
 
@@ -726,11 +707,12 @@ int persoAutoAttaque(int indice, int degats, int type) {
 /*Cette fonction v�rifie si un personnage peut attaquer un ennemi (en fonction du delai depuis sa derni�re attaque et de sa distance)*/
 
 /**
-    \fn int attaqueEnnemi(Personnage* equipe[], Ennemi ennemis[], int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn void attaqueEnnemi()
     \brief cette fonction verifie si un personnage peut lancer un auto-attaque sur un ennemi (verification de la distance et du delai depuis la derniere frappe)
 */
 
-int attaqueEnnemi() {
+
+void attaqueEnnemi() {
 
   for(int i = 0; i < 3; i++) {
 
@@ -754,22 +736,18 @@ int attaqueEnnemi() {
 
   }
 
-  return 0;
-
 }
 
 
 /*Cette fonction calcule les d�gats qu'un personnage inflige � un ennemi en utilisant un de ses arts offensif*/
 
 /**
-    \fn int lanceArt(Art *art, Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn int lanceArt(int indiceArt, int indicePersonnage, int degats)
     \brief un personnage utilise un art sur un ennemi
-    \param art art que le personnage utilise
-    \param equipe equipe de personnage
-    \param ennemi ennemi qui recoit le coup
-    \param indice indice du personnage qui utilise l'art
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
+    \param indiceArt indice de l'art utilise
+    \param indicePersonnage indice de personnage qui utilise l'art
+    \param degats si la fonction est appelle grace au serveur les degats ont deja ete calculé sinon degats egal -1
+    \return le nombre de degats infligé
 */
 
 int lanceArt(int indiceArt, int indicePersonnage, int degats) {
@@ -857,14 +835,11 @@ int lanceArt(int indiceArt, int indicePersonnage, int degats) {
 /*Cette focntion v�rifie si un personnage peut utiliser un art offensif sur un ennemi (en fonction du delai depuis sa derni�re utilisation et de sa distance)*/
 
 /**
-    \fn int attaqueEnnemi(Personnage* equipe[], Ennemi* ennemi, int indice, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn int utiliseArt(int indiceArt, int indicePersonnage)
     \brief Cette fonction vérifie si un personnage peut utiliser un art offensif sur un ennemi (en fonction du delai depuis sa derniére utilisation et de sa distance)
-    \param art art que le personnage utilise
-    \param equipe equipe de personnage
-    \param ennemi ennemi qui recoit le coup
-    \param indice indice du personnage qui attaque
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
+    \param indiceArt indice de l'art utilise
+    \param indicePersonnage indice de personnage qui utilise l'art
+    \return si l'art a été utilise ou pas
 */
 
 int utiliseArt(int indiceArt, int indicePersonnage) {
@@ -888,15 +863,11 @@ int utiliseArt(int indiceArt, int indicePersonnage) {
 }
 
 /**
-    \fn int etatEnnemi(Ennemi *ennemi, int type, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn void etatEnnemi()
     \brief cette fonction vérifie l'état d'un ennemi (si il brule, si il est empoisonné etc...)
-    \param ennemi ennemi que l'on modifie
-    \param type type d'etat (fournaise, frisson, poison, ect...)
-    \param dgtsTxt tableau des texte affichés à l'écran
-    \param nbDgtTxt nombre de parametre affichés à l'écran
 */
 
-int etatEnnemi() {
+void etatEnnemi() {
 
   delaiEtatEnnemis();
 
@@ -947,16 +918,13 @@ int etatEnnemi() {
 
   }
 
-  return -1;
-
 }
 
 /*Si les delais sont �gaux alors on les modifies l�g�rement pour que l'affichage des d�gats soit lisible*/
 
 /**
-    \fn void delaiEtat(Ennemi *ennemi)
+    \fn void delaiEtatEnnemis()
     \brief cette fonction modifie les delai des etat d'un ennemi pour que les degats ne soit pas affiché en même temps, pour plus de lisibilité
-    \param ennemi ennemi que l'on modifie
 */
 
 void delaiEtatEnnemis() {
@@ -977,9 +945,8 @@ void delaiEtatEnnemis() {
 }
 
 /**
-    \fn void delaiModificationEnnemi(Ennemi *ennemi)
+    \fn void delaiModificationEnnemi()
     \brief décrémente les valeurs de "delaiModif" d'un ennemi et inverse leurs effets quand elles sont terminées
-    \param ennemi ennemi que l'on modifie
 */
 
 void delaiModificationEnnemi() {
@@ -1020,10 +987,9 @@ void delaiModificationEnnemi() {
 
 
 /**
-    \fn void persoPoursuit(Personnage *perso, Ennemi *ennemi)
+    \fn void persoPoursuit(int indicePersonnage)
     \brief les personnage qui ne sont pas controlé par le joueur se dirige automatiquement vers l'ennemi qu'ils ciblent
-    \param perso personnage qui poursuit l'ennemi
-    \param ennemi ennemi qui est poursuivis
+    \param indicePersonnage indice du personnage que l'on controle
 */
 
 
@@ -1062,9 +1028,8 @@ void persoPoursuit(int indicePersonnage) {
 
 
 /**
-    \fn void deplacementPersonnage(Personnage* equipe[], int indicePersonnage, Ennemi ennemis[])
+    \fn void deplacementPersonnage()
     \brief deplacement des personnages
-    \param equipe equipe des personnages
 */
 
 
@@ -1093,7 +1058,7 @@ void deplacementPersonnage() {
 
 
 /**
-    \fn void afficherPersonnage(SDL_Rect camera)
+    \fn void afficherPersonnages(SDL_Rect camera)
     \brief afficher le personnage à l'écran
     \param camera coordonnées de la camera(qui represent le centre de l'écran)
 */
@@ -1117,14 +1082,12 @@ void afficherPersonnages(SDL_Rect camera) {
 }
 
 /**
-    \fn void utiliseArtBuff(Art* art, Personnage* equipe[], int indicePersonnage, SDL_Surface *pSurface, degatsTxt dgtsTxt[], int *nbDgtTxt)
+    \fn void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible)
     \brief Cette fonction vérifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa dernière utilisation)
-    \param art art quel le personnage utilise
-    \param equipe equipe qui profite des bonus
+    \param indiceArt indice du l'art utilise
     \param indicePersonnage indice du personnage qui utilise l'art
-    \param pSurface fenetre sur laquelle on affiche les information de l'art (si il soigne on affiche la valeur de soin en vert au dessus des personnages soignés
-    \param dgtsTxt tableau des textes affiché sur l'écran
-    \param nbDgtTxt nombre de degats affiché sur l'écran
+    \param indicePersonnage indice du personnage qui utilise l'art
+    \param cible si l'art cible un seul membre du group on donne l'indice de ce personnage dans ce parametre sinon -1
 */
 
 void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
@@ -1215,6 +1178,8 @@ void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible) {
           if(ArtJeu[indicePersonnage][indiceArt]->hostilite > 0) {
 
             for(int n = 0; n < nbEnnemi; n++) {
+
+              if(ArtJeu[indicePersonnage][indiceArt]->hostilite[equipe[indicePersonnage]->orientationRelative] >= 0)
 
               ennemis[n].hostilite[i] *= ArtJeu[indicePersonnage][indiceArt]->hostilite[equipe[indicePersonnage]->orientationRelative];
 

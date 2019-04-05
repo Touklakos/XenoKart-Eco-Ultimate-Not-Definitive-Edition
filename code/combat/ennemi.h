@@ -13,6 +13,15 @@
 #include "deplacement.h"
 
 
+/**
+  \file ennemi.h
+  \brief primitive des ennemis
+  \author Mano Brabant
+  \version 0.01
+  \date 5 avril 2019
+*/
+
+
 typedef struct {
 
     int posX;
@@ -26,7 +35,6 @@ typedef struct {
     char nom[50];
 
 
-    //def stats in-game
     int NV;
 
     int MAXPV;
@@ -85,7 +93,7 @@ extern int serveur;
 
 
 void initEnnemi(Ennemi* ennemi, char fichier[50]);
-int cibleEnnemis();
+void cibleEnnemis();
 void ennemiPoursuit();
 void deplacementEnnemi();
 void afficherEnnemis(SDL_Rect camera);
@@ -95,12 +103,12 @@ int orientationPersoCombatRelative(int indice);
 int typeCoupPerso(int indice);
 int typeCoupEnnemi(int indice);
 int ennemiAutoAttaque(int indice, int degats, int type);
-int attaqueAllie();
+void attaqueAllie();
 int persoAutoAttaque(int indice, int degats, int type);
-int attaqueEnnemi();
+void attaqueEnnemi();
 int lanceArt(int indiceArt, int indicePersonnage, int degats);
 int utiliseArt(int indiceArt, int indicePersonnage);
-int etatEnnemi();
+void etatEnnemi();
 void delaiEtatEnnemis();
 void delaiModificationEnnemi();
 void persoPoursuit(int indicePersonnage);

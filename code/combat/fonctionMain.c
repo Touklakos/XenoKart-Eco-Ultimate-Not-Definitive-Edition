@@ -163,9 +163,9 @@ void background(SDL_Rect camera) {
 
   int j;
 
-    for(i = -SCREEN_WIDTH; i < SCREEN_WIDTH*2; i+=sol->w) {
+    for(i = ((-SCREEN_WIDTH+camera.x)/sol->w)*sol->w; i < SCREEN_WIDTH*2+camera.x; i+=sol->w) {
 
-        for(j = -SCREEN_HEIGHT; j < SCREEN_HEIGHT*2; j+=sol->h) {
+        for(j = ((-SCREEN_HEIGHT+camera.y)/sol->h)*sol->h; j < SCREEN_HEIGHT*2+camera.y; j+=sol->h) {
 
             SDL_Rect dest = { i-camera.x+camera.w, j-camera.y+camera.h, 0, 0};
             SDL_BlitSurface(sol, NULL, pSurface, &dest);

@@ -17,6 +17,7 @@
     \param b composante en y du premier point
     \param c composante en x du deuxieme point
     \param d composante en y du deuxieme point
+    \return la distance entre les deux points
 */
 
 int distance(int a, int b, int c, int d) {
@@ -42,6 +43,7 @@ int distance(int a, int b, int c, int d) {
     \param d2 taille maximum en x
     \param b2 taille maximum en y
     \param g2 taille minimum en x
+    \si les deux AABB(Axis Aligned Bounding Box) sont en collision
 */
 
 
