@@ -4,7 +4,7 @@
 
 /**
   \file fonction.c
-  \brief texte des degats qui serront afficher à l'ecran
+  \brief boite à outils
   \author Mano Brabant
   \version 0.01
   \date 13 fevrier 2019
