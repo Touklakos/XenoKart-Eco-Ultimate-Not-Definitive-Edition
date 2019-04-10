@@ -15,21 +15,40 @@ extern const int NB_CASE;
 
 extern int caseCount;
 
+/**
+  \enum typemap
+  \brief Une énumération pour les différents type de carte
+*/
+
 enum typemap{ VOLCAN, MONTAGNE, PIC, DESERT, PLATEAU, PLAINE, DONJON, MARAIS, TUNDRA, FORET, OCEAN, ARCHIPEL};
+
+/**
+  \enum typecase
+  \brief Une énumération pour les différents type de case
+*/
+
 enum typecase{ BASE, SPAWN, FIN};
 
 /**
   \file map.h
-  \brief XenoKart Eco Plus
+  \brief Fichier header pour la carte
   \author Benjamin Riviere
-  \version 0.01
-  \date 04 avril 2019
+*/
+
+/**
+  \struct coord_t
+  \brief Une structure qui contient des coordonnées X et Y
 */
 
 typedef struct coord_s{
   int x;
   int y;
 }coord_t;
+
+/**
+  \struct case_t
+  \brief Cette structure contient les valeurs d'une case
+*/
 
 typedef struct case_s{
   coord_t coord;
@@ -39,11 +58,21 @@ typedef struct case_s{
   enum typecase subtype;
 }case_t;
 
+/**
+  \struct map_t
+  \brief Cette structure contient les valeurs d'une carte
+*/
+
 typedef struct map_s{
   case_t v[MAP_HEIGHT][MAP_WIDTH];
   enum typemap type;
   int difficult;
 }map_t;
+
+/**
+  \struct element
+  \brief Cette structure permet d'utiliser la file
+*/
 
 typedef struct element {
 	case_t hexcase;
