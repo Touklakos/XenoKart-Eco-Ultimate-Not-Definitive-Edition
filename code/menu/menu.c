@@ -5,7 +5,6 @@
 #include "menu.h"
 #include "../combat/const.h"
 
-
 long long unsigned fpsCount = 0;
 long long unsigned fin = 0;
 long long unsigned deb = 0;
@@ -13,17 +12,14 @@ int quit = 0;
 
 eEtatProg etatProg;
 
-
 SDL_Event event;
 SDL_Color blanc = {255,255,255};
 SDL_Color noir = {0,0,0};
 
 /**
   \file menu.c
-  \brief XenoKart Eco Plus
+  \brief Fichier qui contient les fonctions pour le menu
   \author Benjamin Riviere
-  \version 0.01
-  \date 12 mars 2019
 */
 
 /**
@@ -61,7 +57,7 @@ void fonctionFin(){
 
 /**
     \fn void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
-    \brief fonction qui affiche toutes la SDL ( Rectangle et texte pour le menu )
+    \brief Cette fonction affiche la SDL ( Rectangle et texte pour le menu )
     \param tab Tableau qui contient les rectangles et les textes contenu dans une structure affichage (SDL_Rect, SDL_Surface*)
     \param tTab Taille du tableau
     \param pSurface Surface sur laquel on affiche
@@ -91,8 +87,8 @@ void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* scre
 }
 
 /**
-    \fn fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
-    \brief fonction qui gère quand l'user va sur "GAME"
+    \fn void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
+    \brief Cette fonction gère quand l'utilisareur va sur "GAME"
     \param pSurface Surface sur laquel on affiche
     \param screen Ecran sur lequel on affiche
     \param police Police d'écriture
@@ -106,7 +102,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   int tailletab = 3;
 
-  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
+  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'écran afin de les centrés
   SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
   SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
 
@@ -149,7 +145,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
       if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
         switch(nbChoix){
-          case 0 : etatProg=connecte; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return;break;
+          case 0 : etatProg=connecte; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return; break;
           case 1 : printf("NEW\n");break;
         }
       }
@@ -165,11 +161,9 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
 }
 
-
 /**
-
-    \fn fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
-    \brief fonction qui gère quand l'user va sur "GAME"
+    \fn void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
+    \brief Cette fonction gère quand l'utilisateur va sur "OPTIONS"
     \param pSurface Surface sur laquel on affiche
     \param screen Ecran sur lequel on affiche
     \param police Police d'écriture
@@ -227,8 +221,8 @@ void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
       if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
         while(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){SDL_PumpEvents(); state = SDL_GetKeyboardState(NULL);}
         switch(nbChoix){
-          case 0 : coop=1; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); fonctionCoop(pSurface, screen, police); return;break;
-          case 1 : coop=0; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return;break;
+          case 0 : coop=1; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); fonctionCoop(pSurface, screen, police); return; break;
+          case 1 : coop=0; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return; break;
         }
       }
 
@@ -243,17 +237,14 @@ void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
 
 }
 
-
-
-
 /**
-
-    \fn fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
-    \brief fonction qui gère quand l'user va sur "GAME"
+    \fn void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
+    \brief Cette fonction gère quand l'utilisateur va sur "OPTIONS" puis "COOP"
     \param pSurface Surface sur laquel on affiche
     \param screen Ecran sur lequel on affiche
     \param police Police d'écriture
 */
+
 
 void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
@@ -307,8 +298,8 @@ void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
         while(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){SDL_PumpEvents(); state = SDL_GetKeyboardState(NULL);}
         switch(nbChoix){
-          case 0 : serveur=1; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return;break;
-          case 1 : serveur=0; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return;break;
+          case 0 : serveur=1; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return; break;
+          case 1 : serveur=0; SDL_FreeSurface(tab[1].txt); SDL_FreeSurface(tab[2].txt); return; break;
         }
       }
 
