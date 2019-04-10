@@ -5,6 +5,12 @@
 #include "menu.h"
 #include "../combat/const.h"
 
+/**
+  \file menu.c
+  \brief Fichier qui contient les fonctions pour le menu
+  \author Benjamin Riviere
+*/
+
 long long unsigned fpsCount = 0;
 long long unsigned fin = 0;
 long long unsigned deb = 0;
@@ -15,12 +21,6 @@ eEtatProg etatProg;
 SDL_Event event;
 SDL_Color blanc = {255,255,255};
 SDL_Color noir = {0,0,0};
-
-/**
-  \file menu.c
-  \brief Fichier qui contient les fonctions pour le menu
-  \author Benjamin Riviere
-*/
 
 /**
     \fn void fonctionQuitter()
