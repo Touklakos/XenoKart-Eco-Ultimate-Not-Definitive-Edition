@@ -16,6 +16,12 @@ extern const int NB_CASE;
 extern int caseCount;
 
 /**
+  \file map.h
+  \brief Fichier header pour la carte
+  \author Benjamin Riviere
+*/
+
+/**
   \enum typemap
   \brief Une énumération pour les différents type de carte
 */
@@ -28,12 +34,6 @@ enum typemap{ VOLCAN, MONTAGNE, PIC, DESERT, PLATEAU, PLAINE, DONJON, MARAIS, TU
 */
 
 enum typecase{ BASE, SPAWN, FIN};
-
-/**
-  \file map.h
-  \brief Fichier header pour la carte
-  \author Benjamin Riviere
-*/
 
 /**
   \struct coord_t
