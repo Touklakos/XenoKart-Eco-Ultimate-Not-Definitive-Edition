@@ -5,7 +5,19 @@
 #include "degatsTxt.h"
 #include <stdarg.h>
 
+/**
+  \file art.h
+  \brief fonctions des ennemis
+  \author Mano Brabant
+  \version 0.01
+  \date 13 fevrier 2019
+*/
+
 /*Structure des arts (attaque sp�ciales des personnages)*/
+
+/**
+    \struct Art "Structure des arts (attaque sp�ciales des personnages)"
+*/
 
 typedef struct {
 
