@@ -1,6 +1,11 @@
 
 #include "art.h"
 
+
+/**
+    \struct Personnage "Structure des personnages"
+*/
+
 typedef struct {
 
     int posX;
