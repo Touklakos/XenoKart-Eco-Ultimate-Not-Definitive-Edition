@@ -1,5 +1,20 @@
 #include "controle.h"
 
+/**
+  \file controle.c
+  \brief fonctions des ennemis
+  \author Mano Brabant
+  \version 0.01
+  \date 13 fevrier 2019
+*/
+
+
+
+
+/**
+    \fn void controlleManette(Personnage *equipe[], int *indicePersonnage, int *positionCurseur, int *recupCurseur, int *relacheA, int *relacheGachetteDroite, int *relacheGachetteGauche)
+    \brief manette ça marche pas 
+*/
 
 void controlleManette(Personnage *equipe[], int *indicePersonnage, int *positionCurseur, int *recupCurseur, int *relacheA, int *relacheGachetteDroite, int *relacheGachetteGauche) {
 
