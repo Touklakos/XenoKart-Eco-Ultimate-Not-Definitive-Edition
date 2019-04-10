@@ -7,9 +7,9 @@
 #include "map.h"
 #include "../combat/const.h"
 
-int fpsCount = 0;
-int deb = 0;
-int fin = 0;
+long long unsigned fpsCount;
+long long unsigned deb;
+long long unsigned fin;
 int quit = 0;
 
 const int NB_CASE = (MAP_WIDTH*MAP_HEIGHT)/2;
@@ -108,8 +108,8 @@ void fonctionFin(){
 
   fin = SDL_GetTicks();
 
-  printf("\nfps = %i\n", (fpsCount++)*1000/SDL_GetTicks());
-  printf("fin = %i\n", fin/1000);
+  printf("\nfps = %lld\n", (fpsCount++)*1000/SDL_GetTicks());
+  printf("fin = %lld\n", fin/1000);
   int delai = ((1000/FPS)-(fin-deb));
 
   if(delai > 0){
