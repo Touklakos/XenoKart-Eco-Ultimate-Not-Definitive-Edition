@@ -14,7 +14,7 @@ doublet clavier[1000];
 
 
 /**
-  \file incroyable.c
+  \file deplacement.c
   \brief XenoKart Eco Plus
   \author Mano Brabant
   \version 0.01
