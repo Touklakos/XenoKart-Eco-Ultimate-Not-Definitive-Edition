@@ -1,4 +1,7 @@
 
+/**
+    \struct Etat "Structure des etats (empoissoné, gelé, brulé)"
+*/
 
 typedef struct {
 
