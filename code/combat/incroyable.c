@@ -124,7 +124,7 @@ int main(int argc, char** argv)
 
 
 
-      gererTexte(pSurface, camera);
+      gererTexte(camera);
 
       gererEnnemis(ennemis, &nbEnnemi, equipe);
 

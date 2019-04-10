@@ -244,15 +244,15 @@ int controlePerso(int *indicePersonnage, int cote) {
 
   if(cote == droite) {
 
-    if(equipe[((*indicePersonnage)+1)%3]->posX > equipe[((*indicePersonnage)+2)%3]->posX) *indicePersonnage += 1;
+    if(equipe[(*indicePersonnage+1)%3]->PV > 0) *indicePersonnage += 1;
 
-    else *indicePersonnage += 2;
+    else if(equipe[(*indicePersonnage+2)%3]->PV > 0) *indicePersonnage += 2;
 
   } else {
 
-    if(equipe[((*indicePersonnage)+1)%3]->posX < equipe[((*indicePersonnage)+2)%3]->posX) *indicePersonnage += 1;
+    if(equipe[(*indicePersonnage+2)%3]->PV > 0) *indicePersonnage += 2;
 
-    else *indicePersonnage += 2;
+    else if(equipe[(*indicePersonnage+1)%3]->PV > 0) *indicePersonnage += 1;
 
   }
 
@@ -1308,6 +1308,8 @@ void freeAll() {
   SDL_FreeSurface(sol);
 
   SDL_FreeSurface(cooldownArt);
+
+  SDL_FreeSurface(pSurface);
 
   SDL_DestroyWindow(screen);
 

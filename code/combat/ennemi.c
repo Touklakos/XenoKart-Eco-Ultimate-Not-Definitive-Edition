@@ -1038,7 +1038,7 @@ void deplacementPersonnage() {
   for(int i = 0; i < 3; i++) {
 
 
-    if(equipe[i]->delaiArt >= 0) {
+    if(equipe[i]->delaiArt >= 0 || equipe[i]->PV <= 0) {
 
       equipe[i]->vitX = 0;
       equipe[i]->vitY = 0;

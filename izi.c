@@ -15,7 +15,7 @@
 #include "code/combat/ennemi.h"
 #include "code/lobby/fonctions.h"
 
-#include "code/combat/fonctionMain.c"
+#include "code/combat/fonctionMain.c" 
 
 
 
@@ -28,7 +28,7 @@ int main(int argc, char** argv){
   TTF_Font *police = NULL;
   police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
 
-  screen = SDL_CreateWindow("XenoKart ECO+ (Not) Definitive Edition", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+  screen = SDL_CreateWindow("XenoKart ECO+ Ultimate (Not) Definitive Edition", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 
   pSurface = SDL_GetWindowSurface(screen);
 
@@ -70,11 +70,9 @@ int main(int argc, char** argv){
 
   coop = 0;
   serveur = 0;
-  if(argc == 3) serveur = 1;
 
   indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
 
-  if(coop) connexion();
 
   srand(time(NULL));
 
@@ -132,7 +130,7 @@ int main(int argc, char** argv){
           while(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]) {SDL_PumpEvents(); state = SDL_GetKeyboardState(NULL);};
           switch(nbChoix){
             case 0 : fonctionJeu(pSurface, screen, police); break;
-            case 1 : break;
+            case 1 : fonctionOption(pSurface, screen, police); break;
             case 2 : quit = 2; break;
           }
         }
@@ -140,6 +138,11 @@ int main(int argc, char** argv){
       fonctionFin();
       fonctionQuitter();
 
+
+    } else if(etatProg == connecte) {
+
+      if(coop) connexion();
+      etatProg = lobby;
 
     } else if(etatProg == lobby) {
 

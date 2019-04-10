@@ -12,14 +12,17 @@
 
 #define N 4
 
-typedef enum {menu, lobby, map, combat} eEtatProg;
+typedef enum {menu, connecte, lobby, map, combat} eEtatProg;
 
 
 
-extern int fpsCount;
-extern int fin;
-extern int deb;
+extern long long unsigned fpsCount;
+extern long long unsigned fin;
+extern long long unsigned deb;
 extern int quit;
+
+extern int coop;
+extern int serveur;
 
 extern eEtatProg etatProg;
 
@@ -34,3 +37,5 @@ void fonctionQuitter();
 void fonctionFin();
 void afficher(affichage tab[], int, SDL_Surface*, SDL_Window*, TTF_Font *);
 void fonctionJeu(SDL_Surface*, SDL_Window*, TTF_Font *);
+void fonctionOption(SDL_Surface*, SDL_Window*, TTF_Font *);
+void fonctionCoop(SDL_Surface*, SDL_Window*, TTF_Font *);

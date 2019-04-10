@@ -4,9 +4,9 @@
 
 #include "../combat/const.h"
 
-extern int fpsCount;
-extern int deb;
-extern int fin;
+extern long long unsigned fpsCount;
+extern long long unsigned deb;
+extern long long unsigned fin;
 extern int quit;
 
 extern SDL_Event event;
