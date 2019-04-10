@@ -28,7 +28,6 @@ int nbDgtTxt = 0;               //nombre de texte de d�gats affich� � l'�
     \param posX position en X du texte à afficher
     \param posY position en Y du texte à afficher
     \param type permet de determiner la couleur du texte
-
 */
 
 
@@ -143,12 +142,10 @@ void addDegatTxt(int dmg, int posX, int posY, int type) {
 
 
 /**
-    \fn void afficherDegatsTxt(degatsTxt *texte, SDL_Surface *pSurface, SDL_Rect camera) {
+    \fn void afficherDegatsTxt(SDL_Surface *pSurface, SDL_Rect camera) {
     \brief permet d'afficher du texte sur l'écran
-    \param texte tableau où sont stockés tout les textes à afficher
     \param pSurface fenetre dans laquelle on va afficher les textes
     \param camera nous permet d'afficher les textes de facon fixe
-
 */
 
 void afficherDegatsTxt(SDL_Surface *pSurface, SDL_Rect camera) {
