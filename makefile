@@ -44,8 +44,7 @@ map: ${MAP}map.c
 
 shishi: ${MAP}shishi.c
 	${CC} -c ${MAP}shishi.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${CODE}file.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o shishi map.o shishi.o file.o ${LIBS} ${INCS} ${FLAGS}
+	${CC} -o shishi map.o shishi.o ${LIBS} ${INCS} ${FLAGS}
 
 rentacleTape : ${MAP}rentacleTape.c map
 	${CC} -c ${MAP}rentacleTape.c ${LIBS} ${INCS} ${FLAGS}
