@@ -2,9 +2,9 @@
 
 /**
   \file controle.c
-  \brief fonctions des ennemis
+  \brief ca marche pas
   \author Mano Brabant
-  \version 0.01
+  \version -1.01
   \date 13 fevrier 2019
 */
 
