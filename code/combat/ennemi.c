@@ -451,6 +451,7 @@ int orientationPersoCombatRelative(int indice) {
     \fn int typeCoupPerso(int indice)
     \brief quand un personnage assene un coup, ce coup est modifié, cela peut être un coup critique, le coup peut-être esquivé, gardé, etc...
     \param indice indice du personnage qui assene le coup
+    \return le type de coup (esquivé, bloqué, critique, etc)
 */
 
 
@@ -485,6 +486,7 @@ int typeCoupPerso(int indice) {
     \fn int typeCoupEnnemi(int indice)
     \brief quand un ennemi assene un coup, ce coup est modifié, cela peut être un coup critique, le coup peut-être esquivé, gardé, etc...
     \param indice indice de l'ennemi qui assene le coup
+    \return le type de coup (esquivé, bloqué, critique, etc)
 */
 
 int typeCoupEnnemi(int indice) {
@@ -634,6 +636,7 @@ void attaqueAllie() {
     \param indice indice du personnage
     \param degats si la fonction est appelle grace au serveur les degats ont deja ete calculé sinon degats egal -1
     \param type  si la fonction est appelle grace au serveur le type a deja ete determine sinon type = -1
+    \return retourne les degats infligé
 */
 
 
@@ -1085,7 +1088,6 @@ void afficherPersonnages(SDL_Rect camera) {
     \fn void utiliseArtBuff(int indiceArt, int indicePersonnage, int cible)
     \brief Cette fonction vérifie si un personnage peut utiliser un art de soutien (en fonction du delai depuis sa dernière utilisation)
     \param indiceArt indice du l'art utilise
-    \param indicePersonnage indice du personnage qui utilise l'art
     \param indicePersonnage indice du personnage qui utilise l'art
     \param cible si l'art cible un seul membre du group on donne l'indice de ce personnage dans ce parametre sinon -1
 */
