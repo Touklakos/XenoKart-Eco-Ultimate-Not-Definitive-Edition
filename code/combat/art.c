@@ -5,11 +5,27 @@
 
 #include "art.h"
 
+/**
+  \file art.c
+  \brief fonctions des ennemis
+  \author Mano Brabant
+  \version 0.01
+  \date 13 fevrier 2019
+*/
+
 Art *ArtJeu[3][8];
 SDL_Surface* pSurface;
 SDL_Window* screen;
 SDL_Surface *cooldownArt;
 
+
+/**
+    \fn int initArt(Art *art, char fichier[50])
+    \brief initialise l'art passé en parametre avec un ficher
+    \param art l'art que l'on initialise
+    \param fichier le fichier qui contient les information de l'ennemi
+    \return si l'initialisation s'est bien passé
+*/
 
 int initArt(Art *art, char fichier[50]) {
 
@@ -988,7 +1004,12 @@ int initArt(Art *art, char fichier[50]) {
 
 }
 
-/*Cette fonction sert � afficher les icones des arts du personnage que l'on controle en bas de l'�cran*/
+
+/**
+    \fn void afficherArt(int indicePersonnage)
+    \brief Cette fonction sert à afficher les icones des arts du personnage que l'on controle en bas de l'écran
+    \param indice du personnage dont-on affiche les arts
+*/
 
 void afficherArt(int indicePersonnage) {
 
@@ -1007,6 +1028,12 @@ void afficherArt(int indicePersonnage) {
     }
 
 }
+
+
+/**
+    \fn void recuperationArt()
+    \brief Cette fonction permet d'utiliser les arts après leurs temps de recharge
+*/
 
 void recuperationArt() {
 
