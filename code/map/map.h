@@ -4,6 +4,12 @@
 
 #include "../combat/const.h"
 
+/**
+  \file map.h
+  \brief Fichier header pour la carte
+  \author Benjamin Riviere
+*/
+
 extern long long unsigned fpsCount;
 extern long long unsigned deb;
 extern long long unsigned fin;
@@ -14,12 +20,6 @@ extern SDL_Event event;
 extern const int NB_CASE;
 
 extern int caseCount;
-
-/**
-  \file map.h
-  \brief Fichier header pour la carte
-  \author Benjamin Riviere
-*/
 
 /**
   \enum typemap
