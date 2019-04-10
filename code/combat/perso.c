@@ -179,7 +179,7 @@ void initPersonnage(Personnage* perso, char fichier[50]) {
 
 
 /**
-    \fn void afficherPersonnage()
+    \fn void delaiModificationPerso()
     \brief décrémente les valeurs de "delaiModif" d'un personnage et inverse leurs effets quand elles sont terminées
 */
 
