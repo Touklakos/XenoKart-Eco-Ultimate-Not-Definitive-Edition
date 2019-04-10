@@ -4,17 +4,17 @@
 
 /**
   \file menu.h
-  \brief XenoKart Eco Plus
   \author Benjamin Riviere
-  \version 0.01
-  \date 12 mars 2019
 */
 
 #define N 4
 
+/**
+  \enum eEtatProg
+  \brief Une énumération pour l'état du programme
+*/
+
 typedef enum {menu, connecte, lobby, map, combat} eEtatProg;
-
-
 
 extern long long unsigned fpsCount;
 extern long long unsigned fin;
@@ -30,6 +30,11 @@ extern eEtatProg etatProg;
 extern SDL_Event event;
 extern SDL_Color blanc;
 extern SDL_Color noir;
+
+/**
+  \struct affichage
+  \brief Une structure qui permet d'avoir le texte et le rectangle ou il apparait au même endroit
+*/
 
 typedef struct {SDL_Rect rec; SDL_Surface* txt;} affichage;
 
