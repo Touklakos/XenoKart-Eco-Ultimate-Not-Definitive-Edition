@@ -21,6 +21,10 @@
   \date 5 avril 2019
 */
 
+/**
+    \struct Ennemi "Structure des ennemis"
+*/
+
 
 typedef struct {
 
