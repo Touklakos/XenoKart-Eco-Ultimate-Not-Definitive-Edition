@@ -2,7 +2,10 @@
 #include "enum.h"
 
 
-/*Texte qui s'affichera au dessus des ennemis et des personnage indicant le nombre de d�gats re�u*/
+
+/**
+    \struct degatsTxt "Texte qui s'affichera au dessus des ennemis et des personnage indicant le nombre de dégats reçu"
+*/
 
 typedef struct {
 
