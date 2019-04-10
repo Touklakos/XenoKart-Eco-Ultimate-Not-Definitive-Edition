@@ -42,7 +42,7 @@ menu: ${MENU}menu.c
 map: ${MAP}map.c
 	${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
 
-shishi: ${MAP}shishi.c
+shishi: ${MAP}shishi.c map
 	${CC} -c ${MAP}shishi.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -o shishi map.o shishi.o ${LIBS} ${INCS} ${FLAGS}
 
