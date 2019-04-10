@@ -1,6 +1,8 @@
 #include "perso.h"
 
-
+/**
+    \struct doublet "Structure pour le clavier"
+*/
 typedef struct {
 
   int enfonce;
