@@ -4,6 +4,7 @@
 
 /**
   \file menu.h
+  \brief Fichier header pour le menu
   \author Benjamin Riviere
 */
 
