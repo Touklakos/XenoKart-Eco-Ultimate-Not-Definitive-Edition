@@ -21,5 +21,5 @@
 #define HEX_HEIGHT 50
 #define HEX_WIDTH 50
 
-#define MAP_HEIGHT 25
-#define MAP_WIDTH 25
+#define MAP_HEIGHT 50
+#define MAP_WIDTH 50

@@ -3,7 +3,11 @@ CC=gcc
 
 FLAGS =-Wall -g
 
-SDL_DIR=${HOME}/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
+SDL_DIR_UNIX=${HOME}/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
+SDL_DIR_MAC=${HOME}/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2_mac
+
+SDL_DIR=$(SDL_DIR_UNIX)
+
 
 SDL_LIB_DIR=${SDL_DIR}/lib
 
@@ -34,6 +38,20 @@ sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${LOBBY}fonctions.c ${LIBS} ${INCS} ${FLAGS}
 	${CC} -o incroyable incroyable.o art.o perso.o deplacement.o ennemi.o degatsTxt.o fonction.o ${LIBS} ${INCS} ${FLAGS}
 	${CC} -o lobby lobby.o fonctions.o perso.o degatsTxt.o ${LIBS} ${INCS} ${FLAGS}
+
+izi: izi.c clean
+		${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${LOBBY}lobby.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${LOBBY}fonctions.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}ennemi.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}art.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}deplacement.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}fonction.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}degatsTxt.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c izi.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -o izi izi.o menu.o lobby.o fonctions.o ennemi.o art.o deplacement.o fonction.o perso.o degatsTxt.o map.o ${LIBS} ${INCS} ${FLAGS}
 
 menu: ${MENU}menu.c
 	${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}

@@ -7,7 +7,6 @@
 extern long long unsigned fpsCount;
 extern long long unsigned deb;
 extern long long unsigned fin;
-extern int quit;
 
 extern SDL_Event event;
 

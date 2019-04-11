@@ -10,7 +10,6 @@
 long long unsigned fpsCount;
 long long unsigned deb;
 long long unsigned fin;
-int quit = 0;
 
 const int NB_CASE = (MAP_WIDTH*MAP_HEIGHT)/2;
 
@@ -83,39 +82,6 @@ void retirer(case_t *v) {
 	}
 }
 
-/**
-    \fn void fonctionQuitter()
-    \brief Cette fonction vérifie si l'utilisateur veut fermer le programme avec la croix
-*/
-
-void fonctionQuitter(){
-
-  SDL_PollEvent(&event);
-
-  switch(event.type){
-      case SDL_QUIT:
-        quit = 1;
-        break;
-  }
-}
-
-/**
-    \fn void fonctionFin()
-    \brief Cette fonction affiche les statistiques à la fin des boucles dans les fonctions
-*/
-
-void fonctionFin(){
-
-  fin = SDL_GetTicks();
-
-  printf("\nfps = %lld\n", (fpsCount++)*1000/SDL_GetTicks());
-  printf("fin = %lld\n", fin/1000);
-  int delai = ((1000/FPS)-(fin-deb));
-
-  if(delai > 0){
-    SDL_Delay(delai);
-  }
-}
 
 /**
     \fn void init_mat(case_t mat[MAP_HEIGHT][MAP_WIDTH])

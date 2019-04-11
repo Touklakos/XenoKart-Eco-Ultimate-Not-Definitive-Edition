@@ -14,8 +14,9 @@
 #include "code/menu/menu.h"
 #include "code/combat/ennemi.h"
 #include "code/lobby/fonctions.h"
+#include "code/map/map.h"
 
-#include "code/combat/fonctionMain.c" 
+#include "code/combat/fonctionMain.c"
 
 
 
@@ -66,6 +67,8 @@ int main(int argc, char** argv){
   load_inv(inv);
 
 
+  map_t * map;
+  map = NULL;
 
 
   coop = 0;
@@ -84,6 +87,8 @@ int main(int argc, char** argv){
     clavier[i].relache = 0;
 
   }
+
+
 
 
   etatProg = menu;
@@ -166,10 +171,29 @@ int main(int argc, char** argv){
 
 
       if(etat == 3){
-        etatProg = combat;
+        etatProg = creationMap;
       }
 
-    } else if(etatProg == map) {
+    } else if(etatProg == creationMap) {
+
+      do{
+        if(map != NULL) free(map);
+        caseCount = 1;
+        map = creerMap(type_expedition);
+        pathfinding(map);
+      }
+      while(!valeurPath(map) || valeurPath(map) < 5);
+
+      etatProg = UtilisationMap;
+
+
+    } else if(etatProg == UtilisationMap) {
+
+      afficherMap(map, pSurface, screen);
+
+      SDL_Delay(5000);
+
+      etatProg = combat;
 
 
 
@@ -220,7 +244,7 @@ int main(int argc, char** argv){
 
         victoire();
 
-        etatProg = map;
+        etatProg = UtilisationMap;
 
       }
 
@@ -229,7 +253,7 @@ int main(int argc, char** argv){
 
         defaite();
 
-        etatProg = map;
+        etatProg = UtilisationMap;
 
       }
 
