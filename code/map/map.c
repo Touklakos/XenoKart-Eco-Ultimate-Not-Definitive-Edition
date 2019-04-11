@@ -7,6 +7,12 @@
 #include "map.h"
 #include "../combat/const.h"
 
+/**
+  \file map.c
+  \brief Fichier qui contient les fonctions pour la carte
+  \author Benjamin Riviere
+*/
+
 long long unsigned fpsCount;
 long long unsigned deb;
 long long unsigned fin;
@@ -19,14 +25,6 @@ int caseCount = 1;
 
 tElement *tete;
 tElement *queue;
-
-/**
-  \file map.c
-  \brief XenoKart Eco Plus
-  \author Benjamin Riviere
-  \version 0.01
-  \date 04 avril 2019
-*/
 
 /**
     \fn void initFile()
@@ -50,7 +48,7 @@ int fileVide() {
 /**
     \fn void ajouter(case_t hexcase)
     \brief Cette fonction ajoute la valeur en parametre dans la file
-		\param hexcase Une case
+    \param hexcase Une case
 */
 
 void ajouter(case_t hexcase) {
