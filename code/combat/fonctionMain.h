@@ -17,7 +17,6 @@ extern int recupCibleEnn;
 
 extern int etatCombat;             //Si on se bat normalement ou si on est en train de choisir une cible pour un art de soutien
 
-extern SDL_Rect camera;  //camera servira à afficher les sprites en fonction de la position du joueur
 
 extern SDL_Surface * sol;
 

@@ -240,49 +240,56 @@ map_t * creerMap(enum typemap type){
     \param screen Ecran sur lequel on affiche
 */
 
-void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Window* screen){
+void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Rect camera){
 
 
   SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
-  SDL_Surface * img = NULL;
-	SDL_Surface * imgsubtype = NULL;
+  SDL_Surface * img[13];
+	SDL_Surface * imgsubtype[3];
+
+	img[0] = IMG_Load("code/map/hex/hex_volcan.png");
+	img[1] = IMG_Load("code/map/hex/hex_montagne.png");
+	img[2] = IMG_Load("code/map/hex/hex_pic.png");
+	img[3] = IMG_Load("code/map/hex/hex_desert.png");
+	img[4] = IMG_Load("code/map/hex/hex_plateau.png");
+	img[5] = IMG_Load("code/map/hex/hex_plaine.png");
+	img[6] = IMG_Load("code/map/hex/hex_donjon.png");
+	img[7] = IMG_Load("code/map/hex/hex_marais.png");
+	img[8] = IMG_Load("code/map/hex/hex_tundra.png");
+	img[9] = IMG_Load("code/map/hex/hex_foret.png");
+	img[10] = IMG_Load("code/map/hex/hex_ocean.png");
+	img[11] = IMG_Load("code/map/hex/hex_archipel.png");
+	img[12] = IMG_Load("code/map/hex/hex.png");
+
+
+	imgsubtype[0] = NULL;
+	imgsubtype[1] = IMG_Load("code/map/hex/spawn.png");
+	imgsubtype[2] = IMG_Load("code/map/hex/end.png");
+
 
   for(int i = 0; i < MAP_HEIGHT; i++){
     for(int j = 0; j < MAP_WIDTH; j++){
       if(map->v[i][j].val){
-        test.x = map->v[i][j].coord.y * (HEX_WIDTH - HEX_HEIGHT/4);
-        test.y = map->v[i][j].coord.x * (HEX_HEIGHT - HEX_HEIGHT/2);
+				test.x = map->v[i][j].coord.x * (HEX_WIDTH - HEX_WIDTH/4-0.5) -camera.x + camera.w;
+        test.y = map->v[i][j].coord.y * (HEX_HEIGHT - HEX_HEIGHT/2) -camera.y + camera.h;
 
-        switch(map->v[i][j].type){
-          case 0 : img = IMG_Load("code/map/hex/hex_volcan.png"); break;
-          case 1 : img = IMG_Load("code/map/hex/hex_montagne.png"); break;
-          case 2 : img = IMG_Load("code/map/hex/hex_pic.png"); break;
-          case 3 : img = IMG_Load("code/map/hex/hex_desert.png"); break;
-          case 4 : img = IMG_Load("code/map/hex/hex_plateau.png"); break;
-          case 5 : img = IMG_Load("code/map/hex/hex_plaine.png"); break;
-          case 6 : img = IMG_Load("code/map/hex/hex_donjon.png"); break;
-          case 7 : img = IMG_Load("code/map/hex/hex_marais.png"); break;
-          case 8 : img = IMG_Load("code/map/hex/hex_tundra.png"); break;
-          case 9 : img = IMG_Load("code/map/hex/hex_foret.png"); break;
-          case 10 : img = IMG_Load("code/map/hex/hex_ocean.png"); break;
-          case 11 : img = IMG_Load("code/map/hex/hex_archipel.png"); break;
-          default : img = IMG_Load("code/map/hex/hex.png"); break;
-        }
-				switch(map->v[i][j].subtype){
-					case 0 : imgsubtype = NULL;break;
-					case 1 : imgsubtype = IMG_Load("code/map/hex/spawn.png"); break;
-					case 2 : imgsubtype = IMG_Load("code/map/hex/end.png"); break;
-					default : img = IMG_Load("code/map/hex/hex.png"); break;
-				}
+        SDL_BlitSurface(img[map->v[i][j].type], NULL, pSurface, &test);
+				SDL_BlitSurface(imgsubtype[map->v[i][j].subtype], NULL, pSurface, &test);
 
-        SDL_BlitSurface(img, NULL, pSurface, &test);
-				SDL_BlitSurface(imgsubtype, NULL, pSurface, &test);
-				SDL_FreeSurface(img);
-				SDL_FreeSurface(imgsubtype);
       }
     }
   }
-  SDL_UpdateWindowSurface(screen);
+	for(int i = 0; i < 13; i++) {
+
+		SDL_FreeSurface(img[i]);
+
+	}
+
+	for(int i = 0; i < 3; i++) {
+
+		SDL_FreeSurface(imgsubtype[i]);
+
+	}
 }
 
 /**

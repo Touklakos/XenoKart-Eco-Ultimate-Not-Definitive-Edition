@@ -15,20 +15,47 @@
 
 //plus tard
 
-void afficherMapMieux(map_t * map, SDL_Rect camera, SDL_Window* screen){
+void afficherMapMieux(map_t * map, SDL_Rect camera, SDL_Surface* pSurface){
 
-  SDL_Surface* pSurface = SDL_GetWindowSurface(screen);
+
   SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
   SDL_Surface * img = NULL;
-  img = IMG_Load("code/map/hex/hex.png");
+  SDL_Surface * imgsubtype = NULL;
 
-  for(int i = 0; i < N; i++){
-    for(int j = 0; j < M; j++){
+
+  for(int i = 0; i < MAP_HEIGHT; i++){
+    for(int j = 0; j < MAP_WIDTH; j++){
       if(map->v[i][j].val){
         test.x = map->v[i][j].coord.x * (HEX_WIDTH - HEX_WIDTH/4-0.5) -camera.x + camera.w;
         test.y = map->v[i][j].coord.y * (HEX_HEIGHT - HEX_HEIGHT/2) -camera.y + camera.h;
 
+        switch(map->v[i][j].type){
+          case 0 : img = IMG_Load("code/map/hex/hex_volcan.png"); break;
+          case 1 : img = IMG_Load("code/map/hex/hex_montagne.png"); break;
+          case 2 : img = IMG_Load("code/map/hex/hex_pic.png"); break;
+          case 3 : img = IMG_Load("code/map/hex/hex_desert.png"); break;
+          case 4 : img = IMG_Load("code/map/hex/hex_plateau.png"); break;
+          case 5 : img = IMG_Load("code/map/hex/hex_plaine.png"); break;
+          case 6 : img = IMG_Load("code/map/hex/hex_donjon.png"); break;
+          case 7 : img = IMG_Load("code/map/hex/hex_marais.png"); break;
+          case 8 : img = IMG_Load("code/map/hex/hex_tundra.png"); break;
+          case 9 : img = IMG_Load("code/map/hex/hex_foret.png"); break;
+          case 10 : img = IMG_Load("code/map/hex/hex_ocean.png"); break;
+          case 11 : img = IMG_Load("code/map/hex/hex_archipel.png"); break;
+          default : img = IMG_Load("code/map/hex/hex.png"); break;
+        }
+        switch(map->v[i][j].subtype){
+          case 0 : imgsubtype = NULL;break;
+          case 1 : imgsubtype = IMG_Load("code/map/hex/spawn.png"); break;
+          case 2 : imgsubtype = IMG_Load("code/map/hex/end.png"); break;
+          default : img = IMG_Load("code/map/hex/hex.png"); break;
+        }
+
         SDL_BlitSurface(img, NULL, pSurface, &test);
+        SDL_BlitSurface(imgsubtype, NULL, pSurface, &test);
+        SDL_FreeSurface(img);
+        SDL_FreeSurface(imgsubtype);
+
       }
     }
   }
@@ -113,11 +140,11 @@ void deplacement(SDL_Event e, SDL_Rect * camera, int mouseX, int mouseY, case_t 
       case SDL_MOUSEBUTTONDOWN:
       switch(e.button.button){
         case SDL_BUTTON_MIDDLE:
-          return 0;break;
+          return;break;
         case SDL_BUTTON_LEFT:
             camera->x = mouseX - camera->w + camera->x;
             camera->y = mouseY - camera->h + camera->y;
-            centrage(&camera, map);
+            centrage(camera, map);
 
             pos->coord.x = camera->x;
             pos->coord.y = camera->y;
@@ -127,88 +154,3 @@ void deplacement(SDL_Event e, SDL_Rect * camera, int mouseX, int mouseY, case_t 
     }
   }
 }
-/****
-int main(){
-
-  SDL_Init(SDL_INIT_EVERYTHING);
-  TTF_Init();
-  IMG_Init(IMG_INIT_PNG);
-  SDL_Window* screen = SDL_CreateWindow("XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-  SDL_Surface* pSurface = NULL;
-  pSurface = SDL_GetWindowSurface(screen);
-  SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 0, 0));
-  map_t * map = creerMap(1);
-  SDL_Rect camera;
-  int mouseX, mouseY/*, nouvX, nouvY*//****;
-  SDL_Event e;
-  SDL_Surface * perso = NULL;
-  perso = IMG_Load("./data/miniGuts.png");
-  Personnage guts;
-  initPersonnage(&guts, "./data/Guts.txt");
-  case_t pos = map->v[0][0];
-  camera.x = pos.coord.x;
-  camera.y = pos.coord.y;
-  camera.w = SCREEN_WIDTH/2;
-  camera.h = SCREEN_HEIGHT/2;
-
-  while(1){
-    SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 0, 0));
-    SDL_GetMouseState(&mouseX,&mouseY);
-    afficherMapMieux(map, camera, screen);
-    afficher_perso_map(perso, pos.coord.x, pos.coord.y, camera, screen);
-    //printf("mouseX : %i\nmouseY : %i\n camera x : %i\ncamera y : %i\n", mouseX, mouseY, camera.x, camera.y);
-
-    SDL_UpdateWindowSurface(screen);
-    deplacement(e, &camera, mouseX, mouseY, map->v, &pos);
-    /*int dist, min = 30000, i, j, nx, ny, test;
-    for(i = 0; i<N; i++){
-      for(j = 0; j<M; j++){
-        if(map->v[i][j].val){
-          printf("cam x abs : %i\n", -(*camera).x + (*camera).w);
-          scanf("%i", dist);
-          dist = distance(mouseX, mouseY, map->v[i][j].coord.x*(HEX_WIDTH + HEX_WIDTH/2)/2 + HEX_WIDTH/2, map->v[i][j].coord.y*HEX_HEIGHT/2 + HEX_HEIGHT/2);
-          if(dist < min){
-            min = dist;
-            nx = i;
-            ny = j;
-          }
-        }
-      }
-    }
-    printf("nx : %i ny : %i\nmouseX : %i\nmouseY : %i\n camera x : %i\ncamera y : %i\n", nx, ny, mouseX, mouseY, camera.x, camera.y);*/
-
-/*
-    if(SDL_PollEvent(&e)){
-      switch(e.type) {
-        case SDL_MOUSEBUTTONDOWN:
-        switch(e.button.button){
-          case SDL_BUTTON_MIDDLE:
-            return 0;break;
-          case SDL_BUTTON_LEFT:
-              camera.x = mouseX-camera.w+camera.x;
-              camera.y = mouseY-camera.h+camera.y;
-              //jugement(map->v);
-              centrage(&camera, map->v);
-
-              pos.coord.x = camera.x;
-              pos.coord.y = camera.y;
-            break;
-        }
-        break;
-      }
-
-    }
-
-*/
-
-  /*  camera.x = pos.coord.x;
-    camera.y = pos.coord.y;*/
-    /*char quitter;
-    printf("quitter ?\n");
-    scanf("%c", &quitter);
-    if(quitter == 'y'){
-      return 0;
-    }*/
-/*****  }
-
-}*/

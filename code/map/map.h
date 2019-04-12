@@ -14,6 +14,9 @@ extern long long unsigned fpsCount;
 extern long long unsigned deb;
 extern long long unsigned fin;
 
+extern SDL_Rect camera;  //camera servira à afficher les sprites en fonction de la position du joueur
+
+
 extern SDL_Event event;
 
 extern const int NB_CASE;
@@ -79,6 +82,8 @@ typedef struct element {
 	struct element* prec;
 } tElement;
 
+
+
 void initFile();
 int fileVide();
 void ajouter(case_t v);
@@ -92,7 +97,7 @@ int choixType(case_t, map_t *);
 case_t creerCase(int, int, map_t *);
 void creerCases(map_t *);
 map_t * creerMap(enum typemap);
-void afficherMap(map_t *, SDL_Surface*, SDL_Window*);
+void afficherMap(map_t *, SDL_Surface*, SDL_Rect camera);
 void afficher_matrice(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
 void afficher_path(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
 void afficher_typecase(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
@@ -102,3 +107,7 @@ case_t arrive(case_t mat[MAP_HEIGHT][MAP_WIDTH]);
 case_t chercherCase(case_t mat[MAP_HEIGHT][MAP_WIDTH], int);
 void pathfinding(map_t *);
 int valeurPath(map_t *);
+void afficherMapMieux(map_t * map, SDL_Rect camera, SDL_Surface* pSurface);
+void afficher_perso_map(SDL_Surface * perso, int x, int y, SDL_Rect camera, SDL_Window* screen);
+void centrage(SDL_Rect * camera, case_t map[N][M]);
+void deplacement(SDL_Event e, SDL_Rect * camera, int mouseX, int mouseY, case_t map[N][M], case_t * pos);
