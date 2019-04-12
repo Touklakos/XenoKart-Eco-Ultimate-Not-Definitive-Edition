@@ -23,3 +23,6 @@
 
 #define MAP_HEIGHT 50
 #define MAP_WIDTH 50
+
+#define N 50
+#define M 50

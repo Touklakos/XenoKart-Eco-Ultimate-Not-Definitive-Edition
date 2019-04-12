@@ -49,9 +49,11 @@ izi: izi.c clean
 		${CC} -c ${COMBAT}fonction.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c ${COMBAT}degatsTxt.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}fonctionMain.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${MAP}rentacleTape.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c izi.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -o izi izi.o menu.o lobby.o fonctions.o ennemi.o art.o deplacement.o fonction.o perso.o degatsTxt.o map.o ${LIBS} ${INCS} ${FLAGS}
+		${CC} -o izi izi.o menu.o lobby.o fonctions.o ennemi.o art.o deplacement.o fonction.o perso.o degatsTxt.o map.o fonctionMain.o rentacleTape.o ${LIBS} ${INCS} ${FLAGS}
 
 menu: ${MENU}menu.c
 	${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}

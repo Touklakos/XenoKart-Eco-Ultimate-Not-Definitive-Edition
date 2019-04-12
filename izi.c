@@ -12,11 +12,10 @@
 
 
 #include "code/menu/menu.h"
-#include "code/combat/ennemi.h"
 #include "code/lobby/fonctions.h"
 #include "code/map/map.h"
 
-#include "code/combat/fonctionMain.c"
+#include "code/combat/fonctionMain.h"
 
 
 
@@ -71,6 +70,20 @@ int main(int argc, char** argv){
   map = NULL;
 
 
+  int mouseX, mouseY;
+  SDL_Event e;
+  SDL_Surface * perso = NULL;
+  perso = IMG_Load("./data/miniGuts.png");
+  Personnage guts;
+  initPersonnage(&guts, "./data/Guts.txt");
+  case_t pos;
+  pos.coord.x = 25; pos.coord.y = 25;
+  camera.x = pos.coord.x;
+  camera.y = pos.coord.y;
+  camera.w = SCREEN_WIDTH/2;
+  camera.h = SCREEN_HEIGHT/2;
+
+
   coop = 0;
   serveur = 0;
 
@@ -100,220 +113,34 @@ int main(int argc, char** argv){
 
     if(etatProg == menu) {
 
-      afficher(tab, tailletab, pSurface, screen, police);
-
-      deb = SDL_GetTicks();
-
-      SDL_PumpEvents();
-      const Uint8 *state = SDL_GetKeyboardState(NULL);
-
-
-      if(recupCurs-- < 0){ //permet la gestion de l'appuie des touches
-
-        if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
-          nbChoix++;
-          if(nbChoix == 3) nbChoix = 0;
-
-          tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
-
-          afficher(tab, tailletab, pSurface, screen, police);
-
-          recupCurs = DELAI_CURSEUR;
-        }
-        if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
-          nbChoix--;
-          if(nbChoix == -1) nbChoix = 2;
-
-          tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
-
-          afficher(tab, tailletab, pSurface, screen, police);
-
-          recupCurs = DELAI_CURSEUR;
-        }
-
-        if(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]){
-          while(state[SDL_SCANCODE_RETURN] || state[SDL_SCANCODE_SPACE]) {SDL_PumpEvents(); state = SDL_GetKeyboardState(NULL);};
-          switch(nbChoix){
-            case 0 : fonctionJeu(pSurface, screen, police); break;
-            case 1 : fonctionOption(pSurface, screen, police); break;
-            case 2 : quit = 2; break;
-          }
-        }
-      }
-      fonctionFin();
-      fonctionQuitter();
+      #include "code/menu/menuUtilisation.c"
 
 
     } else if(etatProg == connecte) {
 
-      if(coop) connexion();
-      etatProg = lobby;
+      #include "code/combat/connexion.c"
 
     } else if(etatProg == lobby) {
 
-      SDL_PollEvent(&event);
+      #include "code/lobby/lobbyUtilisation.c"
 
-
-
-      SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 0, 0, 0));
-
-      switch (etat){
-        case 0 : if(!inv_vide(inv)){echange(screen, inv, &argent, &points);} break;
-        case 1 : type_expedition = expedition(screen); break;
-        case 2 : commerce(screen, inv, &argent); break;
-
-      }
-      etat++;
-
-
-
-      printf("test2\n");
-
-
-      if(etat == 3){
-        etatProg = creationMap;
-      }
 
     } else if(etatProg == creationMap) {
 
-      do{
-        if(map != NULL) free(map);
-        caseCount = 1;
-        map = creerMap(type_expedition);
-        pathfinding(map);
-      }
-      while(!valeurPath(map) || valeurPath(map) < 5);
+      #include "code/map/mapCreation.c"
 
-      etatProg = UtilisationMap;
 
 
     } else if(etatProg == UtilisationMap) {
 
-      afficherMap(map, pSurface, screen);
-
-      SDL_Delay(5000);
-
-      etatProg = combat;
-
+      #include "code/map/mapUtilisation.c"
 
 
     } else if(etatProg == combat) {
 
 
-      //////////////////////////////////////FONCTIONS D'AFFICHAGE DES FPS, DU BACKGROUND////////////////////////////////////////////
+      #include "code/combat/combatUtilisation.c"
 
-
-      deb = SDL_GetTicks();
-
-      SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 255, 255, 255)); //on nettoye l'�cran en affichant un grand rectangle blanc
-
-
-      //////////////////////////////////////FONCTIONS ++&+ SUR CANAL+////////////////////////////////////////////
-
-
-
-      SDL_PumpEvents();
-      const Uint8 *state = SDL_GetKeyboardState(NULL);      //Vérification de quelles sont les touche qui sont enfoncé sur le clavier
-
-      for(int i = 0; i < 1000; i++) {
-
-        if(state[i]) {
-
-           clavier[i].enfonce = 1;
-
-         } else {
-
-           clavier[i].enfonce = 0;
-
-         }
-
-      }
-
-
-      //////////////////////////////////////FONCTIONS AUTOMATIQUE DURANT LE COMBAT////////////////////////////////////////////
-      mortalKombat();
-
-      afficherCombat();
-
-
-      gererTexte(camera);
-
-      gererEnnemis();
-
-      if(nbEnnemi == 0) {
-
-        victoire();
-
-        etatProg = UtilisationMap;
-
-      }
-
-
-      if(equipe[0]->PV <= 0 && equipe[1]->PV <= 0 && equipe[2]->PV <= 0) {
-
-        defaite();
-
-        etatProg = UtilisationMap;
-
-      }
-
-
-
-
-
-      SDL_UpdateWindowSurface(screen);
-
-      for(int i = 0; i < 1000; i++) {
-
-        if(state[i]) clavier[i].relache = 0;
-        else clavier[i].relache = 1;
-
-      }
-
-      if(clavier[SDL_SCANCODE_N].enfonce) quit = 1;
-
-      SDL_PollEvent(&event);
-
-      switch(event.type) {
-
-        case SDL_QUIT:
-          quit = 1;
-          break;
-
-      }
-
-      int delai;
-
-      fin = SDL_GetTicks();
-
-      printf("\nfps = %lld\n", (fpsCount++)*1000/SDL_GetTicks());
-
-      printf("fpsCount = %lld\n", fpsCount);
-
-      printf("fin = %lld\n", fin);
-
-      delai = ((1000/FPS)-(fin-deb));
-
-      do {
-
-        if(coop) {
-
-          pthread_mutex_lock(&mutex); /* On verrouille le mutex */
-
-          pthread_cond_signal(&condition); /* On délivre le signal : condition remplie */
-
-          pthread_mutex_unlock(&mutex); /* On déverrouille le mutex */
-
-        }
-
-        fin = SDL_GetTicks();
-
-        delai = ((1000/FPS)-(fin-deb));
-
-
-      } while(delai > 0);
-
-      system("clear");
 
     }
 
