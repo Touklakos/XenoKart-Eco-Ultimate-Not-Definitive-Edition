@@ -10,8 +10,6 @@
   \file perso.c
   \brief Fonctions qui incluent uniquement les personnages
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 Personnage* equipe[3];      //durant un combat l'équipe est composé de trois personnage

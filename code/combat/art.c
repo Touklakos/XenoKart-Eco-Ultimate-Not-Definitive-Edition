@@ -7,10 +7,8 @@
 
 /**
   \file art.c
-  \brief fonctions des ennemis
+  \brief fonctions des arts
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 Art *ArtJeu[3][8];
@@ -1007,8 +1005,8 @@ int initArt(Art *art, char fichier[50]) {
 
 /**
     \fn void afficherArt(int indicePersonnage)
-    \brief Cette fonction sert à afficher les icones des arts du personnage que l'on controle en bas de l'écran
-    \param indice du personnage dont-on affiche les arts
+    \brief Cette fonction sert à afficher (en bas de l'écran) les icones des arts du personnage que l'on controle
+    \param indice du personnage dont on affiche les arts
 */
 
 void afficherArt(int indicePersonnage) {

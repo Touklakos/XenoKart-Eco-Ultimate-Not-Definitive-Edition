@@ -89,6 +89,8 @@ int main(int argc, char** argv){
 
   indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
 
+  nbEnnemi = 0;
+
 
   srand(time(NULL));
 
@@ -134,6 +136,12 @@ int main(int argc, char** argv){
     } else if(etatProg == UtilisationMap) {
 
       #include "code/map/mapUtilisation.c"
+
+
+    } else if(etatProg == initialisationCombat) {
+
+
+      #include "code/combat/combatInit.c"
 
 
     } else if(etatProg == combat) {

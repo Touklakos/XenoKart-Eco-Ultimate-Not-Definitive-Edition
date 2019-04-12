@@ -12,10 +12,8 @@
 
 /**
   \file fonctionMain.c
-  \brief XenoKart Eco Plus
+  \brief fonction d'affichage et de comportement du progamme
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 char buffer[512];
@@ -111,7 +109,7 @@ void afficherHUD() {
 
 
 /**
-    \fn void afficherCurseur(int a, SDL_Surface* pSurface)
+    \fn void afficherCurseur(int a)
     \brief Affiche dans une fenetre le curseur qui indique l'art que l'on est en train de choisir
     \param a indice pour savoir ou se situe l'art
 */
@@ -137,7 +135,7 @@ void afficherCurseur(int a) {
 
 
 /**
-    \fn void SuiviCamera(SDL_Rect *camera, Personnage *perso, Ennemi *enn)
+    \fn void SuiviCameraCombat(SDL_Rect *camera, Personnage *perso, Ennemi *enn)
     \brief permet de mettre à jour les valeur de camera en fonction du personnage qu'on utilise et de l'ennemi qu'il cible
     \param camera le parametre à modifier
     \param perso personnage que l'on utilise
@@ -151,6 +149,13 @@ void SuiviCameraCombat(SDL_Rect *camera, Personnage *perso, Ennemi *enn) {
 
 }
 
+
+/**
+    \fn void SuiviCameraExploration(SDL_Rect *camera, Personnage *perso)
+    \brief permet de mettre à jour les valeur de camera en fonction du personnage qu'on utilise
+    \param camera le parametre à modifier
+    \param perso personnage que l'on utilise
+*/
 
 void SuiviCameraExploration(SDL_Rect *camera, Personnage *perso) {
 
@@ -375,19 +380,6 @@ void victoire() {
   SDL_FreeSurface(txt);
 
 
-/*
-  int nbNouvEnn = 1;
-
-
-  for(int i = 0; i < nbNouvEnn; i++) {
-
-    int temp = rand()%nbEnnemiPool;
-
-    ennemis[(*nbEnnemi)++] = ennPool[temp];
-
-  }
-
-*/
 }
 
 
@@ -422,19 +414,6 @@ void defaite() {
   SDL_FreeSurface(txt);
 
 
-/*
-  int nbNouvEnn = 1;
-
-
-  for(int i = 0; i < nbNouvEnn; i++) {
-
-    int temp = rand()%nbEnnemiPool;
-
-    ennemis[(*nbEnnemi)++] = ennPool[temp];
-
-  }
-
-*/
 }
 
 
@@ -456,11 +435,14 @@ int testTouche(doublet clavier) {
 }
 
 
-/*
-void fin(int sig){
-	printf("fin du serveur");
-}
+/**
+    \fn int hostname_to_ip(char * hostname , char* ip)
+    \brief cette fonction permet de transfomer un hostname en IP
+    \param hostname hostname dont on veut l'IP
+    \param ip ip de l'hostname à la fin de la fonction
+    \return si il a trouvé l'IP du hostname
 */
+
 int hostname_to_ip(char * hostname , char* ip)
 {
     struct hostent *he;
@@ -487,6 +469,12 @@ int hostname_to_ip(char * hostname , char* ip)
 }
 
 
+/**
+    \fn void view_ip()
+    \brief cette fonction permet d'afficher son IP
+*/
+
+
 void view_ip()
 {
   char s[256];
@@ -498,6 +486,12 @@ void view_ip()
           printf("IP : %s\n", inet_ntoa(**adr));
 }
 
+
+/**
+    \fn void quitter(int to_server_socket)
+    \brief cette fonction permet d'envoyer au seveur la fin de connexion
+    \param to_server_socket socket du serveur
+*/
 
 void quitter(int to_server_socket){
 	printf("[client] envoi message QUITTER au serveur\n");
@@ -1423,13 +1417,6 @@ void initJeu() {
   initEnnemi(&ennPool[nbEnnemiPool++], "./data/Dickson.txt");
 
 
-  ennemis[nbEnnemi] = ennPool[nbEnnemi];
-
-  nbEnnemi++;
-
-  ennemis[nbEnnemi] = ennPool[nbEnnemi];
-
-  nbEnnemi++;
 
 
   recupCibleEnn = 0;           //variable affect� a DELAI_CIBLE_ENN
@@ -1441,5 +1428,27 @@ void initJeu() {
   cible = 0;                  //indique quel personnage on cible avec un art de soutien
 
   recupCible = 0;             //variable qui permet de naviguer entre les cibles
+
+}
+
+
+
+
+
+/**
+    \fn void initCombat()
+    \brief cette fonction permet de remettre les parametres que l'on veut à la valeur que l'on veut au debut de chaque combat
+*/
+
+
+void initCombat() {
+
+  ennemis[nbEnnemi++] = ennPool[rand()%nbEnnemiPool];
+
+  for(int i = 0; i < 3; i++) {
+
+    equipe[i]->PV = equipe[i]->MAXPV;
+
+  }
 
 }

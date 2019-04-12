@@ -2,6 +2,14 @@
 #include "ennemi.h"
 
 
+
+/**
+  \file fonctionMain.h
+  \brief pimitives d'affichage et de comportement du progamme
+  \author Mano Brabant
+*/
+
+
 extern char buffer[512];
 
 extern int client_socket1, client_socket2, to_server_socket;
@@ -24,7 +32,6 @@ extern SDL_Surface * sol;
 extern pthread_cond_t condition; /* Création de la condition */
 
 extern pthread_mutex_t mutex; /* Création du mutex */
-
 
 
 void afficherCible(int cible);
@@ -57,3 +64,4 @@ void connexion();
 void afficherCombat();
 void freeAll();
 void initJeu();
+void initCombat();

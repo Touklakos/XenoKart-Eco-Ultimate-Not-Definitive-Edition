@@ -7,10 +7,8 @@
 
 /**
   \file degatsTxt.c
-  \brief texte des degats qui serront afficher à l'ecran
+  \brief fonctions textes qui seront affiché à l'ecran
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 
@@ -22,9 +20,9 @@ int nbDgtTxt = 0;               //nombre de texte de d�gats affich� � l'�
 
 
 /**
-    \fn void addDegatTxt(degatsTxt *texte, int dmg, int posX, int posY, int type) {
+    \fn void addDegatTxt(int dmg, int posX, int posY, int type) {
     \brief permet d'ajouter du texte à une certaine position sur l'écran
-    \param texte emplacement dans un tableau ou sont stockés tout les texte à afficher
+    \param dmg nombre à afficher
     \param posX position en X du texte à afficher
     \param posY position en Y du texte à afficher
     \param type permet de determiner la couleur du texte

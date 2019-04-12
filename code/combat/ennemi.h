@@ -22,9 +22,9 @@
 */
 
 /**
-    \struct Ennemi "Structure des ennemis"
+    \struct Ennemi
+    \brief Structure des ennemis
 */
-
 
 typedef struct {
 

@@ -109,5 +109,5 @@ void pathfinding(map_t *);
 int valeurPath(map_t *);
 void afficherMapMieux(map_t * map, SDL_Rect camera, SDL_Surface* pSurface);
 void afficher_perso_map(SDL_Surface * perso, int x, int y, SDL_Rect camera, SDL_Window* screen);
-void centrage(SDL_Rect * camera, case_t map[N][M]);
+case_t centrage(SDL_Rect * camera, case_t map[N][M]);
 void deplacement(SDL_Event e, SDL_Rect * camera, int mouseX, int mouseY, case_t map[N][M], case_t * pos);

@@ -15,10 +15,8 @@ doublet clavier[1000];
 
 /**
   \file deplacement.c
-  \brief XenoKart Eco Plus
+  \brief fonction d'interpretation des entrées claviers
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 /**

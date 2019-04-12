@@ -15,10 +15,8 @@
 
 /**
   \file incroyable.c
-  \brief XenoKart Eco Plus
+  \brief test du systeme de combat
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 

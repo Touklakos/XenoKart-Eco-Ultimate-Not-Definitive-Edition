@@ -22,9 +22,11 @@ LOBBY=${CODE}/lobby/
 
 LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm -lpthread
 INCS=-I${SDL_INC_DIR}
-PROG=incroyable menu lobby map rentacleTape shishi
+PROG=incroyable menu lobby map rentacleTape shishi izi
 
-all: sdl_text menu lobby map shishi rentacleTape clean
+izi: sdl_text menu lobby map shishi rentacleTape clean
+
+all : iziAll clean
 
 sdl_text: ${COMBAT}incroyable.c
 	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
@@ -39,7 +41,7 @@ sdl_text: ${COMBAT}incroyable.c
 	${CC} -o incroyable incroyable.o art.o perso.o deplacement.o ennemi.o degatsTxt.o fonction.o ${LIBS} ${INCS} ${FLAGS}
 	${CC} -o lobby lobby.o fonctions.o perso.o degatsTxt.o ${LIBS} ${INCS} ${FLAGS}
 
-izi: izi.c clean
+iziAll: izi.c
 		${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c ${LOBBY}lobby.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c ${LOBBY}fonctions.c ${LIBS} ${INCS} ${FLAGS}

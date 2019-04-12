@@ -86,8 +86,8 @@ void afficher_perso_map(SDL_Surface * perso, int x, int y, SDL_Rect camera, SDL_
   \param map matrice de case symbolisant la carte
 */
 
-void centrage(SDL_Rect * camera, case_t map[N][M]){
-  int dist, min = 30000, i, j, nx, ny, test;
+case_t centrage(SDL_Rect * camera, case_t map[N][M]){
+  int dist, min = 30000, i, j, nx, ny, test, indiceI, indiceJ;
   for(i = 0; i<N; i++){
     for(j = 0; j<M; j++){
       if(map[i][j].val){
@@ -101,12 +101,15 @@ void centrage(SDL_Rect * camera, case_t map[N][M]){
           min = dist;
           nx = map[i][j].coord.x*(HEX_WIDTH + HEX_WIDTH/2)/2+ HEX_WIDTH/2;
           ny = map[i][j].coord.y*HEX_HEIGHT/2 + HEX_HEIGHT/2;
+          indiceI = i;
+          indiceJ = j;
         }
       }
     }
   }
   (*camera).x = nx;
   (*camera).y = ny;
+  return map[indiceI][indiceJ];
 }
 
 void jugement(case_t map[N][M]){
@@ -144,10 +147,8 @@ void deplacement(SDL_Event e, SDL_Rect * camera, int mouseX, int mouseY, case_t 
         case SDL_BUTTON_LEFT:
             camera->x = mouseX - camera->w + camera->x;
             camera->y = mouseY - camera->h + camera->y;
-            centrage(camera, map);
+            *pos = centrage(camera, map);
 
-            pos->coord.x = camera->x;
-            pos->coord.y = camera->y;
           break;
       }
       break;

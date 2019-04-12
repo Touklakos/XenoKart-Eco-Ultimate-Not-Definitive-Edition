@@ -7,16 +7,15 @@
 
 /**
   \file art.h
-  \brief fonctions des ennemis
+  \brief structure et primitives des arts
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 /*Structure des arts (attaque sp�ciales des personnages)*/
 
 /**
-    \struct Art "Structure des arts (attaque sp�ciales des personnages)"
+    \struct Art
+    \brief Structure des arts (attaque spéciales des personnages)
 */
 
 typedef struct {

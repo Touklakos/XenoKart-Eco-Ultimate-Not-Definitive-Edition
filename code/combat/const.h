@@ -1,4 +1,12 @@
 
+
+/**
+  \file const.h
+  \brief definition des constantes du programme
+  \author Mano Brabant
+*/
+
+
 #define ANCOURSE 20000
 #define VITDPL 4
 #define DELAI_CIBLE 5

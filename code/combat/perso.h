@@ -3,7 +3,15 @@
 
 
 /**
-    \struct Personnage "Structure des personnages"
+  \file perso.h
+  \brief Structure des personnages
+  \author Mano Brabant
+*/
+
+
+/**
+    \struct Personnage
+    \brief Structure des personnages
 */
 
 typedef struct {

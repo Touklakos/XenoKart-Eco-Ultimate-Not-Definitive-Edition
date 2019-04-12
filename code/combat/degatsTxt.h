@@ -1,10 +1,17 @@
 
 #include "enum.h"
 
+/**
+  \file degatsTxt.h
+  \brief primitive et structure textes qui seront affiché à l'ecran
+  \author Mano Brabant
+*/
+
 
 
 /**
-    \struct degatsTxt "Texte qui s'affichera au dessus des ennemis et des personnage indicant le nombre de dégats reçu"
+    \struct degatsTxt
+    \brief Texte qui s'affichera au dessus des ennemis et des personnage indiquant le nombre de dégats reçu
 */
 
 typedef struct {

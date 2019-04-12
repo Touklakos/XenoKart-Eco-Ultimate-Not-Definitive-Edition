@@ -4,10 +4,8 @@
 
 /**
   \file fonction.c
-  \brief boite à outils
+  \brief fonction boite à outils
   \author Mano Brabant
-  \version 0.01
-  \date 13 fevrier 2019
 */
 
 /**

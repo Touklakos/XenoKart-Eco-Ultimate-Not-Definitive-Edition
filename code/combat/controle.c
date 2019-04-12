@@ -2,10 +2,8 @@
 
 /**
   \file controle.c
-  \brief ca marche pas
+  \brief fonction de test de controle du jeu à l'aide d'une manette (ne fonctionne pas)
   \author Mano Brabant
-  \version -1.01
-  \date 13 fevrier 2019
 */
 
 
@@ -13,7 +11,7 @@
 
 /**
     \fn void controlleManette(Personnage *equipe[], int *indicePersonnage, int *positionCurseur, int *recupCurseur, int *relacheA, int *relacheGachetteDroite, int *relacheGachetteGauche)
-    \brief manette ça marche pas 
+    \brief manette ça marche pas
 */
 
 void controlleManette(Personnage *equipe[], int *indicePersonnage, int *positionCurseur, int *recupCurseur, int *relacheA, int *relacheGachetteDroite, int *relacheGachetteGauche) {

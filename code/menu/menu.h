@@ -15,7 +15,7 @@
   \brief Une énumération pour l'état du programme
 */
 
-typedef enum {menu, connecte, lobby, creationMap, UtilisationMap, combat} eEtatProg;
+typedef enum {menu, connecte, lobby, creationMap, UtilisationMap, initialisationCombat, combat} eEtatProg;
 
 extern long long unsigned fpsCount;
 extern long long unsigned fin;

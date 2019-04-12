@@ -1,56 +1,64 @@
+
 /**
-    \enum eType 
-    \brief Enumeration des types d'art(physique, magique)
+  \file enum.h
+  \brief enumeration du programme
+  \author Mano Brabant
+*/
+
+
+
+
+/**
+    \enum eType
+    \brief Enumeration des types d'art
 */
 typedef enum {physique, ether} eType;
 
 
 /**
-    \enum eBut 
-    \brief Enumeration des but des arts (attaque, soutien)
+    \enum eBut
+    \brief Enumeration des but des arts
 */
 typedef enum {attaque, soutien} eBut;
 
 
 /**
-    \enum eCible 
-    \brief Enumeration des cibles possible pour un art de soutien (soiMeme, allie, membreGroupe, groupe)
+    \enum eCible
+    \brief Enumeration des cibles possible pour un art de soutien
 */
 typedef enum {soiMeme, allie, membreGroupe, groupe} eCible;
 
 
 /**
-    \enum eOrientationAbsolue 
+    \enum eOrientationAbsolue
     \brief Enumeration des orientations absolue des personnages et des ennemis
 */
 typedef enum {haut, droite, bas, gauche} eOrientationAbsolue;
 
 
 /**
-    \enum eOrientationRelative 
+    \enum eOrientationRelative
     \brief Enumeration des orientations relatives des personnages par rapport aux ennemis
 */
 typedef enum {devant, droiteR, derriere, gaucheR} eOrientationRelative;
 
 
 /**
-    \enum eBuff 
+    \enum eBuff
     \brief Enumeration des differentes statistique modifiables durant le combat
 */
 typedef enum {MAXPV, FRC, MGE, ATTMIN, ATTMAX, VITATT, CRIT, CNTR, DBLATT, GARDE, DEFPHY, DEFMGE, AGI, DEXT, PRTAUTO} eBuff;
 
 
 /**
-    \enum eEtat 
-    \brief Enumeration des etats (empoissoné, gelé, brulé)
+    \enum eEtat
+    \brief Enumeration des etats
 */
 typedef enum {fournaise, frisson, poison} eEtat;
 
 
 /**
-    \enum eCoup 
+    \enum eCoup
     \brief Enumeration des type de coup
 */
 typedef enum {normalC, critiqueC, esquiveC, gardeC, soinC, fournaiseC, frissonC, poisonC} eCoup;
-
-

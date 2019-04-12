@@ -1,7 +1,16 @@
 #include "perso.h"
 
+
 /**
-    \struct doublet "Structure pour le clavier"
+  \file deplacement.h
+  \brief primitive d'interpretation des entrées claviers et structure pour le clavier
+  \author Mano Brabant
+*/
+
+
+/**
+    \struct doublet
+    \brief Structure pour le clavier
 */
 typedef struct {
 
