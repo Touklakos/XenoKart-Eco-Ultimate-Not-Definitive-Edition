@@ -121,6 +121,7 @@ int main(int argc, char** argv){
 
       #include "code/combat/connexion.c"
 
+
     } else if(etatProg == lobby) {
 
       #include "code/lobby/lobbyUtilisation.c"
@@ -138,12 +139,10 @@ int main(int argc, char** argv){
 
     } else if(etatProg == initialisationCombat) {
 
-
       #include "code/combat/combatInit.c"
 
 
     } else if(etatProg == combat) {
-
 
       #include "code/combat/combatUtilisation.c"
 
@@ -165,7 +164,6 @@ int main(int argc, char** argv){
   SDL_FreeSurface(guts.image);
 
   free(map);
-  free(pos);
 
   TTF_CloseFont(police);
 

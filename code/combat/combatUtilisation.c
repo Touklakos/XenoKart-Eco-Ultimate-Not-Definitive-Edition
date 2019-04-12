@@ -45,6 +45,9 @@
 
         if(pos->subtype == ENNEMI) pos->subtype = BASE;
 
+        camera.x = pos->coord.x*(HEX_WIDTH - HEX_WIDTH/4-0.5)+HEX_WIDTH/2;
+        camera.y = pos->coord.y*(HEX_HEIGHT - HEX_HEIGHT/2)+HEX_HEIGHT/2;
+
         etatProg = UtilisationMap;
 
       }
