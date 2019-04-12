@@ -1,0 +1,2 @@
+initCombat();
+etatProg = combat;
