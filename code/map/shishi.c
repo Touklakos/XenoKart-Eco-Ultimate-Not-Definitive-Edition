@@ -16,6 +16,8 @@ int main(int argc, char** argv){
 
   SDL_Window* screen = SDL_CreateWindow("Map - XenoKart ECO PLUS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
 
+  SDL_Rect camera = {0,0,0,0};
+
   SDL_Surface* pSurface = NULL;
   pSurface = SDL_GetWindowSurface(screen);
 
@@ -35,7 +37,7 @@ int main(int argc, char** argv){
   afficher_path(map->v);
   //afficher_typecase(map->v);
   printf("pathfinding = %i\n", valeurPath(map));
-  afficherMap(map, pSurface, screen);
+  afficherMap(map, pSurface, camera);
 
   while(!quit){
 

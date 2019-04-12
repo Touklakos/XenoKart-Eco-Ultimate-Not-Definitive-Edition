@@ -181,7 +181,8 @@ case_t creerCase(int x, int y, map_t * map){
   hexcase.coord.y = y;
 
   hexcase.type = choixType(hexcase, map);
-  hexcase.subtype = BASE;
+	if(rand()%10 != 0) hexcase.subtype = BASE;
+	else hexcase.subtype = ENNEMI;
 
   caseCount++;
 
@@ -245,7 +246,7 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Rect camera){
 
   SDL_Rect test = {0,0,HEX_WIDTH,HEX_HEIGHT};
   SDL_Surface * img[13];
-	SDL_Surface * imgsubtype[3];
+	SDL_Surface * imgsubtype[4];
 
 	img[0] = IMG_Load("code/map/hex/hex_volcan.png");
 	img[1] = IMG_Load("code/map/hex/hex_montagne.png");
@@ -263,8 +264,9 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Rect camera){
 
 
 	imgsubtype[0] = NULL;
-	imgsubtype[1] = IMG_Load("code/map/hex/spawn.png");
-	imgsubtype[2] = IMG_Load("code/map/hex/end.png");
+	imgsubtype[1] = IMG_Load("data/Couteau.bmp");
+	imgsubtype[2] = IMG_Load("code/map/hex/spawn.png");
+	imgsubtype[3] = IMG_Load("code/map/hex/end.png");
 
 
   for(int i = 0; i < MAP_HEIGHT; i++){
@@ -358,7 +360,7 @@ void genererDepArr(map_t * map){
 	int varand;
 	case_t hexcase;
 
-  map->v[0][0].subtype = 1;
+  map->v[0][0].subtype = SPAWN;
 
 	do{
 		varand = rand()%NB_CASE;
@@ -366,7 +368,7 @@ void genererDepArr(map_t * map){
 		hexcase = chercherCase(map->v,varand);
 		printf("hexcase x : %i \n",hexcase.coord.x);
 		printf("hexcase y : %i \n",hexcase.coord.y);
-		map->v[hexcase.coord.x][hexcase.coord.y].subtype = 2;
+		map->v[hexcase.coord.x][hexcase.coord.y].subtype = FIN;
 	}while(hexcase.type == OCEAN);
 }
 

@@ -76,10 +76,11 @@ int main(int argc, char** argv){
   perso = IMG_Load("./data/miniGuts.png");
   Personnage guts;
   initPersonnage(&guts, "./data/Guts.txt");
-  case_t pos;
-  pos.coord.x = 25; pos.coord.y = 25;
-  camera.x = pos.coord.x;
-  camera.y = pos.coord.y;
+  case_t *pos;
+  pos = malloc(sizeof(pos));
+  pos->coord.x = 25; pos->coord.y = 25;
+  camera.x = pos->coord.x;
+  camera.y = pos->coord.y;
   camera.w = SCREEN_WIDTH/2;
   camera.h = SCREEN_HEIGHT/2;
 

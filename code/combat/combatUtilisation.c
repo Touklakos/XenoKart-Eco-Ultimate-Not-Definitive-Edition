@@ -43,6 +43,8 @@
 
         victoire();
 
+        if(pos->subtype == ENNEMI) pos->subtype = BASE;
+
         etatProg = UtilisationMap;
 
       }

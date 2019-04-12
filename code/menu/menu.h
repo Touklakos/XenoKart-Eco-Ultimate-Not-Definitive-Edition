@@ -8,8 +8,6 @@
   \author Benjamin Riviere
 */
 
-#define N 4
-
 /**
   \enum eEtatProg
   \brief Une énumération pour l'état du programme
