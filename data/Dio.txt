@@ -1,4 +1,4 @@
-./data/Guts.png
+./data/Dio.png
 NV : 9;
 EXP : 50;
 MAXPV : 500;

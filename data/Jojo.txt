@@ -1,4 +1,4 @@
-./data/Guts.png
+./data/Jojo.png
 NV : 8;
 EXP : 50;
 MAXPV : 200;
