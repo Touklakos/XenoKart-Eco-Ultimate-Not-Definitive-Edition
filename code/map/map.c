@@ -287,7 +287,7 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Rect camera){
 
 	}
 
-	for(int i = 0; i < 3; i++) {
+	for(int i = 0; i < 4; i++) {
 
 		SDL_FreeSurface(imgsubtype[i]);
 

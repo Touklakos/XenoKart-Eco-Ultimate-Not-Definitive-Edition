@@ -14,7 +14,6 @@
 #define DELAI_CIBLE_ENN 5
 
 //#define SERVEURNAME "192.168.1.106" // adresse IP de mon serveur
-#define SERVEURNAME "127.0.0.1"  // adresse IP de mon serveur
 
 #define QUITTER "QUITTER"
 

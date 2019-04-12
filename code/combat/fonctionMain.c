@@ -8,6 +8,7 @@
 #include <SDL2/SDL_image.h>
 
 #include "fonctionMain.h"
+#include "../menu/menu.h"
 
 
 /**
@@ -21,6 +22,8 @@ char buffer[512];
 int client_socket1, client_socket2, to_server_socket;
 int coop;
 int serveur;
+
+char SERVEURNAME[16] = "127.0.0.1";
 
 
 int recupCurseur;           //variable affect� a DELAI_CURSEUR
@@ -1448,6 +1451,12 @@ void initCombat() {
   for(int i = 0; i < 3; i++) {
 
     equipe[i]->PV = equipe[i]->MAXPV;
+
+    for(int j = 0; j < 8; j++) {
+
+      ArtJeu[i][j]->recup = 0;
+
+    }
 
   }
 

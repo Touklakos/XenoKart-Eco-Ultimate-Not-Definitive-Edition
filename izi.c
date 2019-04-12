@@ -112,8 +112,6 @@ int main(int argc, char** argv){
 
   while(!quit){
 
-    fprintf(stderr, "etatProg : %d\n", etatProg);
-
     if(etatProg == menu) {
 
       #include "code/menu/menuUtilisation.c"
@@ -131,7 +129,6 @@ int main(int argc, char** argv){
     } else if(etatProg == creationMap) {
 
       #include "code/map/mapCreation.c"
-
 
 
     } else if(etatProg == UtilisationMap) {
@@ -163,6 +160,12 @@ int main(int argc, char** argv){
   SDL_FreeSurface(tab[1].txt);
   SDL_FreeSurface(tab[2].txt);
   SDL_FreeSurface(tab[3].txt);
+  SDL_FreeSurface(perso);
+
+  SDL_FreeSurface(guts.image);
+
+  free(map);
+  free(pos);
 
   TTF_CloseFont(police);
 

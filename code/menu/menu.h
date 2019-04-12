@@ -22,6 +22,7 @@ extern int quit;
 
 extern int coop;
 extern int serveur;
+extern char SERVEURNAME[16];
 
 extern eEtatProg etatProg;
 
