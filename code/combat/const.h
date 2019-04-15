@@ -25,8 +25,8 @@
 #define BUTTON_WIDTH 250
 #define DEC 30
 
-#define HEX_HEIGHT 50
-#define HEX_WIDTH 50
+#define HEX_HEIGHT 47
+#define HEX_WIDTH 48
 
 #define MAP_HEIGHT 50
 #define MAP_WIDTH 50
