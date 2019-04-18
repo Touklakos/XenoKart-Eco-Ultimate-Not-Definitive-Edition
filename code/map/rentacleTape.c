@@ -87,7 +87,7 @@ void afficher_perso_map(SDL_Surface * perso, int x, int y, SDL_Rect camera, SDL_
 */
 
 case_t * centrage(SDL_Rect * camera, case_t map[N][M]){
-  int dist, min = 30000, i, j, nx, ny, test, indiceI, indiceJ;
+  int dist, min = 30000, i, j, nx, ny, indiceI, indiceJ;
   for(i = 0; i<N; i++){
     for(j = 0; j<M; j++){
       if(map[i][j].val){

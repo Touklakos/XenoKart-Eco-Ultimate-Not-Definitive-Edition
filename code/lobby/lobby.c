@@ -36,16 +36,16 @@ int main(){
 
     //////Initailisation de la police d'écriture//////
 
-    /*TTF_Font *police = NULL;
+    //TTF_Font *police = NULL;
 
-    police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);*/
+    //police = TTF_OpenFont("./data/DejaVuSans.ttf", 30);
 //fenetre
-/****
+
   SDL_Event event;
   int quit = 0;
 
-  long long unsigned debut;/*, fin , fpsCount = 0;*/
-/****
+  long long unsigned debut;, fin , fpsCount = 0;
+
   SDL_Surface* pSurface = NULL;
 
   pSurface = SDL_GetWindowSurface(screen);
@@ -67,7 +67,7 @@ int main(){
   t_objet inv[nbObjets];
   load_inv(inv);
   //Personnage * equipe[4];
-  /*SDL_Rect dest;
+  SDL_Rect dest;
   dest.x = 100;
   dest.y = 100;
 
@@ -119,7 +119,6 @@ printf("test2\n");
     //SDL_UpdateWindowSurface(screen);
 
 
-/*
 ///fps
     switch(event.type) {
 
