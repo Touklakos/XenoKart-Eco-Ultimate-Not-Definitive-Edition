@@ -1,0 +1,48 @@
+digraph "code/combat/fonctionMain.h"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node0 [label="code/combat/fonctionMain.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node0 -> Node1 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 [label="ennemi.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$ennemi_8h.html",tooltip="primitive des ennemis "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="sys/types.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="sys/socket.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="netinet/in.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="arpa/inet.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="netdb.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="signal.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node8 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="unistd.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node9 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="errno.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node10 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="pthread.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node11 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="deplacement.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$deplacement_8h.html",tooltip="primitive d&#39;interpretation des entrées claviers et structure pour le clavier "];
+  Node11 -> Node12 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="perso.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$perso_8h.html",tooltip="Structure des personnages. "];
+  Node12 -> Node13 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="art.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$art_8h.html",tooltip="structure et primitives des arts "];
+  Node13 -> Node14 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="modif.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$modif_8h.html",tooltip="Structure qui permet de sauvegarder les valeurs de modifications des stats (valeur) pendant un certai..."];
+  Node13 -> Node15 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="etat.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$etat_8h.html",tooltip="structure des etats (empoissoné, gelé, brulé) "];
+  Node13 -> Node16 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 [label="const.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$const_8h.html",tooltip="definition des constantes du programme "];
+  Node13 -> Node17 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node17 [label="fonction.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fonction_8h.html",tooltip="primitive boite à outils "];
+  Node17 -> Node18 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 [label="math.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node13 -> Node19 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node19 [label="degatsTxt.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$degats_txt_8h.html",tooltip="primitive et structure textes qui seront affiché à l&#39;ecran "];
+  Node19 -> Node20 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node20 [label="enum.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$enum_8h.html",tooltip="enumeration du programme "];
+  Node13 -> Node21 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node21 [label="stdarg.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+}

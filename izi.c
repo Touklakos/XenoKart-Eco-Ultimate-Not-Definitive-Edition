@@ -97,7 +97,6 @@ int main(int argc, char** argv){
   int nouvelleEtat;
   nouvelleEtat = etatProg;
 
-
   while(!quit){
     nouvelleEtat = etatProg;
     if(etatProg == menu){
