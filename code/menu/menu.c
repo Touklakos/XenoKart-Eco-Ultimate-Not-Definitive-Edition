@@ -46,12 +46,44 @@ void fonctionQuitter(){
 void fonctionFin(){
   fin = SDL_GetTicks();
 
-  printf("\nfps = %lld\n", (fpsCount++)*1000/SDL_GetTicks());
+  printf("\nfps = %lld\n", (fpsCount++)*1000/fin);
   printf("fin = %lld\n", fin/1000);
   int delai = ((1000/FPS)-(fin-deb));
 
   if(delai > 0){
     SDL_Delay(delai);
+  }
+}
+
+/**
+    \fn void fondu(SDL_Surface* pSurface, SDL_Window* screen)
+    \brief Cette fonction affiche un fondu
+    \param pSurface Surface sur laquel on affiche
+    \param screen Ecran sur lequel on affiche
+*/
+
+void fondu(SDL_Surface* pSurface, SDL_Window* screen){
+  fprintf(stderr, "fondu\n");
+  SDL_Rect rect;
+  rect.x = 0;
+  rect.y=0;
+  rect.w = SCREEN_WIDTH;
+  rect.h = SCREEN_HEIGHT;
+
+  for(int i = 0; i < 255; i+=5){
+    fprintf(stderr, "i = %i\n",i);
+    SDL_FillRect(pSurface, &rect, SDL_MapRGBA(pSurface->format,i,i,i,i));
+    SDL_UpdateWindowSurface(screen);
+    fonctionQuitter();
+    SDL_Delay(2);
+  }
+
+  for(int i = 255; i > 0; i-=5){
+    fprintf(stderr, "i = %i\n",i);
+    SDL_FillRect(pSurface, &rect, SDL_MapRGBA(pSurface->format,i,i,i,i));
+    SDL_UpdateWindowSurface(screen);
+    fonctionQuitter();
+    SDL_Delay(2);
   }
 }
 
@@ -68,8 +100,14 @@ void fonctionFin(){
 void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   SDL_Rect rect;
+  SDL_Rect dest;
+  dest.x=0;
+  dest.y=0;
+  SDL_Surface * img;
+  img = IMG_Load("code/menu/logomenu2.jpg");
+  SDL_BlitSurface(img, NULL, pSurface, &dest);
+  SDL_FreeSurface(img);
 
-  SDL_FillRect(pSurface, NULL, SDL_MapRGB(pSurface->format, 0, 0, 0));
 
   for(int i = 1; i < tTab; i++){
       SDL_FillRect(pSurface, &tab[i].rec, SDL_MapRGB(pSurface->format, 255, 255, 255));
@@ -102,16 +140,16 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   int tailletab = 3;
 
-  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'écran afin de les centrés
-  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'écran afin de les centrés
+  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
 
   affichage tab[tailletab];
   tab[0].rec = choix;
   tab[1].rec = charger;
-  tab[1].txt = TTF_RenderText_Solid(police, "LOAD SAVE", noir);
+  tab[1].txt = TTF_RenderText_Solid(police, "CHARGER JEU", noir);
   tab[2].rec = nouveau;
-  tab[2].txt = TTF_RenderText_Solid(police, "NEW SAVE", noir);
+  tab[2].txt = TTF_RenderText_Solid(police, "NOUVEAU JEU", noir);
 
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -130,7 +168,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
         if(nbChoix == 2) nbChoix = 0;
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
+        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2);
         afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
@@ -138,7 +176,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
         nbChoix--;
         if(nbChoix == -1) nbChoix = 1;
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
+        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2);
         afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
@@ -151,6 +189,7 @@ void fonctionJeu(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       }
 
       if(state[SDL_SCANCODE_BACKSPACE] || state[SDL_SCANCODE_ESCAPE]){
+        SDL_Delay(DELAY_ESCAPE);
         return;
       }
 
@@ -177,16 +216,16 @@ void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
 
   int tailletab = 3;
 
-  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
-  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
+  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
 
   affichage tab[tailletab];
   tab[0].rec = choix;
   tab[1].rec = charger;
-  tab[1].txt = TTF_RenderText_Solid(police, "coop", noir);
+  tab[1].txt = TTF_RenderText_Solid(police, "COOP", noir);
   tab[2].rec = nouveau;
-  tab[2].txt = TTF_RenderText_Solid(police, "solo", noir);
+  tab[2].txt = TTF_RenderText_Solid(police, "SOLO", noir);
 
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -205,7 +244,7 @@ void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
       if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
         if(nbChoix == 2) nbChoix = 0;
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
+        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2);
         afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
@@ -213,7 +252,7 @@ void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
       if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
         nbChoix--;
         if(nbChoix == -1) nbChoix = 1;
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
+        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2);
         afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
@@ -227,6 +266,7 @@ void fonctionOption(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police)
       }
 
       if(state[SDL_SCANCODE_BACKSPACE] || state[SDL_SCANCODE_ESCAPE]){
+        SDL_Delay(DELAY_ESCAPE);
         return;
       }
 
@@ -254,16 +294,16 @@ void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
 
   int tailletab = 3;
 
-  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
-  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect nouveau = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
+  SDL_Rect charger = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
 
   affichage tab[tailletab];
   tab[0].rec = choix;
   tab[1].rec = charger;
-  tab[1].txt = TTF_RenderText_Solid(police, "serveur", noir);
+  tab[1].txt = TTF_RenderText_Solid(police, "SERVEUR", noir);
   tab[2].rec = nouveau;
-  tab[2].txt = TTF_RenderText_Solid(police, "client", noir);
+  tab[2].txt = TTF_RenderText_Solid(police, "CLIENT", noir);
 
   const Uint8 *state = SDL_GetKeyboardState(NULL);
 
@@ -282,7 +322,7 @@ void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       if(state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]){
         nbChoix++;
         if(nbChoix == 2) nbChoix = 0;
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
+        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2);
         afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
@@ -290,7 +330,7 @@ void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       if(state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]){
         nbChoix--;
         if(nbChoix == -1) nbChoix = 1;
-        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2);
+        tab[0].rec.y = nbChoix*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2);
         afficher(tab, tailletab, pSurface, screen, police);
         recupCurs = DELAI_CURSEUR;
       }
@@ -304,6 +344,7 @@ void fonctionCoop(SDL_Surface* pSurface, SDL_Window* screen, TTF_Font *police){
       }
 
       if(state[SDL_SCANCODE_BACKSPACE] || state[SDL_SCANCODE_ESCAPE]){
+        SDL_Delay(DELAY_ESCAPE);
         return;
       }
 

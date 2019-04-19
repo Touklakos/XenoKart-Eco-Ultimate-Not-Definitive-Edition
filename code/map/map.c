@@ -262,12 +262,10 @@ void afficherMap(map_t * map, SDL_Surface* pSurface, SDL_Rect camera){
 	img[11] = IMG_Load("code/map/hex/hex_archipel.png");
 	img[12] = IMG_Load("code/map/hex/hex.png");
 
-
 	imgsubtype[0] = NULL;
-	imgsubtype[1] = IMG_Load("data/Couteau.bmp");
+	imgsubtype[1] = IMG_Load("code/map/hex/ennemi.png");
 	imgsubtype[2] = IMG_Load("code/map/hex/spawn.png");
 	imgsubtype[3] = IMG_Load("code/map/hex/end.png");
-
 
   for(int i = 0; i < MAP_HEIGHT; i++){
     for(int j = 0; j < MAP_WIDTH; j++){

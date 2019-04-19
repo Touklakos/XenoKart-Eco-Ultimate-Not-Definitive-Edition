@@ -1,0 +1,27 @@
+digraph "code/combat/perso.h"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node10 [label="code/combat/perso.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node10 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="code/combat/deplacement.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$deplacement_8h.html",tooltip="primitive d&#39;interpretation des entrées claviers et structure pour le clavier "];
+  Node11 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="code/combat/ennemi.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$ennemi_8h.html",tooltip="primitive des ennemis "];
+  Node12 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="code/combat/controle.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$controle_8h.html",tooltip="primitive de test de controle du jeu à l&#39;aide d&#39;une manette (ne fonctionne pas) "];
+  Node13 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="code/combat/controle.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$controle_8c.html",tooltip="fonction de test de controle du jeu à l&#39;aide d&#39;une manette (ne fonctionne pas) "];
+  Node12 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="code/combat/ennemi.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$ennemi_8c.html",tooltip="fonctions des ennemis "];
+  Node12 -> Node16 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node16 [label="code/combat/fonctionMain.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fonction_main_8h.html",tooltip="pimitives d&#39;affichage et de comportement du progamme "];
+  Node16 -> Node17 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node17 [label="code/combat/fonctionMain.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fonction_main_8c.html",tooltip="fonction d&#39;affichage et de comportement du progamme "];
+  Node17 -> Node18 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node18 [label="code/combat/incroyable.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$incroyable_8c.html",tooltip="test du systeme de combat "];
+  Node12 -> Node18 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 -> Node19 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node19 [label="code/combat/deplacement.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$deplacement_8c.html",tooltip="fonction d&#39;interpretation des entrées claviers "];
+  Node10 -> Node20 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node20 [label="code/combat/perso.c",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$perso_8c.html",tooltip="Fonctions qui incluent uniquement les personnages. "];
+}

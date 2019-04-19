@@ -1,16 +1,9 @@
-
 CC=gcc
 
 FLAGS =-Wall -g
 
-SDL_DIR_UNIX=${HOME}/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
-SDL_DIR_MAC=${HOME}/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2_mac
-
-SDL_DIR=$(SDL_DIR_UNIX)
-
-
+SDL_DIR=${HOME}/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
 SDL_LIB_DIR=${SDL_DIR}/lib
-
 SDL_INC_DIR=${SDL_DIR}/include
 
 CODE=code/
@@ -22,55 +15,35 @@ LOBBY=${CODE}/lobby/
 
 LIBS=-L${SDL_LIB_DIR} -lSDL2 -lSDL2_image -lSDL2_ttf -lm -lpthread
 INCS=-I${SDL_INC_DIR}
-PROG=incroyable menu lobby map rentacleTape shishi izi
-
-izi: sdl_text menu lobby map shishi rentacleTape clean
+PROG=izi
 
 all : iziAll clean
 
-sdl_text: ${COMBAT}incroyable.c
-	${CC} -c ${COMBAT}incroyable.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}ennemi.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}art.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}deplacement.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}degatsTxt.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${COMBAT}fonction.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${LOBBY}lobby.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -c ${LOBBY}fonctions.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o incroyable incroyable.o art.o perso.o deplacement.o ennemi.o degatsTxt.o fonction.o ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o lobby lobby.o fonctions.o perso.o degatsTxt.o ${LIBS} ${INCS} ${FLAGS}
-
-iziAll: izi.c
-		${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${LOBBY}lobby.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${LOBBY}fonctions.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${COMBAT}ennemi.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${COMBAT}art.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${COMBAT}deplacement.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${COMBAT}fonction.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${COMBAT}degatsTxt.c ${LIBS} ${INCS} ${FLAGS}
+iziAll: izi.c menu map gestionMap lobby combat
 		${CC} -c ${COMBAT}fonctionMain.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${MAP}rentacleTape.c ${LIBS} ${INCS} ${FLAGS}
-		${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -c izi.c ${LIBS} ${INCS} ${FLAGS}
 		${CC} -o izi izi.o menu.o lobby.o fonctions.o ennemi.o art.o deplacement.o fonction.o perso.o degatsTxt.o map.o fonctionMain.o rentacleTape.o ${LIBS} ${INCS} ${FLAGS}
 
+combat:
+		${CC} -c ${COMBAT}ennemi.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}perso.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}art.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}deplacement.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}degatsTxt.c ${LIBS} ${INCS} ${FLAGS}
+		${CC} -c ${COMBAT}fonction.c ${LIBS} ${INCS} ${FLAGS}
+
 menu: ${MENU}menu.c
 	${CC} -c ${MENU}menu.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o menu menu.o ${LIBS} ${INCS} ${FLAGS}
 
 map: ${MAP}map.c
 	${CC} -c ${MAP}map.c ${LIBS} ${INCS} ${FLAGS}
 
-shishi: ${MAP}shishi.c map
-	${CC} -c ${MAP}shishi.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o shishi map.o shishi.o ${LIBS} ${INCS} ${FLAGS}
-
-rentacleTape : ${MAP}rentacleTape.c map
+gestionMap : ${MAP}rentacleTape.c map
 	${CC} -c ${MAP}rentacleTape.c ${LIBS} ${INCS} ${FLAGS}
-	${CC} -o rentacleTape rentacleTape.o fonctions.o fonction.o perso.o map.o ${LIBS} ${INCS} ${FLAGS}
+
+lobby : ${LOBBY}lobby.c
+	${CC} -c ${LOBBY}lobby.c ${LIBS} ${INCS} ${FLAGS}
+	${CC} -c ${LOBBY}fonctions.c ${LIBS} ${INCS} ${FLAGS}
 
 clean:
 	rm -f *.o

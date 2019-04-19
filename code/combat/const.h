@@ -1,11 +1,8 @@
-
-
 /**
   \file const.h
   \brief definition des constantes du programme
   \author Mano Brabant
 */
-
 
 #define ANCOURSE 20000
 #define VITDPL 4
@@ -18,6 +15,7 @@
 #define QUITTER "QUITTER"
 
 #define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT2 1020
 #define SCREEN_HEIGHT 720
 #define FPS 60
 
@@ -25,11 +23,13 @@
 #define BUTTON_WIDTH 250
 #define DEC 30
 
-#define HEX_HEIGHT 50
-#define HEX_WIDTH 50
+#define HEX_HEIGHT 44
+#define HEX_WIDTH 48
 
 #define MAP_HEIGHT 50
 #define MAP_WIDTH 50
 
 #define N 50
 #define M 50
+
+#define DELAY_ESCAPE 200

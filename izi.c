@@ -33,17 +33,17 @@ int main(int argc, char** argv){
   pSurface = SDL_GetWindowSurface(screen);
 
   int recupCurs = 0;
+  //int backgroundmenu = 0;
 
   int nbChoix = 0;
   int decallageBouton = BUTTON_HEIGHT+DEC;
 
   int tailletab = 4;
 
-  SDL_Rect jeu = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,0*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
-  SDL_Rect option = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,1*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect quitter = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,2*decallageBouton+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,nbChoix*DEC+SCREEN_HEIGHT/2-((tailletab-1)*decallageBouton/2),BUTTON_WIDTH,BUTTON_HEIGHT};
-
+  SDL_Rect jeu = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,(0*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2)),BUTTON_WIDTH,BUTTON_HEIGHT}; //definition des rectangles, avec calcul sur la taille de l'cran afin de les centrés
+  SDL_Rect option = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,(1*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2)),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect quitter = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,(2*decallageBouton+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2)),BUTTON_WIDTH,BUTTON_HEIGHT};
+  SDL_Rect choix = {(SCREEN_WIDTH/2)-(BUTTON_WIDTH)/2,(nbChoix*DEC+SCREEN_HEIGHT2/2-((tailletab-1)*decallageBouton/2)),BUTTON_WIDTH,BUTTON_HEIGHT};
 
   affichage tab[4];
   tab[0].rec = choix;
@@ -51,12 +51,9 @@ int main(int argc, char** argv){
   tab[2].rec = option;
   tab[3].rec = quitter;
 
-  tab[1].txt = TTF_RenderText_Solid(police, "GAME", noir);
+  tab[1].txt = TTF_RenderText_Solid(police, "JEU", noir);
   tab[2].txt = TTF_RenderText_Solid(police, "OPTIONS", noir);
-  tab[3].txt = TTF_RenderText_Solid(police, "QUIT", noir);
-
-
-
+  tab[3].txt = TTF_RenderText_Solid(police, "QUITTER", noir);
 
   int argent=20000;
   int points=0;
@@ -65,10 +62,8 @@ int main(int argc, char** argv){
   t_objet inv[nbObjets];
   load_inv(inv);
 
-
   map_t * map;
   map = NULL;
-
 
   int mouseX, mouseY;
   SDL_Event e;
@@ -84,71 +79,48 @@ int main(int argc, char** argv){
   camera.w = SCREEN_WIDTH/2;
   camera.h = SCREEN_HEIGHT/2;
 
-
   coop = 0;
   serveur = 0;
-
   indicePersonnage = 0;       //variable qui indique quel personnage on est entrain de controller
-
   nbEnnemi = 0;
-
 
   srand(time(NULL));
 
   initJeu();
 
   for(int i = 0; i< 1000; i++) {
-
     clavier[i].enfonce = 0;
     clavier[i].relache = 0;
-
   }
 
-
-
-
   etatProg = menu;
-
+  int nouvelleEtat;
+  nouvelleEtat = etatProg;
 
   while(!quit){
-
-    if(etatProg == menu) {
-
+    nouvelleEtat = etatProg;
+    if(etatProg == menu){
       #include "code/menu/menuUtilisation.c"
-
-
-    } else if(etatProg == connecte) {
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
+    }else if(etatProg == connecte){
       #include "code/combat/connexion.c"
-
-
-    } else if(etatProg == lobby) {
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
+    }else if(etatProg == lobby){
       #include "code/lobby/lobbyUtilisation.c"
-
-
-    } else if(etatProg == creationMap) {
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
+    }else if(etatProg == creationMap){
       #include "code/map/mapCreation.c"
-
-
-    } else if(etatProg == UtilisationMap) {
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
+    }else if(etatProg == UtilisationMap){
       #include "code/map/mapUtilisation.c"
-
-
-    } else if(etatProg == initialisationCombat) {
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
+    }else if(etatProg == initialisationCombat){
       #include "code/combat/combatInit.c"
-
-
-    } else if(etatProg == combat) {
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
+    }else if(etatProg == combat){
       #include "code/combat/combatUtilisation.c"
-
-
+      //if(nouvelleEtat != etatProg && !ctnFondu){ fondu(pSurface,screen); ctnFondu++;}
     }
-
   }
 
   switch(quit){
@@ -160,14 +132,10 @@ int main(int argc, char** argv){
   SDL_FreeSurface(tab[2].txt);
   SDL_FreeSurface(tab[3].txt);
   SDL_FreeSurface(perso);
-
   SDL_FreeSurface(guts.image);
-
   free(map);
-
   TTF_CloseFont(police);
-
   freeAll();
-
-
+  SDL_DestroyWindow(screen);
+  SDL_Quit();
 }
