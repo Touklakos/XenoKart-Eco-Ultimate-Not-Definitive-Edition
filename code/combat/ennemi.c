@@ -34,8 +34,8 @@ int nbEnnemi = 0;
 
 void initEnnemi(Ennemi* ennemi, char fichier[50]) {
 
-    ennemi->posX = rand()%1280;
-    ennemi->posY = rand()%720;
+    ennemi->posX = SCREEN_WIDTH/2;
+    ennemi->posY = SCREEN_HEIGHT/2;
     ennemi->vitX = 0;
     ennemi->vitY = 0;
     ennemi->orientationAbsolue = 2;
