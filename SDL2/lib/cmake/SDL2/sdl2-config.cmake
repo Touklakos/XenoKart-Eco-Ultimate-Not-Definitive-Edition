@@ -1,10 +1,10 @@
 # sdl2 cmake project-config input for ./configure scripts
 
-set(prefix "/info/etu/l2info/s172032/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2") 
+set(prefix "/info/etu/l2info/s171085/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2") 
 set(exec_prefix "${prefix}")
 set(libdir "${exec_prefix}/lib")
-set(SDL2_PREFIX "/info/etu/l2info/s172032/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2")
-set(SDL2_EXEC_PREFIX "/info/etu/l2info/s172032/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2")
+set(SDL2_PREFIX "/info/etu/l2info/s171085/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2")
+set(SDL2_EXEC_PREFIX "/info/etu/l2info/s171085/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2")
 set(SDL2_LIBDIR "${exec_prefix}/lib")
 set(SDL2_INCLUDE_DIRS "${prefix}/include/SDL2")
 set(SDL2_LIBRARIES "-L${SDL2_LIBDIR} -Wl,-rpath,${libdir} -Wl,--enable-new-dtags -lSDL2")

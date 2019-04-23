@@ -1,6 +1,6 @@
 #!/bin/sh
 
-prefix=/info/etu/l2info/s172032/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
+prefix=/info/etu/l2info/s171085/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
 exec_prefix=${prefix}
 exec_prefix_set=no
 libdir=${exec_prefix}/lib

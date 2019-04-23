@@ -1,6 +1,6 @@
 # sdl pkg-config source file
 
-prefix=/info/etu/l2info/s172032/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
+prefix=/info/etu/l2info/s171085/Projet/XenoKart-Eco-Ultimate-Not-Definitive-Edition/SDL2
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include

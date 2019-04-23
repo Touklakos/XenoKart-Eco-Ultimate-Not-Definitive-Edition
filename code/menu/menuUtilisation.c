@@ -8,7 +8,7 @@ SDL_PumpEvents();
 const Uint8 *state = SDL_GetKeyboardState(NULL);
 
 SDL_Surface * img;
-img = IMG_Load("code/menu/logomenu.jpg");
+img = IMG_Load("code/menu/logomenu.png");
 SDL_BlitSurface(img, NULL, pSurface, &dest);
 SDL_FreeSurface(img);
 SDL_UpdateWindowSurface(screen);

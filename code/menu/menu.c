@@ -104,7 +104,7 @@ void afficher(affichage tab[], int tTab, SDL_Surface* pSurface, SDL_Window* scre
   dest.x=0;
   dest.y=0;
   SDL_Surface * img;
-  img = IMG_Load("code/menu/logomenu2.jpg");
+  img = IMG_Load("code/menu/logomenu2.png");
   SDL_BlitSurface(img, NULL, pSurface, &dest);
   SDL_FreeSurface(img);
 
